@@ -1,3 +1,19 @@
 {
-  "extends": "next/core-web-vitals"
+	"env": {
+		"browser": true,
+		"es2021": true,
+		"node": true
+	},
+	"extends": [
+		"plugin:@typescript-eslint/recommended-requiring-type-checking", // typescriptの型チェックをします
+		"plugin:@next/next/core-web-vitals", // Next.jsとCore Web Vitalsのチェック
+		"prettier"
+	],
+	"ignorePatterns": ["next.config.js"],
+	"parserOptions": {
+		"project": "./tsconfig.json",
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"rules": {}
 }
