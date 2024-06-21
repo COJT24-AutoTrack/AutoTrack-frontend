@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useRouter } from 'next/navigation';
 import HomeIcon from '../../public/icons/HomeIcon.svg';
-import RefuelingIcon from '../../public/icons/RefuelingIcon.svg';
-import MaintenaneIcon from '../../public/icons/MaintenanceIcon.svg';
-import TuningIcon from '../../public/icons/TuningIcon.svg';
 
 const TabBarContainer = styled.nav`
   background-color: ${props => props.theme.colors.baseBackground};
@@ -35,8 +32,8 @@ const TabBarItem = styled.a<{ isActive: boolean }>`
   ${props => props.isActive && activeStyle}
 
   svg {
-    width: 36px;
-    height: 36px;
+    width: 24px;
+    height: 24px;
     margin-bottom: 8px;
     fill: ${props => (props.isActive ? props.theme.colors.link : props.theme.colors.textPrimary)};
   }
@@ -58,15 +55,15 @@ const TabBar = () => {
         Home
       </TabBarItem>
       <TabBarItem href="/refueling" isActive={currentPath === '/refueling'}>
-        <RefuelingIcon />
+        <HomeIcon />
         Refueling
       </TabBarItem>
       <TabBarItem href="/maintenance" isActive={currentPath === '/maintenance'}>
-        <MaintenaneIcon />
+        <HomeIcon />
         Maintenance
       </TabBarItem>
       <TabBarItem href="/tuning" isActive={currentPath === '/tuning'}>
-        <TuningIcon />
+        <HomeIcon />
         Tuning
       </TabBarItem>
     </TabBarContainer>
