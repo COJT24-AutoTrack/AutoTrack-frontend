@@ -1,40 +1,38 @@
 {
-  "name": "auto_track-frontend",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.5",
-    "firebase": "^10.12.2",
-    "firebase-admin": "^12.1.1",
-    "firebaseui": "^6.1.0",
-    "js-cookie": "^3.0.5",
-    "next": "^14.2.3",
-    "next-firebase-auth-edge": "^1.5.3",
-    "next-plugin-svgr": "^1.1.10",
-    "nookies": "^2.5.2",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-firebaseui": "^6.0.0",
-    "styled-components": "^6.1.11",
-    "swr": "^2.2.5"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.3",
-    "prettier": "^3.2.5",
-    "typescript": "^5"
-  },
-  "main": "index.js",
-  "repository": "git@github.com:COJT24-AutoTrack/AutoTrack-frontend.git",
-  "author": "tarou-jp <itohisahideki@gmail.com>",
-  "license": "MIT"
+	"name": "auto_track-frontend",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"dotenv": "^16.4.5",
+		"firebase": "^10.12.2",
+		"firebase-admin": "^12.1.1",
+		"js-cookie": "^3.0.5",
+		"next": "^14.2.3",
+		"next-firebase-auth-edge": "^1.5.3",
+		"next-plugin-svgr": "^1.1.10",
+		"nookies": "^2.5.2",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
+		"styled-components": "^6.1.11",
+		"swr": "^2.2.5"
+	},
+	"devDependencies": {
+		"@types/node": "^20",
+		"@types/react": "^18",
+		"@types/react-dom": "^18",
+		"eslint": "^8",
+		"eslint-config-next": "14.2.3",
+		"prettier": "^3.2.5",
+		"typescript": "^5"
+	},
+	"main": "index.js",
+	"repository": "git@github.com:COJT24-AutoTrack/AutoTrack-frontend.git",
+	"author": "tarou-jp <itohisahideki@gmail.com>",
+	"license": "MIT"
 }
