@@ -4,6 +4,13 @@ import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { clientConfig, serverConfig } from "../../config";
+import HomeClient from "@/components/HomeClient";
+import { Anton } from "@next/font/google";
+
+const Anton400 = Anton({
+	weight: "400",
+	subsets: ["latin"],
+});
 
 export default async function Home() {
 	const tokens = await getTokens(cookies(), {
@@ -17,13 +24,5 @@ export default async function Home() {
 		notFound();
 	}
 
-	return (
-		<main className="flex min-h-screen flex-col items-center justify-center p-24">
-			<h1 className="text-xl mb-4">Super secure home page</h1>
-			<p>
-				Only <strong>{tokens?.decodedToken.email}</strong> holds the magic key
-				to this kingdom!
-			</p>
-		</main>
-	);
+	return <HomeClient tokens={tokens} />;
 }
