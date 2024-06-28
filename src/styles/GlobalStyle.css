@@ -15,3 +15,13 @@ a {
 * {
   box-sizing: border-box;
 }
+
+span.swiper-pagination-bullet {
+  background-color: #5E5E5E;
+  /* ここで色を指定します */
+}
+
+span.swiper-pagination-bullet-active {
+  background-color: #D9D9D9;
+  /* アクティブなバレットの色を指定します */
+}
