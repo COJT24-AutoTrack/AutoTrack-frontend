@@ -1,9 +1,9 @@
+import { Car, carInfo } from "@/api/models/models";
 import React from "react";
 import styled from "styled-components";
-import { Car } from "../types/car";
 
 interface CarCardComponentProps {
-	car: Car;
+	userCar: carInfo;
 	isSelected: boolean;
 	onClick: () => void;
 }
@@ -37,14 +37,14 @@ const CarName = styled.div`
 `;
 
 const CarCardComponent: React.FC<CarCardComponentProps> = ({
-	car,
+	userCar,
 	isSelected,
 	onClick,
 }) => (
 	<Card isSelected={isSelected} onClick={onClick}>
-		<CarImage src={car.image} alt={car.car_name} />
+		<CarImage src={userCar.car_image_url} alt={userCar.car_name} />
 		<CarName>
-			{car.car_name} - {car.carmodelnum}
+			{userCar.car_name} - {userCar.carmodelnum}
 		</CarName>
 	</Card>
 );

@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { clientConfig, serverConfig } from "../../config";
 import HomeClient from "@/components/HomeClient";
 import { Anton } from "@next/font/google";
+import { createClientAPI } from "@/api/clientImplement";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -24,5 +25,16 @@ export default async function Home() {
 		notFound();
 	}
 
-	return <HomeClient tokens={tokens} />;
+	const clientAPI = createClientAPI();
+
+	// todo: api接続
+	const response = await clientAPI.user.getCars({
+		user_id: tokens.decodedToken.uid,
+	});
+
+	if (!response) {
+		notFound();
+	}
+
+	if (response) return <HomeClient userCars={response} />;
 }
