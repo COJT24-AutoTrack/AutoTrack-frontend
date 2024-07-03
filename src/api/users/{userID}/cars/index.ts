@@ -14,16 +14,7 @@ export const userAPI: ClientAPI['user'] = {
         if (!response.ok) {
             throw new Error('Failed to fetch cars');
         }
-        const cars: Car[] = await response.json();
-
-        // carInfo型に変換（FuelEfficiencyは空配列として初期化）
-        const carInfos: carInfo[] = cars.map(car => ({
-            ...car,
-            FuelEfficiency: [],
-            odd_after_wash: 500,
-            odd_after_exchange: 300,
-        }));
-
+        const carInfos: carInfo[] = await response.json();
         return carInfos;
     },
 };
