@@ -5,6 +5,7 @@ import HomeIcon from "../../public/icons/HomeIcon.svg";
 import RefuelingIcon from "../../public/icons/RefuelingIcon.svg";
 import MaintenaneIcon from "../../public/icons/MaintenanceIcon.svg";
 import TuningIcon from "../../public/icons/TuningIcon.svg";
+import { breakpoints } from "@/styles/breakpoints";
 
 const TabBarContainer = styled.nav`
 	background-color: ${(props) => props.theme.colors.baseBackground};
@@ -26,7 +27,7 @@ const TabBarItem = styled.a<{ isActive: boolean }>`
 	color: ${(props) => props.theme.colors.textPrimary};
 	text-decoration: none;
 	display: flex;
-	flex-direction: column;
+	flex-direction: ${breakpoints.SP} ? "column" : "row";
 	align-items: center;
 	font-family: ${(props) => props.theme.fontFamily.primary};
 	font-size: ${(props) => props.theme.fontSizes.subsubContent};
