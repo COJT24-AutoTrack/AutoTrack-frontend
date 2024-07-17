@@ -1,21 +1,23 @@
-import React, { ReactNode } from "react";
-import PCComponent from "./responsive/PCComponents";
-import SPComponent from "./responsive/SPComponents";
-import { usePCQuery, useSPQuery } from "../hooks/useBreakpoints";
+import dynamic from 'next/dynamic';
+import React, { ReactNode } from 'react';
+import { usePCQuery, useSPQuery } from '../hooks/useBreakpoints';
+
+const PCComponent = dynamic(() => import('./responsive/PCComponents'), { ssr: false });
+const SPComponent = dynamic(() => import('./responsive/SPComponents'), { ssr: false });
 
 interface MyComponentProps {
-  children?: ReactNode;
+    children?: ReactNode;
 }
 
 const MyComponent: React.FC<MyComponentProps> = ({ children }) => {
-  const isPC = usePCQuery();
-  const isSP = useSPQuery();
+    const isPC = usePCQuery();
+    const isSP = useSPQuery();
 
-  return (
-    <div>
-      {isPC ? <PCComponent /> : <SPComponent>{children}</SPComponent>}
-    </div>
-  );
+    return (
+        <div>
+        {isPC ? <PCComponent>{children}</PCComponent> : <SPComponent>{children}</SPComponent>}
+        </div>
+    );
 };
 
 export default MyComponent;
