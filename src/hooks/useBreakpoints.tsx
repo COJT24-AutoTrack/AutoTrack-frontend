@@ -1,23 +1,6 @@
-// useBreakpoint.jsx
-import { useState, useEffect } from "react";
+import { useMediaQuery } from "react-responsive";
 import { breakpoints } from "../styles/breakpoints";
 
-const useBreakpoint = () => {
-  const [isPC, setIsPC] = useState(window.innerWidth >= parseInt(breakpoints.PC, 10));
+export const usePCQuery = (): boolean => useMediaQuery({ minWidth: parseInt(breakpoints.PC) });
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsPC(window.innerWidth >= parseInt(breakpoints.PC, 10));
-    };
-
-    window.addEventListener('resize', handleResize);
-    
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  return isPC;
-};
-
-export default useBreakpoint;
+export const useSPQuery = (): boolean => useMediaQuery({ maxWidth: parseInt(breakpoints.SP) });

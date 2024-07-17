@@ -1,18 +1,19 @@
 import React, { ReactNode } from "react";
 import PCComponent from "./responsive/PCComponents";
 import SPComponent from "./responsive/SPComponents";
-import useBreakpoint from "../hooks/useBreakpoints"
+import { usePCQuery, useSPQuery } from "../hooks/useBreakpoints";
 
 interface MyComponentProps {
-    children?: ReactNode;
-  }
+  children?: ReactNode;
+}
 
 const MyComponent: React.FC<MyComponentProps> = ({ children }) => {
-  const isPC = useBreakpoint();
+  const isPC = usePCQuery();
+  const isSP = useSPQuery();
 
   return (
     <div>
-      {isPC ? <PCComponent/> : <SPComponent>{children}</SPComponent>}
+      {isPC ? <PCComponent /> : <SPComponent>{children}</SPComponent>}
     </div>
   );
 };
