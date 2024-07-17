@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Car } from "../types/car";
+import { media } from "../../styles/breakpoints";
 
 interface CarCardComponentProps {
 	car: Car;
@@ -16,12 +17,17 @@ const Card = styled.div<{ isSelected: boolean }>`
 	flex-shrink: 0;
 	border-radius: 8px;
 	background: #1a1a1a;
-	width: 280px;
+	${media.SP} {
+		width: 280px;
+	};
+	${media.PC} {
+		width: 800px;
+	};
 	height: auto;
 `;
 
 const CarImage = styled.img`
-	height: 192px;
+	height: auto;
 	align-self: stretch;
 	border-radius: 8px;
 `;

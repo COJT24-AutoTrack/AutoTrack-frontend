@@ -5,6 +5,7 @@ import HomeIcon from "../../public/icons/HomeIcon.svg";
 import RefuelingIcon from "../../public/icons/RefuelingIcon.svg";
 import MaintenaneIcon from "../../public/icons/MaintenanceIcon.svg";
 import TuningIcon from "../../public/icons/TuningIcon.svg";
+import { media } from "@/styles/breakpoints";
 
 const TabBarContainer = styled.nav`
 	background-color: ${(props) => props.theme.colors.baseBackground};
@@ -26,11 +27,18 @@ const TabBarItem = styled.a<{ isActive: boolean }>`
 	color: ${(props) => props.theme.colors.textPrimary};
 	text-decoration: none;
 	display: flex;
-	flex-direction: column;
 	align-items: center;
 	font-family: ${(props) => props.theme.fontFamily.primary};
-	font-size: ${(props) => props.theme.fontSizes.subsubContent};
 	transition: color 0.3s;
+	${media.SP} {
+		font-size: ${(props) => props.theme.fontSizes.subsubContent};
+		flex-direction: column;
+	};
+	${media.PC} {
+		font-size: ${(props) => props.theme.fontSizes.subContent};
+		flex-direction: row;
+		gap: 8px;
+	};
 
 	${(props) => props.isActive && activeStyle}
 

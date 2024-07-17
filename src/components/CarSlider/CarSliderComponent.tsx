@@ -38,10 +38,10 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 			onSlideChange={handleSlideChange}
 			modules={[Navigation, Pagination]}
 			pagination={{ clickable: true }}
-			style={{ height: "255px" }}
+			style={{ height: "72vh" }}
 		>
 			{cars.map((car) => (
-				<SwiperSlide key={car.car_id} style={{ width: "280px" }}>
+				<SwiperSlide key={car.car_id} style={{ width: "auto" }}>
 					<CarCardComponent
 						car={car}
 						isSelected={car === selectedCar}
