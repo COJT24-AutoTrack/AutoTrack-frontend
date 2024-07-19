@@ -1,4 +1,7 @@
+
 import React, { use } from "react";
+import { Car, carInfo } from "@/api/models/models";
+import React from "react";
 import styled from "styled-components";
 import { Car } from "../types/car";
 import { Anton } from "@next/font/google";
@@ -7,7 +10,7 @@ import theme from "../../styles/theme";
 import { usePCQuery, useSPQuery } from "../../hooks/useBreakpoints";
 
 interface CarCardComponentProps {
-	car: Car;
+	userCar: carInfo;
 	isSelected: boolean;
 	onClick: () => void;
 }
@@ -57,7 +60,7 @@ const CarName = styled.div`
 `;
 
 const CarCardComponent: React.FC<CarCardComponentProps> = ({
-	car,
+	userCar,
 	isSelected,
 	onClick,
 }) => {
@@ -78,7 +81,5 @@ const CarCardComponent: React.FC<CarCardComponentProps> = ({
 		</Card>
 	)
 }
-	
-;
 
 export default CarCardComponent;
