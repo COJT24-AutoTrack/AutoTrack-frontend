@@ -8,6 +8,7 @@ import DetailCardComponent from "./CarDetail/DetailCardComponent";
 import { Car, carInfo, userCarInfos } from "@/api/models/models";
 import { media } from "../styles/breakpoints";
 import { useSPQuery, usePCQuery } from "../hooks/useBreakpoints";
+import { media } from "@/styles/breakpoints";
 
 const demoCars: Car[] = [
 	{
@@ -87,9 +88,6 @@ const HomeClient: React.FC<{ userCars: userCarInfos }> = ({ userCars }) => {
 	const [selectedCar, setSelectedCar] = useState<carInfo | null>(null);
 const HomeClient: React.FC<{ tokens: any }> = ({ tokens }) => {
 	const [selectedCar, setSelectedCar] = useState<Car | null>(null);
-	
-	const isSP = useSPQuery();
-	const isPC = usePCQuery();
 
 	const handleSelectCar = (car: carInfo) => {
 		setSelectedCar(car);
@@ -123,6 +121,7 @@ const HomeClient: React.FC<{ tokens: any }> = ({ tokens }) => {
 			<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
 			<MenuContainer>
 				<BottonMenues>
+					{useSPQuery() && 
 					<FuelEfficiencyComponent
 						userCar={selectedCar}
 						isSelected={!!selectedCar}
@@ -165,13 +164,13 @@ const HomeClient: React.FC<{ tokens: any }> = ({ tokens }) => {
 						/>
 					}
 					<BlockMenus>
-						{isSP && 
+						{useSPQuery() && 
 							<HStack>
 								<DetailCardComponent label={"ODO"} value={0} unit={"Km"} />
 								<DetailCardComponent label={"GAS COST"} value={0} unit={"Yen"} />
 							</HStack>
 						}
-						{isSP &&
+						{useSPQuery() &&
 							<HStack>
 								<DetailCardComponent
 									label={"ODO AFTER WASH"}
@@ -185,7 +184,7 @@ const HomeClient: React.FC<{ tokens: any }> = ({ tokens }) => {
 								/>
 							</HStack>
 						}
-						{isPC &&
+						{usePCQuery() &&
 							<HStack>
 								<FuelEfficiencyComponent
 									car={selectedCar}

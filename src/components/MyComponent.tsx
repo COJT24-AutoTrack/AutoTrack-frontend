@@ -6,16 +6,14 @@ const PCComponent = dynamic(() => import('./responsive/PCComponents'), { ssr: fa
 const SPComponent = dynamic(() => import('./responsive/SPComponents'), { ssr: false });
 
 interface MyComponentProps {
-    children?: ReactNode;
+    children: ReactNode;
 }
 
 const MyComponent: React.FC<MyComponentProps> = ({ children }) => {
-    const isPC = usePCQuery();
-    const isSP = useSPQuery();
-
     return (
         <div>
-        {isPC ? <PCComponent>{children}</PCComponent> : <SPComponent>{children}</SPComponent>}
+            {useSPQuery() && <SPComponent>{children}</SPComponent>}
+            {usePCQuery() && <PCComponent>{children}</PCComponent>}
         </div>
     );
 };

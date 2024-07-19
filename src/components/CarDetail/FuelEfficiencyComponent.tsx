@@ -18,11 +18,11 @@ interface FuelEfficiencyComponentProps {
 const Card = styled.div<{ isSelected: boolean }>`
 	display: flex;
 	${media.SP} {
-		height: 152px;
+		height: 18dvh;
 	};
 	${media.PC} {
-		height: 100px;
-		width: 400px;
+		height: 12dvh;
+		width: 32dvw;
 	};
 	padding: 0px 10px;
 	flex-direction: column;
