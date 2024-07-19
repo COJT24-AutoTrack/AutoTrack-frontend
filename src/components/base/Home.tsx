@@ -16,12 +16,16 @@ const MainContent = styled.main`
 	overflow-y: auto;
 `;
 
-const Home = ({ children }: { children: React.ReactNode } ) => (
-    <PageContainer>
-        <Header />
-        <MainContent>{children}</MainContent>
-		{useSPQuery() && <TabBar />}
-    </PageContainer>
-);
+const Home = ({ children }: { children: React.ReactNode }) => {
+	const isSP = useSPQuery();
+
+	return (
+		<PageContainer>
+			<Header />
+			<MainContent>{children}</MainContent>
+			{isSP && <TabBar />}
+		</PageContainer>
+	);
+};
 
 export default Home;
