@@ -5,49 +5,9 @@ import CarSliderComponent from "./CarSlider/CarSliderComponent";
 import styled from "styled-components";
 import FuelEfficiencyComponent from "./CarDetail/FuelEfficiencyComponent";
 import DetailCardComponent from "./CarDetail/DetailCardComponent";
-import { Car, carInfo, userCarInfos } from "@/api/models/models";
-import { media } from "../styles/breakpoints";
+import { Car, carInfo } from "@/api/models/models";
 import { useSPQuery, usePCQuery } from "../hooks/useBreakpoints";
 import { media } from "@/styles/breakpoints";
-
-const demoCars: Car[] = [
-	{
-		car_id: 1,
-		car_name: "Toyota Prius",
-		carmodelnum: "X123",
-		car_color: "Blue",
-		car_mileage: 10000,
-		car_isflooding: false,
-		car_issmoked: false,
-		fuelEfficiency: 14.2,
-		image:
-			"https://www.automesseweb.jp/wp-content/uploads/2022/07/01_AMW_20220720_Maclaren_F1-1200x800.jpg",
-	},
-	{
-		car_id: 2,
-		car_name: "Honda Accord",
-		carmodelnum: "Y456",
-		car_color: "Red",
-		car_mileage: 20000,
-		car_isflooding: false,
-		fuelEfficiency: 13.2,
-		car_issmoked: false,
-		image:
-			"https://www.automesseweb.jp/wp-content/uploads/2022/07/01_AMW_20220720_Maclaren_F1-1200x800.jpg",
-	},
-	{
-		car_id: 3,
-		car_name: "Honda Accord",
-		carmodelnum: "Y456",
-		car_color: "Red",
-		car_mileage: 20000,
-		car_isflooding: false,
-		car_issmoked: false,
-		fuelEfficiency: 12.2,
-		image:
-			"https://www.automesseweb.jp/wp-content/uploads/2022/07/01_AMW_20220720_Maclaren_F1-1200x800.jpg",
-	},
-];
 
 const MenuContainer = styled.div`
 	display: flex;
@@ -84,10 +44,11 @@ const HStack = styled.div`
 	align-self: stretch;
 `;
 
-const HomeClient: React.FC<{ userCars: userCarInfos }> = ({ userCars }) => {
+const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 	const [selectedCar, setSelectedCar] = useState<carInfo | null>(null);
-const HomeClient: React.FC<{ tokens: any }> = ({ tokens }) => {
-	const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+
+	const isSP = useSPQuery();
+	const isPC = usePCQuery();
 
 	const handleSelectCar = (car: carInfo) => {
 		setSelectedCar(car);
@@ -95,12 +56,12 @@ const HomeClient: React.FC<{ tokens: any }> = ({ tokens }) => {
 
 	// 直近1ヶ月でかかったガソリン代を計算
 	const calculateMonthlyGasCost = () => {
-		if (!selectedCar || !selectedCar.FuelEfficiency.length) return 0;
+		if (!selectedCar || !selectedCar.fuel_efficiency.length) return 0;
 		const now = new Date();
 		const oneMonthAgo = new Date(now);
 		oneMonthAgo.setMonth(now.getMonth() - 1);
 
-		const lastMonthFuelEfficiencies = selectedCar.FuelEfficiency.filter(
+		const lastMonthFuelEfficiencies = selectedCar.fuel_efficiency.filter(
 			(fe) => new Date(fe.fe_date) >= oneMonthAgo,
 		);
 
@@ -121,56 +82,27 @@ const HomeClient: React.FC<{ tokens: any }> = ({ tokens }) => {
 			<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
 			<MenuContainer>
 				<BottonMenues>
-					{useSPQuery() && 
-					<FuelEfficiencyComponent
-						userCar={selectedCar}
-						isSelected={!!selectedCar}
-						onClick={() => {
-							// ここにクリック時の動作を実装
-						}}
-					/>
-					<BlockMenus>
-						<HStack>
-							<DetailCardComponent
-								label={"ODO"}
-								value={selectedCar?.car_mileage ?? 0}
-								unit={"Km"}
-							/>
-							<DetailCardComponent
-								label={"GAS COST"}
-								value={gasCost}
-								unit={"Yen"}
-							/>
-						</HStack>
-						<HStack>
-							<DetailCardComponent
-								label={"ODO AFTER WASH"}
-								value={selectedCar?.odd_after_wash ?? 0}
-								unit={"Km"}
-							/>
-							<DetailCardComponent
-								label={"ODO AFTER exchange"}
-								value={selectedCar?.odd_after_exchange ?? 0}
-								unit={"Km"}
-							/>
-						</HStack>
-					{isSP && 
+					{isSP && (
 						<FuelEfficiencyComponent
-							car={selectedCar}
+							userCar={selectedCar}
 							isSelected={!!selectedCar}
 							onClick={() => {
 								// ここにクリック時の動作を実装
 							}}
 						/>
-					}
+					)}
 					<BlockMenus>
-						{useSPQuery() && 
+						{isSP && (
 							<HStack>
 								<DetailCardComponent label={"ODO"} value={0} unit={"Km"} />
-								<DetailCardComponent label={"GAS COST"} value={0} unit={"Yen"} />
+								<DetailCardComponent
+									label={"GAS COST"}
+									value={0}
+									unit={"Yen"}
+								/>
 							</HStack>
-						}
-						{useSPQuery() &&
+						)}
+						{isSP && (
 							<HStack>
 								<DetailCardComponent
 									label={"ODO AFTER WASH"}
@@ -183,18 +115,22 @@ const HomeClient: React.FC<{ tokens: any }> = ({ tokens }) => {
 									unit={"Km"}
 								/>
 							</HStack>
-						}
-						{usePCQuery() &&
+						)}
+						{isPC && (
 							<HStack>
 								<FuelEfficiencyComponent
-									car={selectedCar}
+									userCar={selectedCar}
 									isSelected={!!selectedCar}
 									onClick={() => {
 										// ここにクリック時の動作を実装
 									}}
 								/>
 								<DetailCardComponent label={"ODO"} value={0} unit={"Km"} />
-								<DetailCardComponent label={"GAS COST"} value={0} unit={"Yen"} />
+								<DetailCardComponent
+									label={"GAS COST"}
+									value={0}
+									unit={"Yen"}
+								/>
 								<DetailCardComponent
 									label={"ODO AFTER WASH"}
 									value={0}
@@ -206,7 +142,7 @@ const HomeClient: React.FC<{ tokens: any }> = ({ tokens }) => {
 									unit={"Km"}
 								/>
 							</HStack>
-						}
+						)}
 					</BlockMenus>
 				</BottonMenues>
 			</MenuContainer>

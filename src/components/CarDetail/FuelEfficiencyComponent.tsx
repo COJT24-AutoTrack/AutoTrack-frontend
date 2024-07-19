@@ -19,11 +19,11 @@ const Card = styled.div<{ isSelected: boolean }>`
 	display: flex;
 	${media.SP} {
 		height: 18dvh;
-	};
+	}
 	${media.PC} {
 		height: 12dvh;
 		width: 32dvw;
-	};
+	}
 	padding: 0px 10px;
 	flex-direction: column;
 	justify-content: center;
@@ -57,12 +57,12 @@ const FuelEfficiencyComponent: React.FC<FuelEfficiencyComponentProps> = ({
 }) => {
 	// 直近1ヶ月分の燃費の平均を計算
 	const calculateMonthlyAverage = () => {
-		if (!userCar || !userCar.FuelEfficiency.length) return 0;
+		if (!userCar || !userCar.fuel_efficiency.length) return 0;
 		const now = new Date();
 		const oneMonthAgo = new Date(now);
 		oneMonthAgo.setMonth(now.getMonth() - 1);
 
-		const lastMonthFuelEfficiencies = userCar.FuelEfficiency.filter(
+		const lastMonthFuelEfficiencies = userCar.fuel_efficiency.filter(
 			(fe) => new Date(fe.fe_date) >= oneMonthAgo,
 		);
 

@@ -6,12 +6,12 @@ import "swiper/css/pagination";
 import CarCardComponent from "./CarCardComponent";
 import AddCarCardComponent from "./AddCarCardComponent";
 import { Navigation, Pagination } from "swiper/modules";
-import { useSPQuery } from "@/hooks/useBreakpoints";
-import { carInfo, userCarInfos } from "@/api/models/models";
+import { carInfo } from "@/api/models/models";
 import { useRouter } from "next/navigation";
+import { useSPQuery } from "@/hooks/useBreakpoints";
 
 interface CarSliderComponentProps {
-	userCars: userCarInfos;
+	userCars: carInfo[];
 	onSelectCar: (userCar: carInfo) => void;
 }
 
@@ -47,12 +47,10 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 			onSlideChange={handleSlideChange}
 			modules={[Navigation, Pagination]}
 			pagination={{ clickable: true }}
-			style={{ height: isSP ? "30dvh" : "72dvh"}}
+			style={{ height: isSP ? "30dvh" : "72dvh" }}
 		>
 			{userCars.map((userCar) => (
-				<SwiperSlide key={userCar.car_id} style={{ width: "280px" }}>
-			{cars.map((car) => (
-				<SwiperSlide key={car.car_id} style={{ width: "auto" }}>
+				<SwiperSlide key={userCar.car_id} style={{ width: "auto" }}>
 					<CarCardComponent
 						userCar={userCar}
 						isSelected={userCar === selectedCar}

@@ -32,7 +32,7 @@ const Card = styled.div`
 	background: #858585;
 `;
 
-const AddText = styled.span`
+const AddTextSpan = styled.span`
 	color: #2b2b2b;
 	text-align: center;
 	font-size: 25px;
@@ -50,7 +50,7 @@ const AddCarCardComponent: React.FC<AddCarCardComponentProps> = ({
 }) => (
 	<CardContainer onClick={onClick}>
 		<Card>
-			<AddText className={Anton400.className}>Add Car</AddText>
+			<AddTextSpan className={Anton400.className}>Add Car</AddTextSpan>
 			<AddCarIcon />
 		</Card>
 	</CardContainer>

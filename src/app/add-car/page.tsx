@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { carInfo } from "@/api/models/models";
 import { useRouter } from "next/navigation";
-import { Anton } from "next/font/google";
-import { Form, Input, Label, Paragraph } from "@/components/auth/FormElements";
 import BackIcon from "../../public/icons/BackIcon.svg";
 import { ContentText } from "@/components/text/TextComponents";
 import { createClientAPI } from "@/api/clientImplement";
+import { Form, Input, Label } from "@/components/form/FormElements";
+import { Anton } from "next/font/google";
 
 const Anton400 = Anton({
 	weight: "400",

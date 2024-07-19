@@ -1,6 +1,6 @@
 // src/api/client.ts
 
-import { Car, userCarInfos } from './models/models';
+import { Car, carInfo } from './models/models';
 
 export interface ClientAPI {
     user: {
@@ -14,7 +14,7 @@ export interface UserAPI {
         request: {
             user_id: string;
         };
-        response: userCarInfos;
+        response: carInfo[];
     };
 
     registerCar: {

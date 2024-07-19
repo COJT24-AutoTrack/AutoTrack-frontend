@@ -56,7 +56,7 @@ paths:
                       type: string
                       format: date-time
                       example: "2023-06-21T10:20:30Z"
-                    FuelEfficiency:
+                    fuel_efficiency:
                       type: array
                       items:
                         type: object
@@ -105,7 +105,7 @@ paths:
                   car_image_url: "https://cdn.autoc-one.jp/images/article/202103/18020439026_fbc4_o.jpg"
                   created_at: "2023-06-21T10:20:30Z"
                   updated_at: "2023-06-21T10:20:30Z"
-                  FuelEfficiency:
+                  fuel_efficiency:
                     - fe_id: 1
                       car_id: 1
                       fe_date: "2023-07-01T10:20:30Z"
@@ -126,7 +126,7 @@ paths:
                   car_image_url: "https://www.toyota-body.co.jp/images/auto/minivan.jpg"
                   created_at: "2023-06-21T10:20:30Z"
                   updated_at: "2023-06-21T10:20:30Z"
-                  FuelEfficiency:
+                  fuel_efficiency:
                     - fe_id: 2
                       car_id: 2
                       fe_date: "2023-07-02T10:20:30Z"
