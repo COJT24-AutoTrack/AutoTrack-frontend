@@ -46,7 +46,7 @@ const HStack = styled.div`
 
 const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 	const [selectedCar, setSelectedCar] = useState<carInfo | null>(null);
-	
+
 	const isSP = useSPQuery();
 	const isPC = usePCQuery();
 
@@ -117,8 +117,6 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 							</HStack>
 						)}
 						{isPC && (
-						}
-						{usePCQuery() &&
 							<HStack>
 								<FuelEfficiencyComponent
 									userCar={selectedCar}
@@ -144,7 +142,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 									unit={"Km"}
 								/>
 							</HStack>
-						}
+						)}
 					</BlockMenus>
 				</BottonMenues>
 			</MenuContainer>

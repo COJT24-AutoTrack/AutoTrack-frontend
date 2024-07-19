@@ -8,6 +8,7 @@ import AddCarCardComponent from "./AddCarCardComponent";
 import { Navigation, Pagination } from "swiper/modules";
 import { carInfo } from "@/api/models/models";
 import { useRouter } from "next/navigation";
+import { useSPQuery } from "@/hooks/useBreakpoints";
 
 interface CarSliderComponentProps {
 	userCars: carInfo[];

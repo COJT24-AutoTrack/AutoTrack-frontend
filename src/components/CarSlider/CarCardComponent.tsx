@@ -1,10 +1,11 @@
-import React, { use } from "react";
 import { Car, carInfo } from "@/api/models/models";
 import React from "react";
 import styled from "styled-components";
 import { media } from "../../styles/breakpoints";
 import theme from "../../styles/theme";
 import { usePCQuery, useSPQuery } from "../../hooks/useBreakpoints";
+import { Anton } from "next/font/google";
+import { ContentText } from "../text/TextComponents";
 
 interface CarCardComponentProps {
 	userCar: carInfo;

@@ -1,5 +1,5 @@
 import { ClientAPI, UserAPI } from '../../../client';
-import { Car, carInfo, userCarInfos } from '../../../models/models';
+import { Car, carInfo } from '../../../models/models';
 
 const BASE_URL = 'http://127.0.0.1:4010/users';
 

@@ -15,7 +15,6 @@ interface MyComponentProps {
 
 const Swittch: React.FC<MyComponentProps> = ({ children }) => {
 	const isPC = usePCQuery();
-	const isSP = useSPQuery();
 
 	return (
 		<div>
