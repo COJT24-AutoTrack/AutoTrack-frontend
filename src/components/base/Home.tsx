@@ -1,6 +1,8 @@
 import React from 'react';
-import Header from '../base/Header';
+import Header from './Header';
 import styled from 'styled-components';
+import TabBar from './TabBar';
+import { useSPQuery } from '@/hooks/useBreakpoints';
 
 const PageContainer = styled.div`
 	display: flex;
@@ -14,11 +16,12 @@ const MainContent = styled.main`
 	overflow-y: auto;
 `;
 
-const PCComponent = ({ children }: { children: React.ReactNode } ) => (
+const Home = ({ children }: { children: React.ReactNode } ) => (
     <PageContainer>
         <Header />
         <MainContent>{children}</MainContent>
+		{useSPQuery() && <TabBar />}
     </PageContainer>
 );
 
-export default PCComponent;
+export default Home;
