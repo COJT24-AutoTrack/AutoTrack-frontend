@@ -6,6 +6,7 @@ import "swiper/css/pagination";
 import CarCardComponent from "./CarCardComponent";
 import { Car } from "../types/car";
 import { Navigation, Pagination } from "swiper/modules";
+import { useSPQuery } from "@/hooks/useBreakpoints";
 
 interface CarSliderComponentProps {
 	cars: Car[];
@@ -29,16 +30,18 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 		handleSelectCar(newSelectedCar);
 	};
 
+	const isSP = useSPQuery();
+
 	return (
 		<Swiper
 			spaceBetween={30}
 			slidesPerView={"auto"}
-			centeredSlides={true}
+			centeredSlides={isSP ? true : false}
 			loop={true}
 			onSlideChange={handleSlideChange}
 			modules={[Navigation, Pagination]}
 			pagination={{ clickable: true }}
-			style={{ height: "72vh" }}
+			style={{ height: isSP ? "30dvh" : "72dvh"}}
 		>
 			{cars.map((car) => (
 				<SwiperSlide key={car.car_id} style={{ width: "auto" }}>

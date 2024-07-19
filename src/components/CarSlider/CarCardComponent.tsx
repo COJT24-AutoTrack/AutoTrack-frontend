@@ -1,13 +1,21 @@
-import React from "react";
+import React, { use } from "react";
 import styled from "styled-components";
 import { Car } from "../types/car";
+import { Anton } from "@next/font/google";
 import { media } from "../../styles/breakpoints";
+import theme from "../../styles/theme";
+import { usePCQuery, useSPQuery } from "../../hooks/useBreakpoints";
 
 interface CarCardComponentProps {
 	car: Car;
 	isSelected: boolean;
 	onClick: () => void;
 }
+
+const Anton400 = Anton({
+	weight: "400",
+	subsets: ["latin"],
+});
 
 const Card = styled.div<{ isSelected: boolean }>`
 	display: flex;
@@ -34,9 +42,15 @@ const CarImage = styled.img`
 
 const CarName = styled.div`
 	color: #fff;
-	text-align: center;
-	font-family: Inter;
-	font-size: 16px;
+	${media.SP} {
+		font-size: ${theme.fontSizes.subsubContent};
+		text-align: center;
+	}
+	${media.PC} {
+		font-size: ${theme.fontSizes.subContent};
+		width: 100%;
+		text-align: left;
+	};
 	font-style: normal;
 	font-weight: 400;
 	line-height: normal;
@@ -46,13 +60,25 @@ const CarCardComponent: React.FC<CarCardComponentProps> = ({
 	car,
 	isSelected,
 	onClick,
-}) => (
-	<Card isSelected={isSelected} onClick={onClick}>
-		<CarImage src={car.image} alt={car.car_name} />
-		<CarName>
-			{car.car_name} - {car.carmodelnum}
-		</CarName>
-	</Card>
-);
+}) => {
+	return (
+		<Card isSelected={isSelected} onClick={onClick} >
+			{usePCQuery() &&
+				<CarName className={Anton400.className}>
+
+					{car.car_name} - {car.carmodelnum}
+				</CarName>
+			}
+			<CarImage src={car.image} alt={car.car_name} />
+			{useSPQuery() && 
+				<CarName className={Anton400.className}>
+					{car.car_name} - {car.carmodelnum}
+				</CarName>
+			}
+		</Card>
+	)
+}
+	
+;
 
 export default CarCardComponent;
