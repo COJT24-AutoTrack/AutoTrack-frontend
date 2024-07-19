@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Anton } from "@next/font/google";
+import { media } from "@/styles/breakpoints";
 
 const Anton400 = Anton({
 	weight: "400",

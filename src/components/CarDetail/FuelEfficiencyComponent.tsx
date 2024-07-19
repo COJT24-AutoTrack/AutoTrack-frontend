@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Anton } from "@next/font/google";
 import { carInfo } from "@/api/models/models";
+import { media } from "@/styles/breakpoints";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -16,7 +17,13 @@ interface FuelEfficiencyComponentProps {
 
 const Card = styled.div<{ isSelected: boolean }>`
 	display: flex;
-	height: 152px;
+	${media.SP} {
+		height: 152px;
+	};
+	${media.PC} {
+		height: 100px;
+		width: 400px;
+	};
 	padding: 0px 10px;
 	flex-direction: column;
 	justify-content: center;

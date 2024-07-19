@@ -1,6 +1,6 @@
 "use client";
 
-import Layout from "@/components/base/Layout";
+import MyComponent from "@/components/MyComponent";
 import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
 import theme from "../styles/theme";
@@ -22,7 +22,7 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={inter.className}>
 				<ThemeProvider theme={theme}>
-					{shouldUseLayout ? <Layout>{children}</Layout> : children}
+					{shouldUseLayout ? <MyComponent>{children}</MyComponent> : children}
 				</ThemeProvider>
 			</body>
 		</html>
