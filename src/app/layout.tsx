@@ -1,6 +1,6 @@
 "use client";
 
-import Switch from "@/components/Switch";
+import Home from "@/components/base/Home";
 import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
 import theme from "../styles/theme";
@@ -22,7 +22,7 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={inter.className}>
 				<ThemeProvider theme={theme}>
-					{shouldUseLayout ? <Switch>{children}</Switch> : children}
+					{shouldUseLayout ? <Home>{children}</Home> : children}
 				</ThemeProvider>
 			</body>
 		</html>
