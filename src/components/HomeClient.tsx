@@ -73,7 +73,7 @@ const HomeClient: React.FC<{ userCars: userCarInfos }> = ({ userCars }) => {
 	const gasCost = calculateMonthlyGasCost();
 
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-center p-24">
+		<main style={{ paddingTop: "10px" }}>
 			<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
 			<MenuContainer>
 				<BottonMenues>

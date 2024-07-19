@@ -5,13 +5,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { clientConfig, serverConfig } from "../../config";
 import HomeClient from "@/components/HomeClient";
-import { Anton } from "@next/font/google";
 import { createClientAPI } from "@/api/clientImplement";
-
-const Anton400 = Anton({
-	weight: "400",
-	subsets: ["latin"],
-});
 
 export default async function Home() {
 	const tokens = await getTokens(cookies(), {

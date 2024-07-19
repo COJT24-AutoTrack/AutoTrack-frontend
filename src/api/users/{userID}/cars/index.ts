@@ -17,4 +17,19 @@ export const userAPI: ClientAPI['user'] = {
         const carInfos: carInfo[] = await response.json();
         return carInfos;
     },
+
+    registerCar: async (request: UserAPI['registerCar']['request']): Promise<UserAPI['registerCar']['response']> => {
+        const response = await fetch(`${BASE_URL}/${request.user_id}/cars`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(request.car),
+        });
+        if (!response.ok) {
+            throw new Error('Failed to add car');
+        }
+        const car: Car = await response.json();
+        return car;
+    },
 };
