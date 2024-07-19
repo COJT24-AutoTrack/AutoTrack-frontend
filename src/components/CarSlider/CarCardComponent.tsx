@@ -1,8 +1,8 @@
 import { Car, carInfo } from "@/api/models/models";
 import React from "react";
 import styled from "styled-components";
-import { Car } from "../types/car";
 import { media } from "../../styles/breakpoints";
+import { ContentText } from "../text/TextComponents";
 
 interface CarCardComponentProps {
 	userCar: carInfo;
@@ -20,10 +20,10 @@ const Card = styled.div<{ isSelected: boolean }>`
 	background: #1a1a1a;
 	${media.SP} {
 		width: 280px;
-	};
+	}
 	${media.PC} {
 		width: 800px;
-	};
+	}
 	height: auto;
 `;
 
@@ -33,16 +33,6 @@ const CarImage = styled.img`
 	border-radius: 8px;
 `;
 
-const CarName = styled.div`
-	color: #fff;
-	text-align: center;
-	font-family: Inter;
-	font-size: 16px;
-	font-style: normal;
-	font-weight: 400;
-	line-height: normal;
-`;
-
 const CarCardComponent: React.FC<CarCardComponentProps> = ({
 	userCar,
 	isSelected,
@@ -50,9 +40,9 @@ const CarCardComponent: React.FC<CarCardComponentProps> = ({
 }) => (
 	<Card isSelected={isSelected} onClick={onClick}>
 		<CarImage src={userCar.car_image_url} alt={userCar.car_name} />
-		<CarName>
+		<ContentText>
 			{userCar.car_name} - {userCar.carmodelnum}
-		</CarName>
+		</ContentText>
 	</Card>
 );
 

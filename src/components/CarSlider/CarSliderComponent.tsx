@@ -6,11 +6,11 @@ import "swiper/css/pagination";
 import CarCardComponent from "./CarCardComponent";
 import AddCarCardComponent from "./AddCarCardComponent";
 import { Navigation, Pagination } from "swiper/modules";
-import { carInfo, userCarInfos } from "@/api/models/models";
+import { carInfo } from "@/api/models/models";
 import { useRouter } from "next/navigation";
 
 interface CarSliderComponentProps {
-	userCars: userCarInfos;
+	userCars: carInfo[];
 	onSelectCar: (userCar: carInfo) => void;
 }
 
@@ -45,12 +45,10 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 			onSlideChange={handleSlideChange}
 			modules={[Navigation, Pagination]}
 			pagination={{ clickable: true }}
-			style={{ height: "72vh" }}
+			style={{ height: "552px" }}
 		>
 			{userCars.map((userCar) => (
-				<SwiperSlide key={userCar.car_id} style={{ width: "280px" }}>
-			{cars.map((car) => (
-				<SwiperSlide key={car.car_id} style={{ width: "auto" }}>
+				<SwiperSlide key={userCar.car_id} style={{ width: "auto" }}>
 					<CarCardComponent
 						userCar={userCar}
 						isSelected={userCar === selectedCar}

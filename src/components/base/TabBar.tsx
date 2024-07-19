@@ -33,12 +33,12 @@ const TabBarItem = styled.a<{ isActive: boolean }>`
 	${media.SP} {
 		font-size: ${(props) => props.theme.fontSizes.subsubContent};
 		flex-direction: column;
-	};
+	}
 	${media.PC} {
 		font-size: ${(props) => props.theme.fontSizes.subContent};
 		flex-direction: row;
 		gap: 8px;
-	};
+	}
 
 	${(props) => props.isActive && activeStyle}
 

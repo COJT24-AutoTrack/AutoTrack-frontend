@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { app } from "../../../firebase";
 import { useRouter } from "next/navigation";
-import { Main, Container } from "./FormContainer";
+import { Main, Container } from "../form/FormContainer";
 import {
 	Form,
 	Label,
@@ -13,7 +13,7 @@ import {
 	Button,
 	Paragraph,
 	StyledLink,
-} from "./FormElements";
+} from "../form/FormElements";
 import { LogoText } from "../text/LogoTextComponen";
 
 export default function RegisterForm() {

@@ -76,9 +76,7 @@ export interface PeriodicInspection {
 // 以下はクライアント側でよしなに定義しているもの
 
 export interface carInfo extends Car {
-    FuelEfficiency: FuelEfficiency[];
+    fuel_efficiency: FuelEfficiency[];
     odd_after_wash: number;
     odd_after_exchange: number;
 }
-
-export type userCarInfos = carInfo[];
