@@ -22,14 +22,12 @@ const HeaderContainer = styled.div`
 `;
 
 const Header = () => {
-	const isPC = usePCQuery();
-
 	return (
 		<HeaderContainer>
 			<Link href="/" passHref>
 				<LogoText />
 			</Link>
-			{isPC && <TabBar />}
+			{usePCQuery() && <TabBar />}
 		</HeaderContainer>
 	);
 };

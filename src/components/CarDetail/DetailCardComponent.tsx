@@ -16,7 +16,7 @@ interface DetailCardComponentProps {
 
 const Card = styled.div`
 	display: flex;
-	height: 100px;
+	height: 12dvh;
 	padding: 10px;
 	flex-direction: column;
 	align-items: center;

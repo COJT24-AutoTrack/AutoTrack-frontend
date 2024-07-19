@@ -6,8 +6,8 @@ import styled from "styled-components";
 import FuelEfficiencyComponent from "./CarDetail/FuelEfficiencyComponent";
 import DetailCardComponent from "./CarDetail/DetailCardComponent";
 import { Car, carInfo } from "@/api/models/models";
-import { media } from "../styles/breakpoints";
 import { useSPQuery, usePCQuery } from "../hooks/useBreakpoints";
+import { media } from "@/styles/breakpoints";
 
 const MenuContainer = styled.div`
 	display: flex;
@@ -46,7 +46,7 @@ const HStack = styled.div`
 
 const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 	const [selectedCar, setSelectedCar] = useState<carInfo | null>(null);
-
+	
 	const isSP = useSPQuery();
 	const isPC = usePCQuery();
 
@@ -82,13 +82,6 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 			<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
 			<MenuContainer>
 				<BottonMenues>
-					<FuelEfficiencyComponent
-						userCar={selectedCar}
-						isSelected={!!selectedCar}
-						onClick={() => {
-							// ここにクリック時の動作を実装
-						}}
-					/>
 					{isSP && (
 						<FuelEfficiencyComponent
 							userCar={selectedCar}
@@ -124,6 +117,8 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 							</HStack>
 						)}
 						{isPC && (
+						}
+						{usePCQuery() &&
 							<HStack>
 								<FuelEfficiencyComponent
 									userCar={selectedCar}
@@ -149,7 +144,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 									unit={"Km"}
 								/>
 							</HStack>
-						)}
+						}
 					</BlockMenus>
 				</BottonMenues>
 			</MenuContainer>

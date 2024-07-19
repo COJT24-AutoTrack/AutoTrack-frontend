@@ -32,6 +32,7 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 		handleSelectCar(newSelectedCar);
 	};
 
+	const isSP = useSPQuery();
 	const handleAddCarClick = () => {
 		router.push("/add-car");
 	};
@@ -40,12 +41,12 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 		<Swiper
 			spaceBetween={30}
 			slidesPerView={"auto"}
-			centeredSlides={true}
+			centeredSlides={isSP ? true : false}
 			loop={false}
 			onSlideChange={handleSlideChange}
 			modules={[Navigation, Pagination]}
 			pagination={{ clickable: true }}
-			style={{ height: "552px" }}
+			style={{ height: isSP ? "30dvh" : "72dvh" }}
 		>
 			{userCars.map((userCar) => (
 				<SwiperSlide key={userCar.car_id} style={{ width: "auto" }}>

@@ -1,14 +1,21 @@
+import React, { use } from "react";
 import { Car, carInfo } from "@/api/models/models";
 import React from "react";
 import styled from "styled-components";
 import { media } from "../../styles/breakpoints";
-import { ContentText } from "../text/TextComponents";
+import theme from "../../styles/theme";
+import { usePCQuery, useSPQuery } from "../../hooks/useBreakpoints";
 
 interface CarCardComponentProps {
 	userCar: carInfo;
 	isSelected: boolean;
 	onClick: () => void;
 }
+
+const Anton400 = Anton({
+	weight: "400",
+	subsets: ["latin"],
+});
 
 const Card = styled.div<{ isSelected: boolean }>`
 	display: flex;
@@ -31,6 +38,22 @@ const CarImage = styled.img`
 	height: auto;
 	align-self: stretch;
 	border-radius: 8px;
+`;
+
+const CarName = styled.div`
+	color: #fff;
+	${media.SP} {
+		font-size: ${theme.fontSizes.subsubContent};
+		text-align: center;
+	}
+	${media.PC} {
+		font-size: ${theme.fontSizes.subContent};
+		width: 100%;
+		text-align: left;
+	}
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
 `;
 
 const CarCardComponent: React.FC<CarCardComponentProps> = ({
