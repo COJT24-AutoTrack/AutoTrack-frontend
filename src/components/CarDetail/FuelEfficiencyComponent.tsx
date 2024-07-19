@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { Car } from "../types/car";
 import { Anton } from "@next/font/google";
+import { carInfo } from "@/api/models/models";
 import { media } from "@/styles/breakpoints";
 
 const Anton400 = Anton({
@@ -10,7 +10,7 @@ const Anton400 = Anton({
 });
 
 interface FuelEfficiencyComponentProps {
-	car: Car | null; // carをnull許容型に変更
+	userCar: carInfo | null;
 	isSelected: boolean;
 	onClick: () => void;
 }
@@ -51,18 +51,49 @@ const Unit = styled.span`
 `;
 
 const FuelEfficiencyComponent: React.FC<FuelEfficiencyComponentProps> = ({
-	car,
+	userCar,
 	isSelected,
 	onClick,
-}) => (
-	<Card isSelected={isSelected} onClick={onClick}>
-		{car && (
-			<Text>
-				<Value className={Anton400.className}>{car.fuelEfficiency}</Value>
-				<Unit className={Anton400.className}>km/L</Unit>
-			</Text>
-		)}
-	</Card>
-);
+}) => {
+	// 直近1ヶ月分の燃費の平均を計算
+	const calculateMonthlyAverage = () => {
+		if (!userCar || !userCar.FuelEfficiency.length) return 0;
+		const now = new Date();
+		const oneMonthAgo = new Date(now);
+		oneMonthAgo.setMonth(now.getMonth() - 1);
+
+		const lastMonthFuelEfficiencies = userCar.FuelEfficiency.filter(
+			(fe) => new Date(fe.fe_date) >= oneMonthAgo,
+		);
+
+		if (lastMonthFuelEfficiencies.length === 0) return 0;
+
+		const totalMileage = lastMonthFuelEfficiencies.reduce(
+			(total, fe) => total + fe.fe_mileage,
+			0,
+		);
+		const totalAmount = lastMonthFuelEfficiencies.reduce(
+			(total, fe) => total + fe.fe_amount,
+			0,
+		);
+
+		return totalMileage / totalAmount;
+	};
+
+	const averageFuelEfficiency = calculateMonthlyAverage();
+
+	return (
+		<Card isSelected={isSelected} onClick={onClick}>
+			{userCar && (
+				<Text>
+					<Value className={Anton400.className}>
+						{averageFuelEfficiency.toFixed(2)}
+					</Value>
+					<Unit className={Anton400.className}>km/L</Unit>
+				</Text>
+			)}
+		</Card>
+	);
+};
 
 export default FuelEfficiencyComponent;

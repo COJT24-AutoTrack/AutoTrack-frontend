@@ -7,19 +7,17 @@ export const TitleText = styled.h1`
 `;
 
 export const ContentText = styled.p`
+	margin: 0;
 	color: ${(props) => props.theme.colors.textPrimary};
 	font-size: ${(props) => props.theme.fontSizes.content};
-	font-family: ${(props) => props.theme.fontFamily.primary};
 `;
 
 export const SubContentText = styled.p`
 	color: ${(props) => props.theme.colors.textPrimary};
 	font-size: ${(props) => props.theme.fontSizes.subContent};
-	font-family: ${(props) => props.theme.fontFamily.primary};
 `;
 
 export const SubSubContentText = styled.p`
 	color: ${(props) => props.theme.colors.textPrimary};
 	font-size: ${(props) => props.theme.fontSizes.subsubContent};
-	font-family: ${(props) => props.theme.fontFamily.primary};
 `;
