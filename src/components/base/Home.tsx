@@ -12,7 +12,6 @@ const PageContainer = styled.div`
 
 const MainContent = styled.main`
 	flex: 1;
-	padding: 10px;
 	overflow-y: auto;
 `;
 

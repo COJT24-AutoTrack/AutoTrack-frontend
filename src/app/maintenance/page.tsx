@@ -1,7 +1,7 @@
 import MaintenancePage from '@/components/maintenance/MaintenancePage';
 
 const Maintenance = () => {
-  return <MaintenancePage />;
+	return <MaintenancePage />;
 };
 
 export default Maintenance;
