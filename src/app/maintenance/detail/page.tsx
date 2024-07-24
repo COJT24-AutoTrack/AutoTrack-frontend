@@ -1,4 +1,4 @@
-import DetailPage from '@/components/maintenance/DetailPage';
+import DetailPage from '@/components/maintenance/detail/DetailPage';
 
 const Detail = () => {
 	return <DetailPage />;

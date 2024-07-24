@@ -75,7 +75,7 @@ const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({ title, lastMainte
 			</Title>
 			<Explanation>
 				<DateText>前回メンテナンス日: {lastMaintenanceDate}</DateText>
-				{showDetail ? <DetailText>{detail}</DetailText> : <DetailText>{detail.substring(0, 20)}...</DetailText>}
+				{showDetail ? <DetailText>{detail}</DetailText> : <DetailText>内容: {detail.substring(0, 20)}...</DetailText>}
 			</Explanation>
 		</Container>
 	);

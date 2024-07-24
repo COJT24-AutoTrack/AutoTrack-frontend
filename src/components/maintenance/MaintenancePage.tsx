@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import MaintenanceDetail from './DetailComponent';
+import MaintenanceDetail from './MentenanceCard';
 import { media } from '@/styles/breakpoints';
 
 const DetailContainer = styled.div`
