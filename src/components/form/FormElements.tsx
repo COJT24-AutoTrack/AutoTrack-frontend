@@ -1,10 +1,36 @@
 import styled from "styled-components";
 import Link from "next/link";
 
+const FormContainer = styled.div`
+	display: flex;
+	padding: 20px;
+	flex-direction: column;
+	align-items: flex-start;
+	align-self: stretch;
+`;
+
 const Form = styled.form`
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
+`;
+
+const FormElementContainer = styled.div`
+	display: flex;
+	padding: 10px 0px;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 10px;
+	align-self: stretch;
+`;
+
+const BigLabel = styled.label`
+	display: block;
+	font-size: 24px;
+	font-weight: 500;
+	color: ${(props) => props.theme.colors.textPrimary};
 `;
 
 const Label = styled.label`
@@ -12,6 +38,12 @@ const Label = styled.label`
 	font-size: 14px;
 	font-weight: 500;
 	color: ${(props) => props.theme.colors.textPrimary};
+`;
+
+const ButtonsContainer = styled.div`
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
 `;
 
 const Input = styled.input`
@@ -59,4 +91,16 @@ const StyledLink = styled(Link)`
 	text-decoration: none;
 `;
 
-export { Form, Label, Input, ErrorMessage, Button, Paragraph, StyledLink };
+export {
+	FormContainer,
+	Form,
+	BigLabel,
+	FormElementContainer,
+	ButtonsContainer,
+	Label,
+	Input,
+	ErrorMessage,
+	Button,
+	Paragraph,
+	StyledLink,
+};

@@ -28,7 +28,6 @@ const TabBarItem = styled.a<{ isActive: boolean }>`
 	text-decoration: none;
 	display: flex;
 	align-items: center;
-	font-family: ${(props) => props.theme.fontFamily.primary};
 	transition: color 0.3s;
 	${media.SP} {
 		font-size: ${(props) => props.theme.fontSizes.subsubContent};

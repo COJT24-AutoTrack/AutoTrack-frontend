@@ -3,7 +3,6 @@ import styled from "styled-components";
 export const TitleText = styled.h1`
 	color: ${(props) => props.theme.colors.textPrimary};
 	font-size: ${(props) => props.theme.fontSizes.title};
-	font-family: ${(props) => props.theme.fontFamily.primary};
 `;
 
 export const ContentText = styled.p`
