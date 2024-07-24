@@ -26,7 +26,7 @@ const Title = styled.div`
 const Explanation = styled.div`
     background-color: ${theme.colors.background};
     margin: 0;
-    padding: 20px 0;
+    padding: 20px;
 `;
 
 const DateText = styled.p`
