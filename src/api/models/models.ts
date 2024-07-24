@@ -80,3 +80,12 @@ export interface carInfo extends Car {
     odd_after_wash: number;
     odd_after_exchange: number;
 }
+
+export interface FuelEfficiencyCalculationResult {
+    car_id: number;
+    total_fuel_efficiency: number;
+    fuel_efficiencies: {
+        fe_id: number;
+        fuel_efficiency: number;
+    }[];
+}

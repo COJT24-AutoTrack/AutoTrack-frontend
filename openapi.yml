@@ -137,3 +137,116 @@ paths:
                       updated_at: "2023-07-02T10:20:30Z"
                   odd_after_wash: 300
                   odd_after_exchange: 340
+  /cars/{car_id}/fuel_efficiencies/calculate:
+    get:
+      summary: Calculate and get the fuel efficiency for a specific car
+      parameters:
+        - in: path
+          name: car_id
+          required: true
+          schema:
+            type: string
+          description: Car ID
+      responses:
+        "200":
+          description: Fuel efficiency calculation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  car_id:
+                    type: integer
+                    example: 1
+                  total_fuel_efficiency:
+                    type: number
+                    example: 8.6
+                  fuel_efficiencies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        fe_id:
+                          type: integer
+                          example: 1
+                        fuel_efficiency:
+                          type: number
+                          example: 8.6
+              example:
+                car_id: 1
+                total_fuel_efficiency: 8.6
+                fuel_efficiencies:
+                  - fe_id: 1
+                    fuel_efficiency: 8.6
+                  - fe_id: 2
+                    fuel_efficiency: 9.0
+  /users/{user_id}/cars/{car_id}/fuel_efficiency:
+    get:
+      summary: Get all fuel efficiencies for a specific car associated with a user
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+          description: User ID
+        - in: path
+          name: car_id
+          required: true
+          schema:
+            type: string
+          description: Car ID
+      responses:
+        "200":
+          description: A list of fuel efficiencies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    fe_id:
+                      type: integer
+                      example: 1
+                    car_id:
+                      type: integer
+                      example: 1
+                    fe_date:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    fe_amount:
+                      type: number
+                      example: 10
+                    fe_unitprice:
+                      type: number
+                      example: 150
+                    fe_mileage:
+                      type: number
+                      example: 10
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    updated_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+              example:
+                - fe_id: 1
+                  car_id: 1
+                  fe_date: "2023-07-01"
+                  fe_amount: 10
+                  fe_unitprice: 150
+                  fe_mileage: 10
+                  created_at: "2023-07-01"
+                  updated_at: "2023-07-01"
+                - fe_id: 2
+                  car_id: 1
+                  fe_date: "2023-07-02"
+                  fe_amount: 20
+                  fe_unitprice: 140
+                  fe_mileage: 20
+                  created_at: "2023-07-02"
+                  updated_at: "2023-07-02"
