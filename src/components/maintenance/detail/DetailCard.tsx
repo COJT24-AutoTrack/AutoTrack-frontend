@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import theme from '@/styles/theme';
-import BackIcon from '../../public/icons/BackIcon.svg';
+import BackIcon from '../../../public/icons/BackIcon.svg';
 
 interface DetailCardProps {
 	title: string;
@@ -11,13 +11,14 @@ interface DetailCardProps {
 }
 
 const Container = styled.div`
-	margin: 0 0 10px 0;
-`;
-
-const Explanation = styled.div`
-	background-color: ${theme.colors.background};
-	margin: 0;
-	padding: 20px;
+	margin: 0 0 5px 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 25px;
+	height: 50px;
+	background-color: ${theme.colors.cardBackground};
 `;
 
 const DateText = styled.p`
@@ -50,20 +51,15 @@ const MaintenanceDetail: React.FC<DetailCardProps> = ({ title, lastMaintenanceDa
 
 	return (
 		<Container>
-			{title}
-			{showDetail ? (
-				<DetailButton onClick={toggleDetail}>閉じる</DetailButton>
-			) : (
-				<Link href="/maintenance/detail" passHref>
-					<DetailButton onClick={toggleDetail}>詳細 
-						<BackIcon fill="#696969" width="10px" height="10px" />
-					</DetailButton>
-				</Link>
-            )}
-			<Explanation>
+			<div>
 				<DateText>日付: {lastMaintenanceDate}</DateText>
-				{showDetail ? <DetailText>{detail}</DetailText> : <DetailText>内容: {detail.substring(0, 20)}...</DetailText>}
-			</Explanation>
+				<DetailText>{detail}</DetailText>
+			</div>
+			<Link href="/maintenance/detail" passHref>
+				<DetailButton onClick={toggleDetail}>編集 
+					<BackIcon fill="#696969" width="10px" height="10px" />
+				</DetailButton>
+			</Link>
 		</Container>
 	);
 };

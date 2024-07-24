@@ -8,6 +8,7 @@ interface MaintenanceDetailProps {
 	title: string;
 	lastMaintenanceDate: string;
 	detail: string;
+	detailUrl: string; // 追加
 }
 
 const Container = styled.div`
@@ -52,7 +53,7 @@ const DetailButton = styled.button`
 	cursor: pointer;
 `;
 
-const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({ title, lastMaintenanceDate, detail }) => {
+const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({ title, lastMaintenanceDate, detail, detailUrl }) => { // detailUrlを追加
 	const [showDetail, setShowDetail] = useState(false);
 
 	const toggleDetail = () => {
@@ -66,7 +67,7 @@ const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({ title, lastMainte
 				{showDetail ? (
 					<DetailButton onClick={toggleDetail}>閉じる</DetailButton>
 				) : (
-					<Link href="/maintenance/detail" passHref>
+					<Link href={detailUrl} passHref> {/* detailUrlを使用 */}
 						<DetailButton onClick={toggleDetail}>詳細 
                             <BackIcon fill="#696969" width="10px" height="10px" />
                         </DetailButton>
