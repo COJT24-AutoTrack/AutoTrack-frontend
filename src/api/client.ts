@@ -1,4 +1,4 @@
-import { Car, carInfo, FuelEfficiencyCalculationResult, FuelEfficiency, Tuning } from './models/models';
+import { Car, carInfo, FuelEfficiencyCalculationResult, FuelEfficiency, Tuning, Maintenance } from './models/models';
 
 export interface ClientAPI {
     user: {
@@ -6,6 +6,7 @@ export interface ClientAPI {
         registerCar(request: UserAPI['registerCar']['request']): Promise<UserAPI['registerCar']['response']>;
         getFuelEfficiency(request: UserAPI['getFuelEfficiency']['request']): Promise<UserAPI['getFuelEfficiency']['response']>;
         getTuning(request: UserAPI['getTuning']['request']): Promise<UserAPI['getTuning']['response']>;
+        getMaintenance(request: UserAPI['getMaintenance']['request']): Promise<UserAPI['getMaintenance']['response']>;
     };
     carFuelEfficiency: {
         calculateFuelEfficiency(request: CarFuelEfficiencyAPI['calculateFuelEfficiency']['request']): Promise<CarFuelEfficiencyAPI['calculateFuelEfficiency']['response']>;
@@ -23,6 +24,13 @@ export interface ClientAPI {
         getTuningById(request: TuningAPI['getTuningById']['request']): Promise<TuningAPI['getTuningById']['response']>;
         updateTuning(request: TuningAPI['updateTuning']['request']): Promise<TuningAPI['updateTuning']['response']>;
         deleteTuning(request: TuningAPI['deleteTuning']['request']): Promise<void>;
+    };
+    maintenance: {
+        createMaintenance(request: MaintenanceAPI['createMaintenance']['request']): Promise<MaintenanceAPI['createMaintenance']['response']>;
+        getAllMaintenances(): Promise<MaintenanceAPI['getAllMaintenances']['response']>;
+        getMaintenanceById(request: MaintenanceAPI['getMaintenanceById']['request']): Promise<MaintenanceAPI['getMaintenanceById']['response']>;
+        updateMaintenance(request: MaintenanceAPI['updateMaintenance']['request']): Promise<MaintenanceAPI['updateMaintenance']['response']>;
+        deleteMaintenance(request: MaintenanceAPI['deleteMaintenance']['request']): Promise<void>;
     };
 }
 
@@ -58,6 +66,15 @@ export interface UserAPI {
             car_id: string;
         };
         response: Tuning[];
+    };
+
+    getMaintenance: {
+        getMaintenanc: (request: { user_id: string; car_id: string; }) => Promise<Tuning[]>;
+        request: {
+            user_id: string;
+            car_id: string;
+        };
+        response: Maintenance[];
     };
 }
 
@@ -138,6 +155,42 @@ export interface TuningAPI {
         response: Tuning;
     };
     deleteTuning: {
+        request: {
+            id: number;
+        };
+    };
+}
+
+export interface MaintenanceAPI {
+    createMaintenance: {
+        request: {
+            car_id: number;
+            maint_type: string;
+            maint_date: string;
+            maint_description: string;
+        };
+        response: Maintenance;
+    };
+    getAllMaintenances: {
+        response: Maintenance[];
+    };
+    getMaintenanceById: {
+        request: {
+            id: number;
+        };
+        response: Maintenance;
+    };
+    updateMaintenance: {
+        request: {
+            id: number;
+            car_id: number;
+            maint_type: string;
+            maint_date: string;
+            maint_description: string;
+        };
+        response: Maintenance;
+    };
+    deleteMaintenance: {
         request: {
             id: number;
         };

@@ -1,5 +1,5 @@
 import { ClientAPI, UserAPI } from '../../../client';
-import { Car, carInfo, FuelEfficiency, Tuning } from '../../../models/models';
+import { Car, carInfo, FuelEfficiency, Maintenance, Tuning } from '../../../models/models';
 
 const BASE_URL = 'http://127.0.0.1:4010/users';
 
@@ -59,5 +59,19 @@ export const userAPI: ClientAPI['user'] = {
         }
         const tunings: Tuning[] = await response.json();
         return tunings;
+    },
+
+    getMaintenance: async (request: UserAPI['getMaintenance']['request']): Promise<UserAPI['getMaintenance']['response']> => {
+        const response = await fetch(`${BASE_URL}/${request.user_id}/cars/${request.car_id}/maintenance`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch maintenance records for user ${request.user_id} and car ${request.car_id}`);
+        }
+        const maintenances: Maintenance[] = await response.json();
+        return maintenances;
     },
 };
