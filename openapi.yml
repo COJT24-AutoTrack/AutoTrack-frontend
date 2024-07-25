@@ -250,3 +250,238 @@ paths:
                   fe_mileage: 20
                   created_at: "2023-07-02"
                   updated_at: "2023-07-02"
+  /users/{user_id}/cars/{car_id}/tuning:
+    get:
+      summary: Get all tunings for a specific car associated with a user
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+          description: User ID
+        - in: path
+          name: car_id
+          required: true
+          schema:
+            type: string
+          description: Car ID
+      responses:
+        "200":
+          description: A list of tunings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tuning_id:
+                      type: integer
+                      example: 1
+                    car_id:
+                      type: integer
+                      example: 1
+                    tuning_name:
+                      type: string
+                      example: "Engine Tuning"
+                    tuning_date:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    tuning_description:
+                      type: string
+                      example: "Improved engine performance"
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    updated_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+              example:
+                - tuning_id: 1
+                  car_id: 1
+                  tuning_name: "Engine Tuning"
+                  tuning_date: "2023-07-01T10:20:30Z"
+                  tuning_description: "Improved engine performance"
+                  created_at: "2023-07-01T10:20:30Z"
+                  updated_at: "2023-07-01T10:20:30Z"
+                - tuning_id: 2
+                  car_id: 1
+                  tuning_name: "Suspension Tuning"
+                  tuning_date: "2023-07-02T10:20:30Z"
+                  tuning_description: "Upgraded suspension system"
+                  created_at: "2023-07-02T10:20:30Z"
+                  updated_at: "2023-07-02T10:20:30Z"
+  /tunings:
+    post:
+      summary: Create a new tuning record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                car_id:
+                  type: integer
+                  example: 1
+                tuning_name:
+                  type: string
+                  example: "Engine Tuning"
+                tuning_date:
+                  type: string
+                  format: date-time
+                  example: "2023-07-01T10:20:30Z"
+                tuning_description:
+                  type: string
+                  example: "Improved engine performance"
+      responses:
+        "200":
+          description: Successfully created a new tuning record
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tuning_id:
+                    type: integer
+                    example: 1
+                  car_id:
+                    type: integer
+                    example: 1
+                  tuning_name:
+                    type: string
+                    example: "Engine Tuning"
+                  tuning_date:
+                    type: string
+                    format: date-time
+                    example: "2023-07-01T10:20:30Z"
+                  tuning_description:
+                    type: string
+                    example: "Improved engine performance"
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2023-07-01T10:20:30Z"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: "2023-07-01T10:20:30Z"
+  /tunings/{tuning_id}:
+    get:
+      summary: Get a tuning record by ID
+      parameters:
+        - in: path
+          name: tuning_id
+          required: true
+          schema:
+            type: integer
+          description: Tuning ID
+      responses:
+        "200":
+          description: A tuning record
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tuning_id:
+                    type: integer
+                    example: 1
+                  car_id:
+                    type: integer
+                    example: 1
+                  tuning_name:
+                    type: string
+                    example: "Engine Tuning"
+                  tuning_date:
+                    type: string
+                    format: date-time
+                    example: "2023-07-01T10:20:30Z"
+                  tuning_description:
+                    type: string
+                    example: "Improved engine performance"
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2023-07-01T10:20:30Z"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: "2023-07-01T10:20:30Z"
+    put:
+      summary: Update a tuning record by ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                car_id:
+                  type: integer
+                  example: 1
+                tuning_name:
+                  type: string
+                  example: "Engine Tuning"
+                tuning_date:
+                  type: string
+                  format: date-time
+                  example: "2023-07-01T10:20:30Z"
+                tuning_description:
+                  type: string
+                  example: "Improved engine performance"
+      parameters:
+        - in: path
+          name: tuning_id
+          required: true
+          schema:
+            type: integer
+          description: Tuning ID
+      responses:
+        "200":
+          description: Successfully updated the tuning record
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tuning_id:
+                    type: integer
+                    example: 1
+                  car_id:
+                    type: integer
+                    example: 1
+                  tuning_name:
+                    type: string
+                    example: "Engine Tuning"
+                  tuning_date:
+                    type: string
+                    format: date-time
+                    example: "2023-07-01T10:20:30Z"
+                  tuning_description:
+                    type: string
+                    example: "Improved engine performance"
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2023-07-01T10:20:30Z"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: "2023-07-01T10:20:30Z"
+    delete:
+      summary: Delete a tuning record by ID
+      parameters:
+        - in: path
+          name: tuning_id
+          required: true
+          schema:
+            type: integer
+          description: Tuning ID
+      responses:
+        "200":
+          description: Successfully deleted the tuning record
