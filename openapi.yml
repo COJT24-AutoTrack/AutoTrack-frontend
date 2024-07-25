@@ -250,3 +250,133 @@ paths:
                   fe_mileage: 20
                   created_at: "2023-07-02"
                   updated_at: "2023-07-02"
+  /users/{user_id}/cars/{car_id}/tuning:
+    get:
+      summary: Get all tunings for a specific car associated with a user
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+          description: User ID
+        - in: path
+          name: car_id
+          required: true
+          schema:
+            type: string
+          description: Car ID
+      responses:
+        "200":
+          description: A list of tunings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tuning_id:
+                      type: integer
+                      example: 1
+                    car_id:
+                      type: integer
+                      example: 1
+                    tuning_date:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    tuning_name:
+                      type: string
+                      example: "エンジンオイル交換"
+                    tuning_description:
+                      type: string
+                      example: "エンジンオイルを新しいものに交換しました。"
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    updated_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+              example:
+                - tuning_id: 1
+                  car_id: 1
+                  tuning_date: "2023-07-01"
+                  tuning_name: "エンジンオイル交換"
+                  tuning_description: "エンジンオイルを新しいものに交換しました。"
+                  created_at: "2023-07-01"
+                  updated_at: "2023-07-01"
+                - tuning_id: 2
+                  car_id: 1
+                  tuning_date: "2023-07-02"
+                  tuning_name: "ブレーキパッド交換"
+                  tuning_description: "ブレーキパッドを新しいものに交換しました。"
+                  created_at: "2023-07-02"
+                  updated_at: "2023-07-02"
+  /users/{user_id}/cars/{car_id}/maintenance:
+    get:
+      summary: Get all maintenances for a specific car associated with a user
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+          description: User ID
+        - in: path
+          name: car_id
+          required: true
+          schema:
+            type: string
+          description: Car ID
+      responses:
+        "200":
+          description: A list of maintenances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    maint_id:
+                      type: integer
+                      example: 1
+                    car_id:
+                      type: integer
+                      example: 1
+                    maint_date:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    maint_type:
+                      type: string
+                      example: "エンジンオイル交換"
+                    maint_description:
+                      type: string
+                      example: "エンジンオイルを新しいものに交換しました。"
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    updated_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+              example:
+                - maint_id: 1
+                  car_id: 1
+                  maint_date: "2023-07-01"
+                  maint_type: "エンジンオイル交換"
+                  maint_description: "エンジンオイルを新しいものに交換しました。"
+                  created_at: "2023-07-01"
+                  updated_at: "2023-07-01"
+                - maint_id: 2
+                  car_id: 1
+                  maint_date: "2023-07-02"
+                  maint_type: "ブレーキパッド交換"
+                  maint_description: "ブレーキパッドを新しいものに交換しました。"
+                  created_at: "2023-07-02"
+                  updated_at: "2023-07-02"

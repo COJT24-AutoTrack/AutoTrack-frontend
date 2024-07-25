@@ -1,8 +1,9 @@
-import React from 'react';
-import Header from './Header';
-import styled from 'styled-components';
-import TabBar from './TabBar';
-import { useSPQuery } from '@/hooks/useBreakpoints';
+import React from "react";
+import Header from "./Header";
+import styled from "styled-components";
+import TabBar from "./TabBar";
+import { useSPQuery } from "@/hooks/useBreakpoints";
+import dynamic from "next/dynamic";
 
 const PageContainer = styled.div`
 	display: flex;
@@ -27,4 +28,4 @@ const Home = ({ children }: { children: React.ReactNode }) => {
 	);
 };
 
-export default Home;
+export default dynamic(() => Promise.resolve(Home), { ssr: false });
