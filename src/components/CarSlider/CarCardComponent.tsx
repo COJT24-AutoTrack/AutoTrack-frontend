@@ -36,9 +36,7 @@ const Card = styled.div<{ isSelected: boolean }>`
 `;
 
 const CarImage = styled.img`
-	height: 190px;
-	width: 280px;
-	object-fit: cover;
+	height: auto;
 	align-self: stretch;
 	border-radius: 8px;
 `;

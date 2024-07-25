@@ -21,11 +21,11 @@ const Anton400 = Anton({
 	subsets: ["latin"],
 });
 
-interface UpdateFuelingProps {
+interface RefuelingCardGroupProps {
 	fuelEfficiencies: FuelEfficiency[];
 }
 
-const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
+const UpdateRefueling: React.FC<RefuelingCardGroupProps> = ({
 	fuelEfficiencies,
 }) => {
 	const [fuelEfficiency, setFuelEfficiency] = useState<FuelEfficiency | null>(
