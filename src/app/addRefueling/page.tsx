@@ -21,11 +21,11 @@ const Anton400 = Anton({
 	subsets: ["latin"],
 });
 
-interface RefuelingCardGroupProps {
+interface AddFuelEfficiencyProps {
 	fuelEfficiencies: FuelEfficiency[];
 }
 
-const UpdateRefueling: React.FC<RefuelingCardGroupProps> = ({
+const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({
 	fuelEfficiencies,
 }) => {
 	const [fuelEfficiency, setFuelEfficiency] = useState<FuelEfficiency | null>(
@@ -62,16 +62,6 @@ const UpdateRefueling: React.FC<RefuelingCardGroupProps> = ({
 				fe_amount: amount,
 				fe_unitprice: unitPrice,
 				fe_mileage: mileage,
-			});
-			router.push("/refueling");
-		}
-	};
-
-	const handleDelete = async () => {
-		if (fuelEfficiency) {
-			const clientAPI = createClientAPI();
-			await clientAPI.fuelEfficiency.deleteFuelEfficiency({
-				id: fuelEfficiency.fe_id,
 			});
 			router.push("/refueling");
 		}
@@ -130,4 +120,4 @@ const UpdateRefueling: React.FC<RefuelingCardGroupProps> = ({
 	);
 };
 
-export default UpdateRefueling;
+export default AddRefueling;
