@@ -1,118 +1,105 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import MaintenanceDetail from './MentenanceCard';
+import MaintenanceDetail from './MaintenanceDetail';
 import { media } from '@/styles/breakpoints';
+import CarSelect from '@/components/base/CarSelect';
+import { useRouter } from 'next/navigation';
+import AddIcon from '@/public/icons/AddIcon.svg';
+import { carInfo } from '@/api/models/models';
+import { createClientAPI } from '@/api/clientImplement';
 
 const DetailContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	${media.SP} {
 		padding: 0px;
-		width: 100dvw
+		width: 100dvw;
 	}
 	${media.PC} {
 		padding: 20px;
 	}
-	mergin: 0;
+	margin: 0;
 `;
 
-const MaintenancePage = () => {
+const SVGButton = styled.button`
+	background-color: #f0f0f0;
+	border: none;
+	cursor: pointer;
+	padding: 10px;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	z-index: 1000;
+	svg {
+		width: 24px;
+		height: 24px;
+		fill: red;
+	}
+`;
+
+interface MaintenanceProps {
+	userCars: carInfo[];
+	userId: string;
+}
+
+const MaintenancePage: React.FC<MaintenanceProps> = ({ userCars, userId }) => {
+	const router = useRouter();
+	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
+	const [maintenanceDetails, setMaintenanceDetails] = useState<any[]>([]);
+
+	const switchCar = () => {
+		setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
+	};
+
+	useEffect(() => {
+		const fetchMaintenanceDetails = async () => {
+			const clientAPI = createClientAPI();
+			const car_id = userCars[selectedCarIndex].car_id.toString();
+			
+			try {
+				const response = await clientAPI.user.getMaintenance({
+					user_id: userId,
+					car_id: parseInt(car_id, 10)
+				});
+				setMaintenanceDetails(response);
+			} catch (error) {
+				console.error('Failed to fetch maintenance details:', error);
+			}
+		};
+
+		fetchMaintenanceDetails();
+	}, [selectedCarIndex, userCars, userId]);
+
+	const handleAddClick = () => {
+		router.push("/addMaintenance");
+	};
+
 	return (
-		<DetailContainer>
-			<MaintenanceDetail
-				title="エンジンオイル"
-				lastMaintenanceDate="2021/12/01"
-				detail="オイル交換を行いました。"
-				detailUrl="/maintenance/oil"
-			/>
-			<MaintenanceDetail
-				title="オイルエレメント"
-				lastMaintenanceDate="2021/12/01"
-				detail="エレメント交換を行いました。"
-				detailUrl="/maintenance/oilelement"
-			/>
-			<MaintenanceDetail
-				title="灯火類"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/lights"
-			/>
-			<MaintenanceDetail
-				title="洗車"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/carwash"
-			/>
-			<MaintenanceDetail
-				title="ワイパーブレード"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/wiper"
-			/>
-			<MaintenanceDetail
-				title="ブレーキパッド"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/brakepad"
-			/>
-			<MaintenanceDetail
-				title="ブレーキディスク"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/brakedisk"
-			/>
-			<MaintenanceDetail
-				title="タイヤ"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/tire"
-			/>
-			<MaintenanceDetail
-				title="バッテリー"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/battery"
-			/>
-			<MaintenanceDetail
-				title="タイミングベルト"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/timingbelt"
-			/>
-			<MaintenanceDetail
-				title="クーラント"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/coolant"
-			/>
-			<MaintenanceDetail
-				title="ウォッシャー液"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/washer"
-			/>
-			<MaintenanceDetail
-				title="デフオイル"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/differentialoil"
-			/>
-			<MaintenanceDetail
-				title="パワステオイル"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/powersteeringoil"
-			/>
-			<MaintenanceDetail
-				title="エアコンフィルター"
-				lastMaintenanceDate=""
-				detail=""
-				detailUrl="/maintenance/filter"
-			/>
-		</DetailContainer>
-	)
+		<>
+			<DetailContainer>
+				<CarSelect
+					userCars={userCars}
+					selectedCarIndex={selectedCarIndex}
+					switchCar={switchCar}
+				/>
+				
+				{maintenanceDetails.map((detail) => (
+					<MaintenanceDetail
+						key={detail.maint_id}
+						title={detail.maint_type}
+						lastMaintenanceDate={detail.maint_date.toString()} // Date オブジェクトを文字列に変換
+						detail={detail.maint_description}
+						detailUrl={`/maintenance/${detail.maint_id}`}
+					/>
+				))}
+			</DetailContainer>
+			<SVGButton onClick={handleAddClick}>
+				<AddIcon />
+			</SVGButton>
+		</>
+	);
 };
 
 export default MaintenancePage;
