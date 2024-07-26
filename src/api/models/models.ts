@@ -89,3 +89,58 @@ export interface FuelEfficiencyCalculationResult {
         fuel_efficiency: number;
     }[];
 }
+
+// src/api/models/models.ts
+
+export interface Maintenance {
+    maint_id: number;
+    car_id: number;
+    maint_type: string;
+    maint_date: string;
+    maint_description: string;
+    created_at: string;
+    updated_at: string;
+}
+
+// APIリクエスト・レスポンス用のインターフェース
+
+export namespace MaintenanceAPI {
+    export interface CreateMaintenanceRequest {
+        car_id: number;
+        maint_type: string;
+        maint_date: string;
+        maint_description: string;
+        created_at: string;
+        updated_at: string;
+    }
+
+    export interface CreateMaintenanceResponse extends Maintenance {}
+
+    export interface GetMaintenanceRequest {
+        id: number;
+    }
+
+    export interface GetMaintenanceResponse extends Maintenance {}
+
+    export interface UpdateMaintenanceRequest {
+        id: number;
+        maint_type: string;
+        maint_date: string;
+        maint_description: string;
+        car_id: number;
+        created_at: string;
+        updated_at: string;
+    }
+
+    export interface UpdateMaintenanceResponse extends Maintenance {}
+
+    export interface DeleteMaintenanceRequest {
+        id: number;
+    }
+
+    export interface GetMaintenancesRequest {
+        car_id: number;
+    }
+
+    export interface GetMaintenancesResponse extends Array<Maintenance> {}
+}
