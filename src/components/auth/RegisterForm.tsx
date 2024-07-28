@@ -45,10 +45,10 @@ export default function RegisterForm() {
 			// JWTトークンを使用してclientAPIを作成
 			const clientAPI = createClientAPI(idToken);
 
-			// バックエンドのユーザーIDを取得
+			// バックエンドのユーザー作成apiを叩く
 			const response = await clientAPI.user.createUser({
 				user_email: email,
-				user_name: "John Doe",
+				user_name: "John Doe", //ユーザー名って概念は存在しなかったことにさせてくれ(
 				user_password: password,
 			});
 
