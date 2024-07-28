@@ -1,7 +1,8 @@
-import { Car, carInfo, FuelEfficiencyCalculationResult, FuelEfficiency, Tuning, Maintenance } from './models/models';
+import { Car, carInfo, FuelEfficiencyCalculationResult, FuelEfficiency, Tuning, Maintenance, User } from './models/models';
 
 export interface ClientAPI {
     user: {
+        createUser(request: UserAPI['createUser']['request']): Promise<UserAPI['createUser']['response']>;
         getCars(request: UserAPI['getCars']['request']): Promise<UserAPI['getCars']['response']>;
         registerCar(request: UserAPI['registerCar']['request']): Promise<UserAPI['registerCar']['response']>;
         getFuelEfficiency(request: UserAPI['getFuelEfficiency']['request']): Promise<UserAPI['getFuelEfficiency']['response']>;
@@ -35,6 +36,14 @@ export interface ClientAPI {
 }
 
 export interface UserAPI {
+    createUser: {
+        request: {
+            user_email: string,
+            user_name: string,
+            user_password: string,
+        },
+        response: User;
+    }
     getCars: {
         request: {
             user_id: string;

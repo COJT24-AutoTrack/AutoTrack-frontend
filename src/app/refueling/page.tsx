@@ -1,5 +1,4 @@
 import { createClientAPI } from "@/api/clientImplement";
-import { carInfo } from "@/api/models/models";
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { clientConfig, serverConfig } from "../../../config";
@@ -18,7 +17,7 @@ const RefuelingPage = async () => {
 		return notFound();
 	}
 
-	const clientAPI = createClientAPI();
+	const clientAPI = createClientAPI(tokens.token);
 
 	const response = await clientAPI.user.getCars({
 		user_id: tokens.decodedToken.uid,

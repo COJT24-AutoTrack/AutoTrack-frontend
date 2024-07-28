@@ -16,10 +16,10 @@ export default async function Home() {
 	});
 
 	if (!tokens) {
-		notFound();
+		return notFound();
 	}
 
-	const clientAPI = createClientAPI();
+	const clientAPI = createClientAPI(tokens.token);
 
 	// todo: api接続
 	const response = await clientAPI.user.getCars({
@@ -27,8 +27,8 @@ export default async function Home() {
 	});
 
 	if (!response) {
-		notFound();
+		return notFound();
 	}
 
-	if (response) return <HomeClient userCars={response} />;
+	return <HomeClient userCars={response} />;
 }

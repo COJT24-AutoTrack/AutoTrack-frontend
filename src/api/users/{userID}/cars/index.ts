@@ -1,16 +1,37 @@
 import { ClientAPI, UserAPI } from '../../../client';
-import { Car, carInfo, FuelEfficiency, Maintenance, Tuning } from '../../../models/models';
+import { Car, carInfo, FuelEfficiency, Maintenance, Tuning, User } from '../../../models/models';
 
-const BASE_URL = 'http://127.0.0.1:4010/users';
+const BASE_URL = 'http://161.34.35.147:8369/api/users';
 
-export const userAPI: ClientAPI['user'] = {
+const fetchWithToken = async (url: string, options: RequestInit, idToken: string) => {
+    return fetch(url, {
+        ...options,
+        headers: {
+            ...options.headers,
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+        }
+    });
+
+};
+
+export const createUserAPI = (idToken: string): ClientAPI['user'] => ({
+    createUser: async (request: UserAPI['createUser']['request']): Promise<UserAPI['createUser']['response']> => {
+        const response = await fetchWithToken(`${BASE_URL}`, {
+            method: 'POST',
+            body: JSON.stringify(request),
+        }, idToken);
+        if (!response.ok) {
+            throw new Error('Failed to create user');
+        }
+        const user: User = await response.json();
+        return user;
+    },
+
     getCars: async (request: UserAPI['getCars']['request']): Promise<UserAPI['getCars']['response']> => {
-        const response = await fetch(`${BASE_URL}/${request.user_id}/cars`, {
+        const response = await fetchWithToken(`${BASE_URL}/${request.user_id}/cars`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        }, idToken);
         if (!response.ok) {
             throw new Error('Failed to fetch cars');
         }
@@ -19,13 +40,10 @@ export const userAPI: ClientAPI['user'] = {
     },
 
     registerCar: async (request: UserAPI['registerCar']['request']): Promise<UserAPI['registerCar']['response']> => {
-        const response = await fetch(`${BASE_URL}/${request.user_id}/cars`, {
+        const response = await fetchWithToken(`${BASE_URL}/${request.user_id}/cars`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify(request.car),
-        });
+        }, idToken);
         if (!response.ok) {
             throw new Error('Failed to add car');
         }
@@ -34,12 +52,9 @@ export const userAPI: ClientAPI['user'] = {
     },
 
     getFuelEfficiency: async (request: UserAPI['getFuelEfficiency']['request']): Promise<UserAPI['getFuelEfficiency']['response']> => {
-        const response = await fetch(`${BASE_URL}/${request.user_id}/cars/${request.car_id}/fuel_efficiency`, {
+        const response = await fetchWithToken(`${BASE_URL}/${request.user_id}/cars/${request.car_id}/fuel_efficiency`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        }, idToken);
         if (!response.ok) {
             throw new Error(`Failed to fetch fuel efficiency records for user ${request.user_id} and car ${request.car_id}`);
         }
@@ -48,12 +63,9 @@ export const userAPI: ClientAPI['user'] = {
     },
 
     getTuning: async (request: UserAPI['getTuning']['request']): Promise<UserAPI['getTuning']['response']> => {
-        const response = await fetch(`${BASE_URL}/${request.user_id}/cars/${request.car_id}/tuning`, {
+        const response = await fetchWithToken(`${BASE_URL}/${request.user_id}/cars/${request.car_id}/tuning`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        }, idToken);
         if (!response.ok) {
             throw new Error(`Failed to fetch tuning records for user ${request.user_id} and car ${request.car_id}`);
         }
@@ -62,16 +74,13 @@ export const userAPI: ClientAPI['user'] = {
     },
 
     getMaintenance: async (request: UserAPI['getMaintenance']['request']): Promise<UserAPI['getMaintenance']['response']> => {
-        const response = await fetch(`${BASE_URL}/${request.user_id}/cars/${request.car_id}/maintenance`, {
+        const response = await fetchWithToken(`${BASE_URL}/${request.user_id}/cars/${request.car_id}/maintenance`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        }, idToken);
         if (!response.ok) {
             throw new Error(`Failed to fetch maintenance records for user ${request.user_id} and car ${request.car_id}`);
         }
         const maintenances: Maintenance[] = await response.json();
         return maintenances;
     },
-};
+});
