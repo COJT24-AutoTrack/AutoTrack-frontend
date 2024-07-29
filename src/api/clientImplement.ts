@@ -1,4 +1,4 @@
-import { ClientAPI } from "@/api/client";
+import { ClientAPIInterface } from "@/api/client";
 import { UserAPI } from "@/api/handlers/users";
 import { CarAPI } from "@/api/handlers/cars";
 import { FuelEfficiencyAPI } from "@/api/handlers/fuel_efficiencies";
@@ -8,7 +8,7 @@ import { AccidentAPI } from "@/api/handlers/accidents";
 import { PeriodicInspectionAPI } from "@/api/handlers/periodic_inspections";
 import { ImageAPI } from "@/api/handlers/images";
 
-export const createClientAPI = (jwt: string): ClientAPI => ({
+export const ClientAPI = (jwt: string): ClientAPIInterface => ({
 	user: {
 		...UserAPI(jwt),
 	},
