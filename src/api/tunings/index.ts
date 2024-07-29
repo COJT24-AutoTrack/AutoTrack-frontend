@@ -1,20 +1,21 @@
-import { ClientAPI, TuningAPI } from "@/api/client";
+import { ClientAPI, TuningAPIInterface } from "@/api/client";
 import { Tuning } from "@/api/models/models";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
-const BASE_URL = "http://127.0.0.1:4010/tuning";
+const AUTOTRACK_API_BASE_URL = process.env.AUTOTRACK_API_BASE_URL;
+const AUTOTRACK_API_TUNINGS_URL = `${AUTOTRACK_API_BASE_URL}/tunings`;
 
-export const createTuningAPI = (idToken: string): ClientAPI["tuning"] => ({
+export const TuningAPI = (jwt: string): ClientAPI["tuning"] => ({
 	createTuning: async (
-		request: TuningAPI["createTuning"]["request"],
-	): Promise<TuningAPI["createTuning"]["response"]> => {
+		request: TuningAPIInterface["createTuning"]["request"],
+	): Promise<TuningAPIInterface["createTuning"]["response"]> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}`,
+			`${AUTOTRACK_API_TUNINGS_URL}`,
 			{
 				method: "POST",
 				body: JSON.stringify(request),
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error("Failed to create Tuning record");
@@ -23,13 +24,15 @@ export const createTuningAPI = (idToken: string): ClientAPI["tuning"] => ({
 		return result;
 	},
 
-	getAllTunings: async (): Promise<TuningAPI["getAllTunings"]["response"]> => {
+	getTunings: async (): Promise<
+		TuningAPIInterface["getTunings"]["response"]
+	> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}`,
+			`${AUTOTRACK_API_TUNINGS_URL}`,
 			{
 				method: "GET",
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error("Failed to fetch all Tuning records");
@@ -38,53 +41,59 @@ export const createTuningAPI = (idToken: string): ClientAPI["tuning"] => ({
 		return result;
 	},
 
-	getTuningById: async (
-		request: TuningAPI["getTuningById"]["request"],
-	): Promise<TuningAPI["getTuningById"]["response"]> => {
+	getTuning: async (
+		request: TuningAPIInterface["getTuning"]["request"],
+	): Promise<TuningAPIInterface["getTuning"]["response"]> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}/${request.id}`,
+			`${AUTOTRACK_API_TUNINGS_URL}/${request.tuning_id}`,
 			{
 				method: "GET",
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
-			throw new Error(`Failed to fetch Tuning record with ID ${request.id}`);
+			throw new Error(
+				`Failed to fetch Tuning record with ID ${request.tuning_id}`,
+			);
 		}
 		const result: Tuning = await response.json();
 		return result;
 	},
 
 	updateTuning: async (
-		request: TuningAPI["updateTuning"]["request"],
-	): Promise<TuningAPI["updateTuning"]["response"]> => {
+		request: TuningAPIInterface["updateTuning"]["request"],
+	): Promise<TuningAPIInterface["updateTuning"]["response"]> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}/${request.id}`,
+			`${AUTOTRACK_API_TUNINGS_URL}/${request.tuning_id}`,
 			{
 				method: "PUT",
 				body: JSON.stringify(request),
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
-			throw new Error(`Failed to update Tuning record with ID ${request.id}`);
+			throw new Error(
+				`Failed to update Tuning record with ID ${request.tuning_id}`,
+			);
 		}
 		const result: Tuning = await response.json();
 		return result;
 	},
 
 	deleteTuning: async (
-		request: TuningAPI["deleteTuning"]["request"],
+		request: TuningAPIInterface["deleteTuning"]["request"],
 	): Promise<void> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}/${request.id}`,
+			`${AUTOTRACK_API_TUNINGS_URL}/${request.tuning_id}`,
 			{
 				method: "DELETE",
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
-			throw new Error(`Failed to delete Tuning record with ID ${request.id}`);
+			throw new Error(
+				`Failed to delete Tuning record with ID ${request.tuning_id}`,
+			);
 		}
 	},
 });

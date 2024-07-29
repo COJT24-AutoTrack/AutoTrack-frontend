@@ -1,22 +1,28 @@
-import { ClientAPI, FuelEfficiencyAPI } from "@/api/client";
-import { FuelEfficiency } from "@/api/models/models";
+import { ClientAPI, FuelEfficiencyAPIInterface } from "@/api/client";
+import {
+	FuelEfficiency,
+	FuelEfficiencyCalculationResult,
+} from "@/api/models/models";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
-const BASE_URL = "http://127.0.0.1:4010/fuel_efficiencies";
+const AUTOTRACK_API_BASE_URL = process.env.AUTOTRACK_API_BASE_URL;
+const AUTOTRACK_API_FUELEFFICIENCIES_URL = `${AUTOTRACK_API_BASE_URL}/fuel_efficiencies`;
 
-export const createFuelEfficiencyAPI = (
-	idToken: string,
+export const FuelEfficiencyAPI = (
+	jwt: string,
 ): ClientAPI["fuelEfficiency"] => ({
 	createFuelEfficiency: async (
-		request: FuelEfficiencyAPI["createFuelEfficiency"]["request"],
-	): Promise<FuelEfficiencyAPI["createFuelEfficiency"]["response"]> => {
+		request: FuelEfficiencyAPIInterface["createFuelEfficiency"]["request"],
+	): Promise<
+		FuelEfficiencyAPIInterface["createFuelEfficiency"]["response"]
+	> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}`,
+			`${AUTOTRACK_API_FUELEFFICIENCIES_URL}`,
 			{
 				method: "POST",
 				body: JSON.stringify(request),
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error("Failed to create fuel efficiency record");
@@ -25,15 +31,15 @@ export const createFuelEfficiencyAPI = (
 		return result;
 	},
 
-	getAllFuelEfficiencies: async (): Promise<
-		FuelEfficiencyAPI["getAllFuelEfficiencies"]["response"]
+	getFuelEfficiencies: async (): Promise<
+		FuelEfficiencyAPIInterface["getFuelEfficiencies"]["response"]
 	> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}`,
+			`${AUTOTRACK_API_FUELEFFICIENCIES_URL}`,
 			{
 				method: "GET",
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error("Failed to fetch all fuel efficiency records");
@@ -42,19 +48,19 @@ export const createFuelEfficiencyAPI = (
 		return result;
 	},
 
-	getFuelEfficiencyById: async (
-		request: FuelEfficiencyAPI["getFuelEfficiencyById"]["request"],
-	): Promise<FuelEfficiencyAPI["getFuelEfficiencyById"]["response"]> => {
+	getFuelEfficiency: async (
+		request: FuelEfficiencyAPIInterface["getFuelEfficiency"]["request"],
+	): Promise<FuelEfficiencyAPIInterface["getFuelEfficiency"]["response"]> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}/${request.id}`,
+			`${AUTOTRACK_API_FUELEFFICIENCIES_URL}/${request.fe_id}`,
 			{
 				method: "GET",
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error(
-				`Failed to fetch fuel efficiency record with ID ${request.id}`,
+				`Failed to fetch fuel efficiency record with ID ${request.fe_id}`,
 			);
 		}
 		const result: FuelEfficiency = await response.json();
@@ -62,19 +68,21 @@ export const createFuelEfficiencyAPI = (
 	},
 
 	updateFuelEfficiency: async (
-		request: FuelEfficiencyAPI["updateFuelEfficiency"]["request"],
-	): Promise<FuelEfficiencyAPI["updateFuelEfficiency"]["response"]> => {
+		request: FuelEfficiencyAPIInterface["updateFuelEfficiency"]["request"],
+	): Promise<
+		FuelEfficiencyAPIInterface["updateFuelEfficiency"]["response"]
+	> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}/${request.id}`,
+			`${AUTOTRACK_API_FUELEFFICIENCIES_URL}/${request.fe_id}`,
 			{
 				method: "PUT",
 				body: JSON.stringify(request),
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error(
-				`Failed to update fuel efficiency record with ID ${request.id}`,
+				`Failed to update fuel efficiency record with ID ${request.fe_id}`,
 			);
 		}
 		const result: FuelEfficiency = await response.json();
@@ -82,19 +90,40 @@ export const createFuelEfficiencyAPI = (
 	},
 
 	deleteFuelEfficiency: async (
-		request: FuelEfficiencyAPI["deleteFuelEfficiency"]["request"],
+		request: FuelEfficiencyAPIInterface["deleteFuelEfficiency"]["request"],
 	): Promise<void> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}/${request.id}`,
+			`${AUTOTRACK_API_FUELEFFICIENCIES_URL}/${request.fe_id}`,
 			{
 				method: "DELETE",
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error(
-				`Failed to delete fuel efficiency record with ID ${request.id}`,
+				`Failed to delete fuel efficiency record with ID ${request.fe_id}`,
 			);
 		}
+	},
+
+	calculateFuelEfficiencies: async (
+		request: FuelEfficiencyAPIInterface["calculateFuelEfficiencies"]["request"],
+	): Promise<
+		FuelEfficiencyAPIInterface["calculateFuelEfficiencies"]["response"]
+	> => {
+		const response = await fetchWithToken(
+			`${AUTOTRACK_API_FUELEFFICIENCIES_URL}/${request.car_id}/calculate`,
+			{
+				method: "GET",
+			},
+			jwt,
+		);
+		if (!response.ok) {
+			throw new Error(
+				`Failed to calculate fuel efficiencies for car with ID ${request.car_id}`,
+			);
+		}
+		const result: FuelEfficiencyCalculationResult = await response.json();
+		return result;
 	},
 });

@@ -11,130 +11,148 @@ import {
 export interface ClientAPI {
 	user: {
 		createUser(
-			request: UserAPI["createUser"]["request"],
-		): Promise<UserAPI["createUser"]["response"]>;
-		getUsers(): Promise<UserAPI["getUsers"]["response"]>;
+			request: UserAPIInterface["createUser"]["request"],
+		): Promise<UserAPIInterface["createUser"]["response"]>;
+		getUsers(): Promise<UserAPIInterface["getUsers"]["response"]>;
 		getUser(
-			request: UserAPI["getUser"]["request"],
-		): Promise<UserAPI["getUser"]["response"]>;
+			request: UserAPIInterface["getUser"]["request"],
+		): Promise<UserAPIInterface["getUser"]["response"]>;
 		updateUser(
-			request: UserAPI["updateUser"]["request"],
-		): Promise<UserAPI["updateUser"]["response"]>;
-		deleteUser(request: UserAPI["deleteUser"]["request"]): Promise<void>;
-		getCars(
-			request: UserAPI["getCars"]["request"],
-		): Promise<UserAPI["getCars"]["response"]>;
+			request: UserAPIInterface["updateUser"]["request"],
+		): Promise<UserAPIInterface["updateUser"]["response"]>;
+		deleteUser(
+			request: UserAPIInterface["deleteUser"]["request"],
+		): Promise<void>;
+		getUserCars(
+			request: UserAPIInterface["getUserCars"]["request"],
+		): Promise<UserAPIInterface["getUserCars"]["response"]>;
 	};
 	car: {
 		createCar(
-			request: CarAPI["createCar"]["request"],
-		): Promise<CarAPI["createCar"]["response"]>;
-		getCars(): Promise<CarAPI["getCars"]["response"]>;
+			request: CarAPIInterface["createCar"]["request"],
+		): Promise<CarAPIInterface["createCar"]["response"]>;
+		getCars(): Promise<CarAPIInterface["getCars"]["response"]>;
 		getCar(
-			request: CarAPI["getCar"]["request"],
-		): Promise<CarAPI["getCar"]["response"]>;
+			request: CarAPIInterface["getCar"]["request"],
+		): Promise<CarAPIInterface["getCar"]["response"]>;
 		updateCar(
-			request: CarAPI["updateCar"]["request"],
-		): Promise<CarAPI["updateCar"]["response"]>;
-		deleteCar(request: CarAPI["deleteCar"]["request"]): Promise<void>;
-		updateCarImage(request: CarAPI["updateCarImage"]["request"]): Promise<void>;
-		deleteCarImage(request: CarAPI["deleteCarImage"]["request"]): Promise<void>;
+			request: CarAPIInterface["updateCar"]["request"],
+		): Promise<CarAPIInterface["updateCar"]["response"]>;
+		deleteCar(request: CarAPIInterface["deleteCar"]["request"]): Promise<void>;
+		updateCarImage(
+			request: CarAPIInterface["updateCarImage"]["request"],
+		): Promise<void>;
+		deleteCarImage(
+			request: CarAPIInterface["deleteCarImage"]["request"],
+		): Promise<void>;
 		getCarTuning(
-			request: CarAPI["getCarTuning"]["request"],
-		): Promise<TuningAPI["getTuning"]["response"]>;
+			request: CarAPIInterface["getCarTuning"]["request"],
+		): Promise<CarAPIInterface["getCarTuning"]["response"]>;
 		getCarMaintenance(
-			request: CarAPI["getCarMaintenance"]["request"],
-		): Promise<MaintenanceAPI["getMaintenance"]["response"]>;
+			request: CarAPIInterface["getCarMaintenance"]["request"],
+		): Promise<CarAPIInterface["getCarMaintenance"]["response"]>;
 		getCarFuelEfficiency(
-			request: CarAPI["getCarFuelEfficiency"]["request"],
-		): Promise<FuelEfficiencyAPI["getFuelEfficiency"]["response"]>;
+			request: CarAPIInterface["getCarFuelEfficiency"]["request"],
+		): Promise<CarAPIInterface["getCarFuelEfficiency"]["response"]>;
 	};
 	tuning: {
 		createTuning(
-			request: TuningAPI["createTuning"]["request"],
-		): Promise<TuningAPI["createTuning"]["response"]>;
-		getTunings(): Promise<TuningAPI["getTunings"]["response"]>;
+			request: TuningAPIInterface["createTuning"]["request"],
+		): Promise<TuningAPIInterface["createTuning"]["response"]>;
+		getTunings(): Promise<TuningAPIInterface["getTunings"]["response"]>;
 		getTuning(
-			request: TuningAPI["getTuning"]["request"],
-		): Promise<TuningAPI["getTuning"]["response"]>;
+			request: TuningAPIInterface["getTuning"]["request"],
+		): Promise<TuningAPIInterface["getTuning"]["response"]>;
 		updateTuning(
-			request: TuningAPI["updateTuning"]["request"],
-		): Promise<TuningAPI["updateTuning"]["response"]>;
-		deleteTuning(request: TuningAPI["deleteTuning"]["request"]): Promise<void>;
+			request: TuningAPIInterface["updateTuning"]["request"],
+		): Promise<TuningAPIInterface["updateTuning"]["response"]>;
+		deleteTuning(
+			request: TuningAPIInterface["deleteTuning"]["request"],
+		): Promise<void>;
 	};
 	maintenance: {
 		createMaintenance(
-			request: MaintenanceAPI["createMaintenance"]["request"],
-		): Promise<MaintenanceAPI["createMaintenance"]["response"]>;
-		getMaintenances(): Promise<MaintenanceAPI["getMaintenances"]["response"]>;
+			request: MaintenanceAPIInterface["createMaintenance"]["request"],
+		): Promise<MaintenanceAPIInterface["createMaintenance"]["response"]>;
+		getMaintenances(): Promise<
+			MaintenanceAPIInterface["getMaintenances"]["response"]
+		>;
 		getMaintenance(
-			request: MaintenanceAPI["getMaintenance"]["request"],
-		): Promise<MaintenanceAPI["getMaintenance"]["response"]>;
+			request: MaintenanceAPIInterface["getMaintenance"]["request"],
+		): Promise<MaintenanceAPIInterface["getMaintenance"]["response"]>;
 		updateMaintenance(
-			request: MaintenanceAPI["updateMaintenance"]["request"],
-		): Promise<MaintenanceAPI["updateMaintenance"]["response"]>;
+			request: MaintenanceAPIInterface["updateMaintenance"]["request"],
+		): Promise<MaintenanceAPIInterface["updateMaintenance"]["response"]>;
 		deleteMaintenance(
-			request: MaintenanceAPI["deleteMaintenance"]["request"],
+			request: MaintenanceAPIInterface["deleteMaintenance"]["request"],
 		): Promise<void>;
 	};
 	fuelEfficiency: {
 		createFuelEfficiency(
-			request: FuelEfficiencyAPI["createFuelEfficiency"]["request"],
-		): Promise<FuelEfficiencyAPI["createFuelEfficiency"]["response"]>;
+			request: FuelEfficiencyAPIInterface["createFuelEfficiency"]["request"],
+		): Promise<FuelEfficiencyAPIInterface["createFuelEfficiency"]["response"]>;
 		getFuelEfficiencies(): Promise<
-			FuelEfficiencyAPI["getFuelEfficiencies"]["response"]
+			FuelEfficiencyAPIInterface["getFuelEfficiencies"]["response"]
 		>;
 		getFuelEfficiency(
-			request: FuelEfficiencyAPI["getFuelEfficiency"]["request"],
-		): Promise<FuelEfficiencyAPI["getFuelEfficiency"]["response"]>;
+			request: FuelEfficiencyAPIInterface["getFuelEfficiency"]["request"],
+		): Promise<FuelEfficiencyAPIInterface["getFuelEfficiency"]["response"]>;
 		updateFuelEfficiency(
-			request: FuelEfficiencyAPI["updateFuelEfficiency"]["request"],
-		): Promise<FuelEfficiencyAPI["updateFuelEfficiency"]["response"]>;
+			request: FuelEfficiencyAPIInterface["updateFuelEfficiency"]["request"],
+		): Promise<FuelEfficiencyAPIInterface["updateFuelEfficiency"]["response"]>;
 		deleteFuelEfficiency(
-			request: FuelEfficiencyAPI["deleteFuelEfficiency"]["request"],
+			request: FuelEfficiencyAPIInterface["deleteFuelEfficiency"]["request"],
 		): Promise<void>;
 		calculateFuelEfficiencies(
-			request: FuelEfficiencyAPI["calculateFuelEfficiencies"]["request"],
+			request: FuelEfficiencyAPIInterface["calculateFuelEfficiencies"]["request"],
 		): Promise<FuelEfficiencyCalculationResult>;
 	};
 	accident: {
 		createAccident(
-			request: AccidentAPI["createAccident"]["request"],
-		): Promise<AccidentAPI["createAccident"]["response"]>;
-		getAccidents(): Promise<AccidentAPI["getAccidents"]["response"]>;
+			request: AccidentAPIInterface["createAccident"]["request"],
+		): Promise<AccidentAPIInterface["createAccident"]["response"]>;
+		getAccidents(): Promise<AccidentAPIInterface["getAccidents"]["response"]>;
 		getAccident(
-			request: AccidentAPI["getAccident"]["request"],
-		): Promise<AccidentAPI["getAccident"]["response"]>;
+			request: AccidentAPIInterface["getAccident"]["request"],
+		): Promise<AccidentAPIInterface["getAccident"]["response"]>;
 		updateAccident(
-			request: AccidentAPI["updateAccident"]["request"],
-		): Promise<AccidentAPI["updateAccident"]["response"]>;
+			request: AccidentAPIInterface["updateAccident"]["request"],
+		): Promise<AccidentAPIInterface["updateAccident"]["response"]>;
 		deleteAccident(
-			request: AccidentAPI["deleteAccident"]["request"],
+			request: AccidentAPIInterface["deleteAccident"]["request"],
 		): Promise<void>;
 	};
 	periodicInspection: {
 		createPeriodicInspection(
-			request: PeriodicInspectionAPI["createPeriodicInspection"]["request"],
-		): Promise<PeriodicInspectionAPI["createPeriodicInspection"]["response"]>;
+			request: PeriodicInspectionAPIInterface["createPeriodicInspection"]["request"],
+		): Promise<
+			PeriodicInspectionAPIInterface["createPeriodicInspection"]["response"]
+		>;
 		getPeriodicInspections(): Promise<
-			PeriodicInspectionAPI["getPeriodicInspections"]["response"]
+			PeriodicInspectionAPIInterface["getPeriodicInspections"]["response"]
 		>;
 		getPeriodicInspection(
-			request: PeriodicInspectionAPI["getPeriodicInspection"]["request"],
-		): Promise<PeriodicInspectionAPI["getPeriodicInspection"]["response"]>;
+			request: PeriodicInspectionAPIInterface["getPeriodicInspection"]["request"],
+		): Promise<
+			PeriodicInspectionAPIInterface["getPeriodicInspection"]["response"]
+		>;
 		updatePeriodicInspection(
-			request: PeriodicInspectionAPI["updatePeriodicInspection"]["request"],
-		): Promise<PeriodicInspectionAPI["updatePeriodicInspection"]["response"]>;
+			request: PeriodicInspectionAPIInterface["updatePeriodicInspection"]["request"],
+		): Promise<
+			PeriodicInspectionAPIInterface["updatePeriodicInspection"]["response"]
+		>;
 		deletePeriodicInspection(
-			request: PeriodicInspectionAPI["deletePeriodicInspection"]["request"],
+			request: PeriodicInspectionAPIInterface["deletePeriodicInspection"]["request"],
 		): Promise<void>;
 	};
 	image: {
-		uploadImage(request: ImageAPI["uploadImage"]["request"]): Promise<void>;
+		uploadImage(
+			request: ImageAPIInterface["uploadImage"]["request"],
+		): Promise<void>;
 	};
 }
 
-export interface UserAPI {
+export interface UserAPIInterface {
 	createUser: {
 		request: {
 			user_email: string;
@@ -166,7 +184,7 @@ export interface UserAPI {
 			user_id: string;
 		};
 	};
-	getCars: {
+	getUserCars: {
 		request: {
 			user_id: string;
 		};
@@ -174,7 +192,7 @@ export interface UserAPI {
 	};
 }
 
-export interface CarAPI {
+export interface CarAPIInterface {
 	createCar: {
 		request: {
 			user_id: string;
@@ -234,7 +252,7 @@ export interface CarAPI {
 	};
 }
 
-export interface TuningAPI {
+export interface TuningAPIInterface {
 	createTuning: {
 		request: {
 			car_id: number;
@@ -270,7 +288,7 @@ export interface TuningAPI {
 	};
 }
 
-export interface MaintenanceAPI {
+export interface MaintenanceAPIInterface {
 	createMaintenance: {
 		request: {
 			car_id: number;
@@ -306,7 +324,7 @@ export interface MaintenanceAPI {
 	};
 }
 
-export interface FuelEfficiencyAPI {
+export interface FuelEfficiencyAPIInterface {
 	createFuelEfficiency: {
 		request: {
 			car_id: number;
@@ -350,7 +368,7 @@ export interface FuelEfficiencyAPI {
 	};
 }
 
-export interface AccidentAPI {
+export interface AccidentAPIInterface {
 	createAccident: {
 		request: {
 			car_id: number;
@@ -384,7 +402,7 @@ export interface AccidentAPI {
 	};
 }
 
-export interface PeriodicInspectionAPI {
+export interface PeriodicInspectionAPIInterface {
 	createPeriodicInspection: {
 		request: {
 			car_id: number;
@@ -418,7 +436,7 @@ export interface PeriodicInspectionAPI {
 	};
 }
 
-export interface ImageAPI {
+export interface ImageAPIInterface {
 	uploadImage: {
 		request: {
 			image: string;

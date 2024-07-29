@@ -1,22 +1,21 @@
-import { ClientAPI, MaintenanceAPI } from "@/api/client";
+import { ClientAPI, MaintenanceAPIInterface } from "@/api/client";
 import { Maintenance } from "@/api/models/models";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
-const BASE_URL = "http://127.0.0.1:4010/maintenance";
+const AUTOTRACK_API_BASE_URL = process.env.AUTOTRACK_API_BASE_URL;
+const AUTOTRACK_API_MAINTENANCES_URL = `${AUTOTRACK_API_BASE_URL}/maintenances`;
 
-export const createMaintenanceAPI = (
-	idToken: string,
-): ClientAPI["maintenance"] => ({
+export const MaintenanceAPI = (jwt: string): ClientAPI["maintenance"] => ({
 	createMaintenance: async (
-		request: MaintenanceAPI["createMaintenance"]["request"],
-	): Promise<MaintenanceAPI["createMaintenance"]["response"]> => {
+		request: MaintenanceAPIInterface["createMaintenance"]["request"],
+	): Promise<MaintenanceAPIInterface["createMaintenance"]["response"]> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}`,
+			`${AUTOTRACK_API_MAINTENANCES_URL}`,
 			{
 				method: "POST",
 				body: JSON.stringify(request),
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error("Failed to create Maintenance record");
@@ -25,15 +24,15 @@ export const createMaintenanceAPI = (
 		return result;
 	},
 
-	getAllMaintenances: async (): Promise<
-		MaintenanceAPI["getAllMaintenances"]["response"]
+	getMaintenances: async (): Promise<
+		MaintenanceAPIInterface["getMaintenances"]["response"]
 	> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}`,
+			`${AUTOTRACK_API_MAINTENANCES_URL}`,
 			{
 				method: "GET",
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error("Failed to fetch all Maintenance records");
@@ -42,19 +41,19 @@ export const createMaintenanceAPI = (
 		return result;
 	},
 
-	getMaintenanceById: async (
-		request: MaintenanceAPI["getMaintenanceById"]["request"],
-	): Promise<MaintenanceAPI["getMaintenanceById"]["response"]> => {
+	getMaintenance: async (
+		request: MaintenanceAPIInterface["getMaintenance"]["request"],
+	): Promise<MaintenanceAPIInterface["getMaintenance"]["response"]> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}/${request.id}`,
+			`${AUTOTRACK_API_MAINTENANCES_URL}/${request.maint_id}`,
 			{
 				method: "GET",
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error(
-				`Failed to fetch Maintenance record with ID ${request.id}`,
+				`Failed to fetch Maintenance record with ID ${request.maint_id}`,
 			);
 		}
 		const result: Maintenance = await response.json();
@@ -62,19 +61,19 @@ export const createMaintenanceAPI = (
 	},
 
 	updateMaintenance: async (
-		request: MaintenanceAPI["updateMaintenance"]["request"],
-	): Promise<MaintenanceAPI["updateMaintenance"]["response"]> => {
+		request: MaintenanceAPIInterface["updateMaintenance"]["request"],
+	): Promise<MaintenanceAPIInterface["updateMaintenance"]["response"]> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}/${request.id}`,
+			`${AUTOTRACK_API_MAINTENANCES_URL}/${request.maint_id}`,
 			{
 				method: "PUT",
 				body: JSON.stringify(request),
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error(
-				`Failed to update Maintenance record with ID ${request.id}`,
+				`Failed to update Maintenance record with ID ${request.maint_id}`,
 			);
 		}
 		const result: Maintenance = await response.json();
@@ -82,18 +81,18 @@ export const createMaintenanceAPI = (
 	},
 
 	deleteMaintenance: async (
-		request: MaintenanceAPI["deleteMaintenance"]["request"],
+		request: MaintenanceAPIInterface["deleteMaintenance"]["request"],
 	): Promise<void> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}/${request.id}`,
+			`${AUTOTRACK_API_MAINTENANCES_URL}/${request.maint_id}`,
 			{
 				method: "DELETE",
 			},
-			idToken,
+			jwt,
 		);
 		if (!response.ok) {
 			throw new Error(
-				`Failed to delete Maintenance record with ID ${request.id}`,
+				`Failed to delete Maintenance record with ID ${request.maint_id}`,
 			);
 		}
 	},
