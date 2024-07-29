@@ -6,7 +6,7 @@ import {
 	Tuning,
 	Maintenance,
 	User,
-} from "./models/models";
+} from "@/api/models/models";
 
 export interface ClientAPI {
 	user: {
