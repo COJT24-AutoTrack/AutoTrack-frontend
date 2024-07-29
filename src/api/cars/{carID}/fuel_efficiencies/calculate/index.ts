@@ -1,22 +1,9 @@
 import { CarFuelEfficiencyAPI, ClientAPI } from "@/api/client";
 import { FuelEfficiencyCalculationResult } from "@/api/models/models";
+import { fetchWithToken } from "@/api/module/fetchWithToken";
 
-const BASE_URL = "http://127.0.0.1:4010/cars";
-
-const fetchWithToken = async (
-	url: string,
-	options: RequestInit,
-	idToken: string,
-) => {
-	return fetch(url, {
-		...options,
-		headers: {
-			...options.headers,
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${idToken}`,
-		},
-	});
-};
+const AUTOTRACK_API_BASE_URL = process.env.AUTOTRACK_API_BASE_URL;
+const AUTOTRACK_API_CARS_URL = `${AUTOTRACK_API_BASE_URL}/cars`;
 
 export const createCarFuelEfficiencyAPI = (
 	idToken: string,
@@ -25,7 +12,7 @@ export const createCarFuelEfficiencyAPI = (
 		request: CarFuelEfficiencyAPI["calculateFuelEfficiency"]["request"],
 	): Promise<CarFuelEfficiencyAPI["calculateFuelEfficiency"]["response"]> => {
 		const response = await fetchWithToken(
-			`${BASE_URL}/${request.car_id}/fuel_efficiencies/calculate`,
+			`${AUTOTRACK_API_CARS_URL}/${request.car_id}/fuel_efficiencies/calculate`,
 			{
 				method: "GET",
 			},

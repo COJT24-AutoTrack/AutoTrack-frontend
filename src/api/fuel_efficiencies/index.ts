@@ -1,22 +1,8 @@
 import { ClientAPI, FuelEfficiencyAPI } from "@/api/client";
 import { FuelEfficiency } from "@/api/models/models";
+import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 const BASE_URL = "http://127.0.0.1:4010/fuel_efficiencies";
-
-const fetchWithToken = async (
-	url: string,
-	options: RequestInit,
-	idToken: string,
-) => {
-	return fetch(url, {
-		...options,
-		headers: {
-			...options.headers,
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${idToken}`,
-		},
-	});
-};
 
 export const createFuelEfficiencyAPI = (
 	idToken: string,

@@ -1,22 +1,8 @@
 import { ClientAPI, TuningAPI } from "@/api/client";
 import { Tuning } from "@/api/models/models";
+import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 const BASE_URL = "http://127.0.0.1:4010/tuning";
-
-const fetchWithToken = async (
-	url: string,
-	options: RequestInit,
-	idToken: string,
-) => {
-	return fetch(url, {
-		...options,
-		headers: {
-			...options.headers,
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${idToken}`,
-		},
-	});
-};
 
 export const createTuningAPI = (idToken: string): ClientAPI["tuning"] => ({
 	createTuning: async (

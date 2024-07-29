@@ -1,4 +1,4 @@
-import { ClientAPI, UserAPI } from "../../../client";
+import { ClientAPI, UserAPI } from "@/api/client";
 import {
 	Car,
 	carInfo,
@@ -6,24 +6,8 @@ import {
 	Maintenance,
 	Tuning,
 	User,
-} from "../../../models/models";
-
-const BASE_URL = "http://161.34.35.147:8369/api/users";
-
-const fetchWithToken = async (
-	url: string,
-	options: RequestInit,
-	idToken: string,
-) => {
-	return fetch(url, {
-		...options,
-		headers: {
-			...options.headers,
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${idToken}`,
-		},
-	});
-};
+} from "@/api/models/models";
+import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 export const createUserAPI = (idToken: string): ClientAPI["user"] => ({
 	createUser: async (
