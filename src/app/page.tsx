@@ -22,7 +22,7 @@ export default async function Home() {
 	const clientAPI = createClientAPI(tokens.token);
 
 	// todo: api接続
-	const response = await clientAPI.user.getCars({
+	const response = await clientAPI.user.getUserCars({
 		user_id: tokens.decodedToken.uid,
 	});
 
