@@ -23,8 +23,10 @@ export default async function Home() {
 
 	// todo: api接続
 	const response = await clientAPI.user.getUserCars({
-		user_id: tokens.decodedToken.uid,
+		firebase_user_id: tokens.decodedToken.uid,
 	});
+
+	console.log(response);
 
 	if (!response) {
 		return notFound();

@@ -6,9 +6,12 @@ import CarSelect from "@/components/base/CarSelect";
 import { createClientAPI } from "@/api/clientImplement";
 import styled from "styled-components";
 import AddIcon from "@/public/icons/AddIcon.svg";
-import { useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import TuningInfoCardGroup from "./TuningInfoCardGroup";
 import type { Tuning } from "@/api/models/models";
+import { getTokens } from "next-firebase-auth-edge";
+import { cookies } from "next/headers";
+import { clientConfig, serverConfig } from "../../../config";
 
 const Container = styled.div`
 	position: relative;
@@ -38,10 +41,21 @@ interface TuningProps {
 	userId: string;
 }
 
-const Tuning: React.FC<TuningProps> = ({ userCars, userId }) => {
+const Tuning: React.FC<TuningProps> = async ({ userCars, userId }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
 	const [tunings, setTunings] = useState<Tuning[] | null>(null);
 	const router = useRouter();
+
+	const tokens = await getTokens(cookies(), {
+		apiKey: clientConfig.apiKey,
+		cookieName: serverConfig.cookieName,
+		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+		serviceAccount: serverConfig.serviceAccount,
+	});
+
+	if (!tokens) {
+		return notFound();
+	}
 
 	const switchCar = () => {
 		setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
@@ -49,9 +63,8 @@ const Tuning: React.FC<TuningProps> = ({ userCars, userId }) => {
 
 	useEffect(() => {
 		const fetchTunings = async () => {
-			const clientAPI = createClientAPI();
-			const response = await clientAPI.user.getTuning({
-				user_id: userId,
+			const clientAPI = createClientAPI(tokens.token);
+			const response = await clientAPI.car.getCarTuning({
 				car_id: userCars[selectedCarIndex].car_id.toString(),
 			});
 			setTunings(response);

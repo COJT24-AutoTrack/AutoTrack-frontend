@@ -42,7 +42,7 @@ export const UserAPI = (jwt: string): ClientAPI["user"] => ({
 		request: UserAPIInterface["getUser"]["request"],
 	): Promise<UserAPIInterface["getUser"]["response"]> => {
 		const response = await fetchWithToken(
-			`${AUTOTRACK_API_USERS_URL}/${request.user_id}`,
+			`${AUTOTRACK_API_USERS_URL}/${request.firebase_user_id}`,
 			{
 				method: "GET",
 			},
@@ -59,7 +59,7 @@ export const UserAPI = (jwt: string): ClientAPI["user"] => ({
 		request: UserAPIInterface["updateUser"]["request"],
 	): Promise<UserAPIInterface["updateUser"]["response"]> => {
 		const response = await fetchWithToken(
-			`${AUTOTRACK_API_USERS_URL}/${request.user_id}`,
+			`${AUTOTRACK_API_USERS_URL}/${request.firebase_user_id}`,
 			{
 				method: "PUT",
 				body: JSON.stringify(request),
@@ -77,7 +77,7 @@ export const UserAPI = (jwt: string): ClientAPI["user"] => ({
 		request: UserAPIInterface["deleteUser"]["request"],
 	): Promise<void> => {
 		const response = await fetchWithToken(
-			`${AUTOTRACK_API_USERS_URL}/${request.user_id}`,
+			`${AUTOTRACK_API_USERS_URL}/${request.firebase_user_id}`,
 			{
 				method: "DELETE",
 			},
@@ -91,7 +91,7 @@ export const UserAPI = (jwt: string): ClientAPI["user"] => ({
 		request: UserAPIInterface["getUserCars"]["request"],
 	): Promise<UserAPIInterface["getUserCars"]["response"]> => {
 		const response = await fetchWithToken(
-			`${AUTOTRACK_API_USERS_URL}/${request.user_id}`,
+			`${AUTOTRACK_API_USERS_URL}/${request.firebase_user_id}/cars`,
 			{
 				method: "GET",
 			},

@@ -19,15 +19,21 @@ const RefuelingPage = async () => {
 
 	const clientAPI = createClientAPI(tokens.token);
 
-	const response = await clientAPI.user.getCars({
-		user_id: tokens.decodedToken.uid,
+	const response = await clientAPI.user.getUserCars({
+		firebase_user_id: tokens.decodedToken.uid,
 	});
 
 	if (!response) {
 		return notFound();
 	}
 
-	return <Refueling userCars={response} userId={tokens.decodedToken.uid} />;
+	return (
+		<Refueling
+			userCars={response}
+			token={tokens.token}
+			userId={tokens.decodedToken.uid}
+		/>
+	);
 };
 
 export default RefuelingPage;

@@ -19,10 +19,10 @@ const TuningPage = async () => {
 		return notFound();
 	}
 
-	const clientAPI = createClientAPI();
+	const clientAPI = createClientAPI(tokens.token);
 
-	const response = await clientAPI.user.getCars({
-		user_id: tokens.decodedToken.uid,
+	const response = await clientAPI.user.getUserCars({
+		firebase_user_id: tokens.decodedToken.uid,
 	});
 
 	if (!response) {

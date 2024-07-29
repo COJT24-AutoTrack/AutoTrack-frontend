@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { createClientAPI } from "@/api/clientImplement";
 import { FuelEfficiency } from "@/api/models/models";
 import BackHeader from "@/components/base/BackHeader";
@@ -15,6 +15,9 @@ import {
 	FormElementContainer,
 } from "@/components/form/FormElements";
 import { Anton } from "next/font/google";
+import { getTokens } from "next-firebase-auth-edge";
+import { clientConfig, serverConfig } from "../../../config";
+import { cookies } from "next/headers";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -25,7 +28,7 @@ interface UpdateFuelingProps {
 	fuelEfficiencies: FuelEfficiency[];
 }
 
-const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
+const UpdateRefueling: React.FC<UpdateFuelingProps> = async ({
 	fuelEfficiencies,
 }) => {
 	const [fuelEfficiency, setFuelEfficiency] = useState<FuelEfficiency | null>(
@@ -39,6 +42,17 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const feId = searchParams.get("id");
+
+	const tokens = await getTokens(cookies(), {
+		apiKey: clientConfig.apiKey,
+		cookieName: serverConfig.cookieName,
+		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+		serviceAccount: serverConfig.serviceAccount,
+	});
+
+	if (!tokens) {
+		return notFound();
+	}
 
 	useEffect(() => {
 		if (fuelEfficiencies) {
@@ -55,9 +69,9 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
 
 	const handleUpdate = async () => {
 		if (fuelEfficiency) {
-			const clientAPI = createClientAPI();
+			const clientAPI = createClientAPI(tokens.token);
 			await clientAPI.fuelEfficiency.updateFuelEfficiency({
-				id: fuelEfficiency.fe_id,
+				fe_id: fuelEfficiency.fe_id,
 				car_id: fuelEfficiency.car_id,
 				fe_date: date,
 				fe_amount: amount,
@@ -70,9 +84,9 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
 
 	const handleDelete = async () => {
 		if (fuelEfficiency) {
-			const clientAPI = createClientAPI();
+			const clientAPI = createClientAPI(tokens.token);
 			await clientAPI.fuelEfficiency.deleteFuelEfficiency({
-				id: fuelEfficiency.fe_id,
+				fe_id: fuelEfficiency.fe_id,
 			});
 			router.push("/refueling");
 		}

@@ -35,10 +35,11 @@ const SVGButton = styled.button`
 
 interface RefuelingProps {
 	userCars: carInfo[];
+	token: string;
 	userId: string;
 }
 
-const Refueling: React.FC<RefuelingProps> = ({ userCars, userId }) => {
+const Refueling: React.FC<RefuelingProps> = ({ userCars, token, userId }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
 	const [fuelEfficiencies, setFuelEfficiencies] = useState<
 		FuelEfficiency[] | null
@@ -51,15 +52,14 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, userId }) => {
 
 	useEffect(() => {
 		const fetchFuelEfficiencies = async () => {
-			const clientAPI = createClientAPI();
-			const response = await clientAPI.user.getFuelEfficiency({
-				user_id: userId,
+			const clientAPI = createClientAPI(token);
+			const response = await clientAPI.car.getCarFuelEfficiency({
 				car_id: userCars[selectedCarIndex].car_id.toString(),
 			});
 			setFuelEfficiencies(response);
 		};
 		fetchFuelEfficiencies();
-	}, [selectedCarIndex, userCars]);
+	}, [selectedCarIndex, userCars, token]);
 
 	const handleAddClick = () => {
 		router.push("/addRefueling");

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { createClientAPI } from "@/api/clientImplement";
 import { Tuning } from "@/api/models/models";
 import BackHeader from "@/components/base/BackHeader";
@@ -15,6 +15,9 @@ import {
 	FormElementContainer,
 } from "@/components/form/FormElements";
 import { Anton } from "next/font/google";
+import { getTokens } from "next-firebase-auth-edge";
+import { cookies } from "next/headers";
+import { clientConfig, serverConfig } from "../../../config";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -25,7 +28,7 @@ interface UpdateTuningProps {
 	tunings: Tuning[];
 }
 
-const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings }) => {
+const UpdateTuning: React.FC<UpdateTuningProps> = async ({ tunings }) => {
 	const [tuning, setTuning] = useState<Tuning | null>(null);
 	const [date, setDate] = useState("");
 	const [title, setTitle] = useState("");
@@ -34,6 +37,17 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings }) => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const tuId = searchParams.get("id");
+
+	const tokens = await getTokens(cookies(), {
+		apiKey: clientConfig.apiKey,
+		cookieName: serverConfig.cookieName,
+		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+		serviceAccount: serverConfig.serviceAccount,
+	});
+
+	if (!tokens) {
+		return notFound();
+	}
 
 	useEffect(() => {
 		if (tunings) {
@@ -49,9 +63,9 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings }) => {
 
 	const handleUpdate = async () => {
 		if (tuning) {
-			const clientAPI = createClientAPI();
+			const clientAPI = createClientAPI(tokens.token);
 			await clientAPI.tuning.updateTuning({
-				id: tuning.tuning_id,
+				tuning_id: tuning.tuning_id,
 				car_id: tuning.car_id,
 				tuning_date: date,
 				tuning_name: title,
@@ -63,9 +77,9 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings }) => {
 
 	const handleDelete = async () => {
 		if (tuning) {
-			const clientAPI = createClientAPI();
+			const clientAPI = createClientAPI(tokens.token);
 			await clientAPI.tuning.deleteTuning({
-				id: tuning.tuning_id,
+				tuning_id: tuning.tuning_id,
 			});
 			router.push("/tuning");
 		}
