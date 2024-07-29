@@ -1,11 +1,11 @@
-import { ClientAPI, CarAPIInterface } from "@/api/client";
+import { ClientAPIInterface, CarAPIInterface } from "@/api/client";
 import { Car, FuelEfficiency, Maintenance, Tuning } from "@/api/models/models";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 const AUTOTRACK_API_BASE_URL = process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL;
 const AUTOTRACK_API_CARS_URL = `${AUTOTRACK_API_BASE_URL}/cars`;
 
-export const CarAPI = (jwt: string): ClientAPI["car"] => ({
+export const CarAPI = (jwt: string): ClientAPIInterface["car"] => ({
 	createCar: async (
 		request: CarAPIInterface["createCar"]["request"],
 	): Promise<CarAPIInterface["createCar"]["response"]> => {

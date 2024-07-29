@@ -1,11 +1,11 @@
-import { ClientAPI, UserAPIInterface } from "@/api/client";
+import { ClientAPIInterface, UserAPIInterface } from "@/api/client";
 import { carInfo, User } from "@/api/models/models";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 const AUTOTRACK_API_BASE_URL = process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL;
 const AUTOTRACK_API_USERS_URL = `${AUTOTRACK_API_BASE_URL}/users`;
 
-export const UserAPI = (jwt: string): ClientAPI["user"] => ({
+export const UserAPI = (jwt: string): ClientAPIInterface["user"] => ({
 	createUser: async (
 		request: UserAPIInterface["createUser"]["request"],
 	): Promise<UserAPIInterface["createUser"]["response"]> => {
