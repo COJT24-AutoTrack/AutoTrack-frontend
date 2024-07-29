@@ -98,7 +98,8 @@ export const UserAPI = (jwt: string): ClientAPI["user"] => ({
 			jwt,
 		);
 		if (!response.ok) {
-			throw new Error("Failed to fetch cars");
+			const errorText = await response.text(); // エラーメッセージを取得
+			throw new Error(`Failed to fetch cars: ${errorText}`);
 		}
 		const carInfos: carInfo[] = await response.json();
 		return carInfos;
