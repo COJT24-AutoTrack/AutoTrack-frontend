@@ -50,7 +50,7 @@ export default function RegisterForm() {
 				user_email: email,
 				user_name: "John Doe", //ユーザー名って概念は存在しなかったことにさせてくれ(
 				user_password: password,
-				firebase_user_id: jwt,
+				firebase_user_id: userCredential.user.uid,
 			});
 
 			// ユーザー作成が成功したらログインページにリダイレクト
