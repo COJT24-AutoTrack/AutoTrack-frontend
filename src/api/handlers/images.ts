@@ -1,7 +1,7 @@
 import { ClientAPI, ImageAPIInterface } from "@/api/client";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
-const AUTOTRACK_API_BASE_URL = process.env.AUTOTRACK_API_BASE_URL;
+const AUTOTRACK_API_BASE_URL = process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL;
 const AUTOTRACK_API_IMAGES_URL = `${AUTOTRACK_API_BASE_URL}/images`;
 
 export const ImageAPI = (jwt: string): ClientAPI["image"] => ({

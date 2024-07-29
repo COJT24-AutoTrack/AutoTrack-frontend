@@ -2,7 +2,7 @@ import { ClientAPI, CarAPIInterface } from "@/api/client";
 import { Car, FuelEfficiency, Maintenance, Tuning } from "@/api/models/models";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
-const AUTOTRACK_API_BASE_URL = process.env.AUTOTRACK_API_BASE_URL;
+const AUTOTRACK_API_BASE_URL = process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL;
 const AUTOTRACK_API_CARS_URL = `${AUTOTRACK_API_BASE_URL}/cars`;
 
 export const CarAPI = (jwt: string): ClientAPI["car"] => ({
