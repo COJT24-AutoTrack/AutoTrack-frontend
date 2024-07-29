@@ -1,16 +1,22 @@
-import { createCarFuelEfficiencyAPI } from "./cars/{carID}/fuel_efficiencies/calculate";
-import { ClientAPI } from "./client";
-import { createUserAPI } from "./users/{userID}/cars";
-import { createFuelEfficiencyAPI } from "./fuel_efficiencies";
-import { createTuningAPI } from "./tunings";
-import { createMaintenanceAPI } from "./maintenance";
+import { ClientAPI } from "@/api/client";
+import { UserAPI } from "@/api/handlers/users";
+import { CarAPI } from "@/api/handlers/cars";
+import { FuelEfficiencyAPI } from "@/api/handlers/fuel_efficiencies";
+import { TuningAPI } from "@/api/handlers/tunings";
+import { MaintenanceAPI } from "@/api/handlers/maintenance";
+import { AccidentAPI } from "@/api/handlers/accidents";
+import { PeriodicInspectionAPI } from "@/api/handlers/periodic_inspections";
+import { ImageAPI } from "@/api/handlers/images";
 
-export const createClientAPI = (idToken: string): ClientAPI => ({
+export const createClientAPI = (jwt: string): ClientAPI => ({
 	user: {
-		...createUserAPI(idToken),
+		...UserAPI(jwt),
 	},
-	carFuelEfficiency: createCarFuelEfficiencyAPI(idToken),
-	fuelEfficiency: createFuelEfficiencyAPI(idToken),
-	tuning: createTuningAPI(idToken),
-	maintenance: createMaintenanceAPI(idToken),
+	car: CarAPI(jwt),
+	fuelEfficiency: FuelEfficiencyAPI(jwt),
+	tuning: TuningAPI(jwt),
+	maintenance: MaintenanceAPI(jwt),
+	accident: AccidentAPI(jwt),
+	periodicInspection: PeriodicInspectionAPI(jwt),
+	image: ImageAPI(jwt),
 });
