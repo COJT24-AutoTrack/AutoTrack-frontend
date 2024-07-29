@@ -1,14 +1,14 @@
 export const fetchWithToken = async (
 	url: string,
 	options: RequestInit,
-	idToken: string,
+	jwt: string,
 ) => {
 	return fetch(url, {
 		...options,
 		headers: {
 			...options.headers,
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${idToken}`,
+			Authorization: `Bearer ${jwt}`,
 		},
 	});
 };
