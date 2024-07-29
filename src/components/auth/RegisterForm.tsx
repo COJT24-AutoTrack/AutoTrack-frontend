@@ -40,16 +40,17 @@ export default function RegisterForm() {
 			);
 
 			// アカウント作成後にユーザーのIDトークンを取得
-			const idToken = await userCredential.user.getIdToken();
+			const jwt = await userCredential.user.getIdToken();
 
 			// JWTトークンを使用してclientAPIを作成
-			const clientAPI = createClientAPI(idToken);
+			const clientAPI = createClientAPI(jwt);
 
 			// バックエンドのユーザー作成apiを叩く
 			const response = await clientAPI.user.createUser({
 				user_email: email,
 				user_name: "John Doe", //ユーザー名って概念は存在しなかったことにさせてくれ(
 				user_password: password,
+				firebase_user_id: jwt,
 			});
 
 			// ユーザー作成が成功したらログインページにリダイレクト
