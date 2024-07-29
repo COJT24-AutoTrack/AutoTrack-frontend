@@ -1,10 +1,7 @@
-import { createClientAPI } from "@/api/clientImplement";
-import { carInfo } from "@/api/models/models";
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { clientConfig, serverConfig } from "../../../config";
 import { notFound } from "next/navigation";
-import Refueling from "@/components/refueling/Refueling";
 import Tuning from "@/components/tuning/Tuning";
 
 const TuningPage = async () => {
@@ -21,7 +18,7 @@ const TuningPage = async () => {
 
 	const clientAPI = createClientAPI(tokens.token);
 
-	const response = await clientAPI.user.getUserCars({
+	const response = await clientAPI.user.({
 		firebase_user_id: tokens.decodedToken.uid,
 	});
 
@@ -29,7 +26,13 @@ const TuningPage = async () => {
 		return notFound();
 	}
 
-	return <Tuning userCars={response} userId={tokens.decodedToken.uid} />;
+	return (
+		<Tuning
+			userCars={response}
+			token={tokens.token}
+			userId={tokens.decodedToken.uid}
+		/>
+	);
 };
 
 export default TuningPage;

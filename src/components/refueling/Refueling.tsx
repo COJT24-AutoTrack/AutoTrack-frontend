@@ -4,10 +4,10 @@ import { carInfo, FuelEfficiency } from "@/api/models/models";
 import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
 import RefuelingCardGroup from "./RefuelingCardGroup";
-import { createClientAPI } from "@/api/clientImplement";
 import styled from "styled-components";
 import AddIcon from "@/public/icons/AddIcon.svg";
 import { useRouter } from "next/navigation";
+import { ClientAPI } from "@/api/clientImplement";
 
 const Container = styled.div`
 	position: relative;
@@ -52,7 +52,7 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token, userId }) => {
 
 	useEffect(() => {
 		const fetchFuelEfficiencies = async () => {
-			const clientAPI = createClientAPI(token);
+			const clientAPI = ClientAPI(token);
 			const response = await clientAPI.car.getCarFuelEfficiency({
 				car_id: userCars[selectedCarIndex].car_id.toString(),
 			});
@@ -62,7 +62,7 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token, userId }) => {
 	}, [selectedCarIndex, userCars, token]);
 
 	const handleAddClick = () => {
-		router.push("/addRefueling");
+		router.push(`/addRefueling?car_id=${userCars[selectedCarIndex].car_id}`);
 	};
 
 	return (

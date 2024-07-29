@@ -1,9 +1,10 @@
-import { ClientAPI, FuelEfficiencyAPIInterface } from "@/api/client";
+import { FuelEfficiencyAPIInterface } from "@/api/client";
 import {
 	FuelEfficiency,
 	FuelEfficiencyCalculationResult,
 } from "@/api/models/models";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
+import { ClientAPI } from "@/components/CarSlider/AddCarPageComponent";
 
 const AUTOTRACK_API_BASE_URL = process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL;
 const AUTOTRACK_API_FUELEFFICIENCIES_URL = `${AUTOTRACK_API_BASE_URL}/fuel_efficiencies`;

@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { notFound, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FuelEfficiency } from "@/api/models/models";
 import BackHeader from "@/components/base/BackHeader";
-import BorderButton from "@/components/buttons/BorderButton";
 import MainButton from "@/components/buttons/MainButton";
 import {
 	BigLabel,
@@ -14,9 +13,6 @@ import {
 	FormElementContainer,
 } from "@/components/form/FormElements";
 import { Anton } from "next/font/google";
-import { getTokens } from "next-firebase-auth-edge";
-import { clientConfig, serverConfig } from "../../../config";
-import { cookies } from "next/headers";
 import { ClientAPI } from "@/api/clientImplement";
 
 const Anton400 = Anton({
@@ -24,42 +20,35 @@ const Anton400 = Anton({
 	subsets: ["latin"],
 });
 
-interface UpdateFuelingProps {
-	fuelEfficiencies: FuelEfficiency[];
+interface AddFuelEfficiencyProps {
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
+	carId: string;
 }
 
-const UpdateRefueling: React.FC<UpdateFuelingProps> = async ({
-	fuelEfficiencies,
-}) => {
+const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
+	const [fuelEfficiencies, setFuelEfficiencies] = useState<
+		FuelEfficiency[] | null
+	>(null);
 	const [fuelEfficiency, setFuelEfficiency] = useState<FuelEfficiency | null>(
 		null,
 	);
-	const [date, setDate] = useState("");
-	const [amount, setAmount] = useState(0);
-	const [mileage, setMileage] = useState(0);
-	const [unitPrice, setUnitPrice] = useState(0);
+	const [date, setDate] = useState<Date | null>(null);
+	const [amount, setAmount] = useState<number>(0);
+	const [mileage, setMileage] = useState<number>(0);
+	const [unitPrice, setUnitPrice] = useState<number>(0);
 
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const feId = searchParams.get("id");
 
-	const tokens = await getTokens(cookies(), {
-		apiKey: clientConfig.apiKey,
-		cookieName: serverConfig.cookieName,
-		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
-		serviceAccount: serverConfig.serviceAccount,
-	});
-
-	if (!tokens) {
-		return notFound();
-	}
-
 	useEffect(() => {
 		if (fuelEfficiencies) {
 			const fe = fuelEfficiencies.find((fe) => fe.fe_id === Number(feId));
 			if (fe) {
-				setFuelEfficiency(fe);
-				setDate(fe.fe_date);
+				setDate(new Date(fe.fe_date));
 				setAmount(fe.fe_amount);
 				setMileage(fe.fe_mileage);
 				setUnitPrice(fe.fe_unitprice);
@@ -67,43 +56,32 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = async ({
 		}
 	}, [feId, fuelEfficiencies]);
 
-	const handleUpdate = async () => {
-		if (fuelEfficiency) {
-			const clientAPI = ClientAPI(tokens.token);
-			await clientAPI.fuelEfficiency.updateFuelEfficiency({
-				fe_id: fuelEfficiency.fe_id,
-				car_id: fuelEfficiency.car_id,
-				fe_date: date,
-				fe_amount: amount,
-				fe_unitprice: unitPrice,
-				fe_mileage: mileage,
-			});
-			router.push("/refueling");
-		}
-	};
+	const handleRegister = async (event: React.FormEvent) => {
+		event.preventDefault();
 
-	const handleDelete = async () => {
-		if (fuelEfficiency) {
-			const clientAPI = ClientAPI(tokens.token);
-			await clientAPI.fuelEfficiency.deleteFuelEfficiency({
-				fe_id: fuelEfficiency.fe_id,
-			});
-			router.push("/refueling");
-		}
+		const clientAPI = ClientAPI(tokens.token);
+		await clientAPI.fuelEfficiency.createFuelEfficiency({
+			car_id: Number(carId),
+			fe_date: date?.toISOString() || "",
+			fe_amount: amount,
+			fe_unitprice: unitPrice,
+			fe_mileage: mileage,
+		});
+		router.push("/refueling");
 	};
 
 	return (
 		<>
 			<BackHeader route="/refueling" />
 			<FormContainer>
-				<Form>
-					<BigLabel>給油記録編集</BigLabel>
+				<Form onSubmit={handleRegister}>
+					<BigLabel>給油記録追加</BigLabel>
 					<FormElementContainer>
 						<BigLabel>日付</BigLabel>
 						<input
 							type="date"
-							value={date}
-							onChange={(e) => setDate(e.target.value)}
+							value={date ? date.toISOString().substr(0, 10) : ""}
+							onChange={(e) => setDate(new Date(e.target.value))}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
@@ -137,8 +115,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = async ({
 						</BigLabel>
 					</FormElementContainer>
 					<ButtonsContainer>
-						<MainButton label="更新" onClick={handleUpdate} />
-						<BorderButton label="削除" onClick={handleDelete} />
+						<MainButton label="登録" type="submit" />
 					</ButtonsContainer>
 				</Form>
 			</FormContainer>
@@ -146,4 +123,4 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = async ({
 	);
 };
 
-export default UpdateRefueling;
+export default AddRefueling;
