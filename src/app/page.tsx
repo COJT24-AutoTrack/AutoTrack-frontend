@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { clientConfig, serverConfig } from "../../config";
 import HomeClient from "@/components/HomeClient";
-import { createClientAPI } from "@/api/clientImplement";
+import { ClientAPI } from "@/api/clientImplement";
 
 export default async function Home() {
 	const tokens = await getTokens(cookies(), {
@@ -19,7 +19,7 @@ export default async function Home() {
 		return notFound();
 	}
 
-	const clientAPI = createClientAPI(tokens.token);
+	const clientAPI = ClientAPI(tokens.token);
 
 	// todo: api接続
 	const response = await clientAPI.user.getUserCars({

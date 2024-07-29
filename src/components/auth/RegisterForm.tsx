@@ -15,7 +15,7 @@ import {
 	StyledLink,
 } from "../form/FormElements";
 import { LogoText } from "../text/LogoTextComponen";
-import { createClientAPI } from "@/api/clientImplement";
+import { ClientAPI } from "@/api/clientImplement";
 
 export default function RegisterForm() {
 	const [email, setEmail] = useState("");
@@ -43,7 +43,7 @@ export default function RegisterForm() {
 			const jwt = await userCredential.user.getIdToken();
 
 			// JWTトークンを使用してclientAPIを作成
-			const clientAPI = createClientAPI(jwt);
+			const clientAPI = ClientAPI(jwt);
 
 			// バックエンドのユーザー作成apiを叩く
 			const response = await clientAPI.user.createUser({

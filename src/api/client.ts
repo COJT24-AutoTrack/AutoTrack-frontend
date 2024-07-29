@@ -8,7 +8,7 @@ import {
     User,
 } from "@/api/models/models";
 
-export interface ClientAPI {
+export interface ClientAPIInterface {
     user: {
         createUser(
             request: UserAPIInterface["createUser"]["request"],

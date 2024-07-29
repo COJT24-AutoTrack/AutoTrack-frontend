@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClientAPI } from "@/api/clientImplement";
+import { ClientAPI } from "@/api/clientImplement";
 import { FuelEfficiency } from "@/api/models/models";
 import BackHeader from "@/components/base/BackHeader";
 import BorderButton from "@/components/buttons/BorderButton";
@@ -55,7 +55,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({
 
 	const handleRegister = async () => {
 		if (fuelEfficiency) {
-			const clientAPI = createClientAPI();
+			const clientAPI = ClientAPI();
 			await clientAPI.fuelEfficiency.createFuelEfficiency({
 				car_id: fuelEfficiency.car_id,
 				fe_date: date,
