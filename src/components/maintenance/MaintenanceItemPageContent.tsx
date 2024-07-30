@@ -4,8 +4,8 @@ import React from "react";
 import styled from "styled-components";
 import { Maintenance } from "@/api/models/models";
 import BackIcon from "../../public/icons/BackIcon.svg";
-import { useRouter, useSearchParams } from "next/navigation";
-import AddIcon from "@/public/icons/AddIcon.svg";
+import { useRouter } from "next/navigation";
+import AddIcon from "../../public/icons/AddIcon.svg";
 import { ContentText } from "../text/TextComponents";
 
 interface MaintenanceItemPageContentProps {
@@ -15,6 +15,15 @@ interface MaintenanceItemPageContentProps {
 
 const Container = styled.div`
 	padding: 20px;
+`;
+
+const TopBar = styled.div`
+	width: 100vw;
+	height: 50px;
+	padding-left: 10px;
+	display: flex;
+	align-items: center;
+	background-color: #2b2b2b;
 `;
 
 const SVGButton = styled.button`
@@ -34,15 +43,6 @@ const SVGButton = styled.button`
 		width: 100px;
 		height: 100px;
 	}
-`;
-
-const TopBar = styled.div`
-	width: 100vw;
-	height: 50px;
-	padding-left: 10px;
-	display: flex;
-	align-items: center;
-	background-color: #2b2b2b;
 `;
 
 const BackButton = styled.button`
