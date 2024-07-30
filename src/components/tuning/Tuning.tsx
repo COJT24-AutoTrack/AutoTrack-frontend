@@ -3,7 +3,7 @@
 import { carInfo } from "@/api/models/models";
 import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
-import { createClientAPI } from "@/api/clientImplement";
+import { ClientAPI } from "@/api/clientImplement";
 import styled from "styled-components";
 import AddIcon from "@/public/icons/AddIcon.svg";
 import { useRouter } from "next/navigation";
@@ -50,7 +50,7 @@ const Tuning: React.FC<TuningProps> = ({ userCars, token, userId }) => {
 
 	useEffect(() => {
 		const fetchTunings = async () => {
-			const clientAPI = createClientAPI(token);
+			const clientAPI = ClientAPI(token);
 			const response = await clientAPI.car.getCarTuning({
 				car_id: userCars[selectedCarIndex].car_id.toString(),
 			});

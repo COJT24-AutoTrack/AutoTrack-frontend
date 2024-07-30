@@ -8,7 +8,7 @@ import CarSelect from "@/components/base/CarSelect";
 import { useRouter } from "next/navigation";
 import AddIcon from "@/public/icons/AddIcon.svg";
 import { carInfo } from "@/api/models/models";
-import { createClientAPI } from "@/api/clientImplement";
+import { ClientAPI } from "@/api/clientImplement";
 
 const DetailContainer = styled.div`
 	display: flex;
@@ -55,7 +55,7 @@ const MaintenancePage: React.FC<MaintenanceProps> = ({ userCars, userId }) => {
 
 	useEffect(() => {
 		const fetchMaintenanceDetails = async () => {
-			const clientAPI = createClientAPI();
+			const clientAPI = ClientAPI(token);
 			const car_id = userCars[selectedCarIndex].car_id.toString();
 
 			try {
@@ -89,7 +89,7 @@ const MaintenancePage: React.FC<MaintenanceProps> = ({ userCars, userId }) => {
 					<MaintenanceDetail
 						key={detail.maint_id}
 						title={detail.maint_type}
-						lastMaintenanceDate={detail.maint_date.toString()} // Date オブジェクトを文字列に変換
+						lastMaintenanceDate={detail.maint_date.toString()}
 						detail={detail.maint_description}
 						detailUrl={`/maintenance/${detail.maint_id}`}
 					/>
