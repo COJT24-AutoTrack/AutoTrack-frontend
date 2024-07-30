@@ -2,7 +2,8 @@ import styled from "styled-components";
 
 interface StyledButtonProps {
 	label: string;
-	onClick: () => void;
+	onClick?: () => void;
+	type?: "button" | "submit" | "reset";
 }
 
 const Button = styled.button`
@@ -24,8 +25,16 @@ const Button = styled.button`
 	}
 `;
 
-const MainButton: React.FC<StyledButtonProps> = ({ label, onClick }) => {
-	return <Button onClick={onClick}>{label}</Button>;
+const MainButton: React.FC<StyledButtonProps> = ({
+	label,
+	onClick,
+	type = "button",
+}) => {
+	return (
+		<Button onClick={onClick} type={type}>
+			{label}
+		</Button>
+	);
 };
 
 export default MainButton;

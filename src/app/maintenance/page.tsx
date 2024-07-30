@@ -1,4 +1,4 @@
-import MaintenancePage from '@/components/maintenance/MaintenancePage';
+import MaintenancePage from "@/components/maintenance/MaintenancePage";
 
 const Maintenance = () => {
 	return <MaintenancePage />;

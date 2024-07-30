@@ -1,93 +1,333 @@
-import { Car, carInfo, FuelEfficiencyCalculationResult, FuelEfficiency, Tuning, Maintenance } from './models/models';
+import {
+    Car,
+    carInfo,
+    FuelEfficiencyCalculationResult,
+    FuelEfficiency,
+    Tuning,
+    Maintenance,
+    User,
+} from "@/api/models/models";
 
-export interface ClientAPI {
+export interface ClientAPIInterface {
     user: {
-        getCars(request: UserAPI['getCars']['request']): Promise<UserAPI['getCars']['response']>;
-        registerCar(request: UserAPI['registerCar']['request']): Promise<UserAPI['registerCar']['response']>;
-        getFuelEfficiency(request: UserAPI['getFuelEfficiency']['request']): Promise<UserAPI['getFuelEfficiency']['response']>;
-        getTuning(request: UserAPI['getTuning']['request']): Promise<UserAPI['getTuning']['response']>;
-        getMaintenance(request: UserAPI['getMaintenance']['request']): Promise<UserAPI['getMaintenance']['response']>;
+        createUser(
+            request: UserAPIInterface["createUser"]["request"],
+        ): Promise<UserAPIInterface["createUser"]["response"]>;
+        getUsers(): Promise<UserAPIInterface["getUsers"]["response"]>;
+        getUser(
+            request: UserAPIInterface["getUser"]["request"],
+        ): Promise<UserAPIInterface["getUser"]["response"]>;
+        updateUser(
+            request: UserAPIInterface["updateUser"]["request"],
+        ): Promise<UserAPIInterface["updateUser"]["response"]>;
+        deleteUser(
+            request: UserAPIInterface["deleteUser"]["request"],
+        ): Promise<void>;
+        getUserCars(
+            request: UserAPIInterface["getUserCars"]["request"],
+        ): Promise<UserAPIInterface["getUserCars"]["response"]>;
     };
-    carFuelEfficiency: {
-        calculateFuelEfficiency(request: CarFuelEfficiencyAPI['calculateFuelEfficiency']['request']): Promise<CarFuelEfficiencyAPI['calculateFuelEfficiency']['response']>;
-    };
-    fuelEfficiency: {
-        createFuelEfficiency(request: FuelEfficiencyAPI['createFuelEfficiency']['request']): Promise<FuelEfficiencyAPI['createFuelEfficiency']['response']>;
-        getAllFuelEfficiencies(): Promise<FuelEfficiencyAPI['getAllFuelEfficiencies']['response']>;
-        getFuelEfficiencyById(request: FuelEfficiencyAPI['getFuelEfficiencyById']['request']): Promise<FuelEfficiencyAPI['getFuelEfficiencyById']['response']>;
-        updateFuelEfficiency(request: FuelEfficiencyAPI['updateFuelEfficiency']['request']): Promise<FuelEfficiencyAPI['updateFuelEfficiency']['response']>;
-        deleteFuelEfficiency(request: FuelEfficiencyAPI['deleteFuelEfficiency']['request']): Promise<void>;
+    car: {
+        createCar(
+            request: CarAPIInterface["createCar"]["request"],
+        ): Promise<CarAPIInterface["createCar"]["response"]>;
+        getCars(): Promise<CarAPIInterface["getCars"]["response"]>;
+        getCar(
+            request: CarAPIInterface["getCar"]["request"],
+        ): Promise<CarAPIInterface["getCar"]["response"]>;
+        updateCar(
+            request: CarAPIInterface["updateCar"]["request"],
+        ): Promise<CarAPIInterface["updateCar"]["response"]>;
+        deleteCar(request: CarAPIInterface["deleteCar"]["request"]): Promise<void>;
+        updateCarImage(
+            request: CarAPIInterface["updateCarImage"]["request"],
+        ): Promise<void>;
+        deleteCarImage(
+            request: CarAPIInterface["deleteCarImage"]["request"],
+        ): Promise<void>;
+        getCarTuning(
+            request: CarAPIInterface["getCarTuning"]["request"],
+        ): Promise<CarAPIInterface["getCarTuning"]["response"]>;
+        getCarMaintenance(
+            request: CarAPIInterface["getCarMaintenance"]["request"],
+        ): Promise<CarAPIInterface["getCarMaintenance"]["response"]>;
+        getCarFuelEfficiency(
+            request: CarAPIInterface["getCarFuelEfficiency"]["request"],
+        ): Promise<CarAPIInterface["getCarFuelEfficiency"]["response"]>;
     };
     tuning: {
-        createTuning(request: TuningAPI['createTuning']['request']): Promise<TuningAPI['createTuning']['response']>;
-        getAllTunings(): Promise<TuningAPI['getAllTunings']['response']>;
-        getTuningById(request: TuningAPI['getTuningById']['request']): Promise<TuningAPI['getTuningById']['response']>;
-        updateTuning(request: TuningAPI['updateTuning']['request']): Promise<TuningAPI['updateTuning']['response']>;
-        deleteTuning(request: TuningAPI['deleteTuning']['request']): Promise<void>;
+        createTuning(
+            request: TuningAPIInterface["createTuning"]["request"],
+        ): Promise<TuningAPIInterface["createTuning"]["response"]>;
+        getTunings(): Promise<TuningAPIInterface["getTunings"]["response"]>;
+        getTuning(
+            request: TuningAPIInterface["getTuning"]["request"],
+        ): Promise<TuningAPIInterface["getTuning"]["response"]>;
+        updateTuning(
+            request: TuningAPIInterface["updateTuning"]["request"],
+        ): Promise<TuningAPIInterface["updateTuning"]["response"]>;
+        deleteTuning(
+            request: TuningAPIInterface["deleteTuning"]["request"],
+        ): Promise<void>;
     };
     maintenance: {
-        createMaintenance(request: MaintenanceAPI['createMaintenance']['request']): Promise<MaintenanceAPI['createMaintenance']['response']>;
-        getAllMaintenances(): Promise<MaintenanceAPI['getAllMaintenances']['response']>;
-        getMaintenanceById(request: MaintenanceAPI['getMaintenanceById']['request']): Promise<MaintenanceAPI['getMaintenanceById']['response']>;
-        updateMaintenance(request: MaintenanceAPI['updateMaintenance']['request']): Promise<MaintenanceAPI['updateMaintenance']['response']>;
-        deleteMaintenance(request: MaintenanceAPI['deleteMaintenance']['request']): Promise<void>;
+        createMaintenance(
+            request: MaintenanceAPIInterface["createMaintenance"]["request"],
+        ): Promise<MaintenanceAPIInterface["createMaintenance"]["response"]>;
+        getMaintenances(): Promise<
+            MaintenanceAPIInterface["getMaintenances"]["response"]
+        >;
+        getMaintenance(
+            request: MaintenanceAPIInterface["getMaintenance"]["request"],
+        ): Promise<MaintenanceAPIInterface["getMaintenance"]["response"]>;
+        updateMaintenance(
+            request: MaintenanceAPIInterface["updateMaintenance"]["request"],
+        ): Promise<MaintenanceAPIInterface["updateMaintenance"]["response"]>;
+        deleteMaintenance(
+            request: MaintenanceAPIInterface["deleteMaintenance"]["request"],
+        ): Promise<void>;
+    };
+    fuelEfficiency: {
+        createFuelEfficiency(
+            request: FuelEfficiencyAPIInterface["createFuelEfficiency"]["request"],
+        ): Promise<FuelEfficiencyAPIInterface["createFuelEfficiency"]["response"]>;
+        getFuelEfficiencies(): Promise<
+            FuelEfficiencyAPIInterface["getFuelEfficiencies"]["response"]
+        >;
+        getFuelEfficiency(
+            request: FuelEfficiencyAPIInterface["getFuelEfficiency"]["request"],
+        ): Promise<FuelEfficiencyAPIInterface["getFuelEfficiency"]["response"]>;
+        updateFuelEfficiency(
+            request: FuelEfficiencyAPIInterface["updateFuelEfficiency"]["request"],
+        ): Promise<FuelEfficiencyAPIInterface["updateFuelEfficiency"]["response"]>;
+        deleteFuelEfficiency(
+            request: FuelEfficiencyAPIInterface["deleteFuelEfficiency"]["request"],
+        ): Promise<void>;
+        calculateFuelEfficiencies(
+            request: FuelEfficiencyAPIInterface["calculateFuelEfficiencies"]["request"],
+        ): Promise<FuelEfficiencyCalculationResult>;
+    };
+    accident: {
+        createAccident(
+            request: AccidentAPIInterface["createAccident"]["request"],
+        ): Promise<AccidentAPIInterface["createAccident"]["response"]>;
+        getAccidents(): Promise<AccidentAPIInterface["getAccidents"]["response"]>;
+        getAccident(
+            request: AccidentAPIInterface["getAccident"]["request"],
+        ): Promise<AccidentAPIInterface["getAccident"]["response"]>;
+        updateAccident(
+            request: AccidentAPIInterface["updateAccident"]["request"],
+        ): Promise<AccidentAPIInterface["updateAccident"]["response"]>;
+        deleteAccident(
+            request: AccidentAPIInterface["deleteAccident"]["request"],
+        ): Promise<void>;
+    };
+    periodicInspection: {
+        createPeriodicInspection(
+            request: PeriodicInspectionAPIInterface["createPeriodicInspection"]["request"],
+        ): Promise<
+            PeriodicInspectionAPIInterface["createPeriodicInspection"]["response"]
+        >;
+        getPeriodicInspections(): Promise<
+            PeriodicInspectionAPIInterface["getPeriodicInspections"]["response"]
+        >;
+        getPeriodicInspection(
+            request: PeriodicInspectionAPIInterface["getPeriodicInspection"]["request"],
+        ): Promise<
+            PeriodicInspectionAPIInterface["getPeriodicInspection"]["response"]
+        >;
+        updatePeriodicInspection(
+            request: PeriodicInspectionAPIInterface["updatePeriodicInspection"]["request"],
+        ): Promise<
+            PeriodicInspectionAPIInterface["updatePeriodicInspection"]["response"]
+        >;
+        deletePeriodicInspection(
+            request: PeriodicInspectionAPIInterface["deletePeriodicInspection"]["request"],
+        ): Promise<void>;
+    };
+    image: {
+        uploadImage(
+            request: ImageAPIInterface["uploadImage"]["request"],
+        ): Promise<ImageAPIInterface["uploadImage"]["response"]>;
     };
 }
 
-export interface UserAPI {
-    getCars: {
+export interface UserAPIInterface {
+    createUser: {
         request: {
-            user_id: string;
+            user_email: string;
+            user_name: string;
+            user_password: string;
+            firebase_user_id: string;
         };
-        response: carInfo[];
+        response: User;
     };
-
-    registerCar: {
+    getUsers: {
+        response: User[];
+    };
+    getUser: {
         request: {
-            user_id: string;
+            firebase_user_id: string;
+        };
+        response: User;
+    };
+    updateUser: {
+        request: {
+            firebase_user_id: string;
+            user_email?: string;
+            user_name?: string;
+            user_password?: string;
+        };
+        response: User;
+    };
+    deleteUser: {
+        request: {
+            firebase_user_id: string;
+        };
+    };
+    getUserCars: {
+        request: {
+            firebase_user_id: string;
+        };
+        response: Car[];
+    };
+}
+
+export interface CarAPIInterface {
+    createCar: {
+        request: {
+            firebase_user_id: string;
             car: Car;
         };
         response: Car;
     };
-
-    getFuelEfficiency: {
-        getFuelEfficiency: (request: { user_id: string; car_id: string; }) => Promise<FuelEfficiency[]>;
-        request: {
-            user_id: string;
-            car_id: string;
-        };
-        response: FuelEfficiency[];
+    getCars: {
+        response: Car[];
     };
-
-    getTuning: {
-        getTuning: (request: { user_id: string; car_id: string; }) => Promise<Tuning[]>;
+    getCar: {
         request: {
-            user_id: string;
-            car_id: string;
+            car_id: number;
+        };
+        response: Car;
+    };
+    updateCar: {
+        request: {
+            car_id: number;
+            car: Car;
+        };
+        response: Car;
+    };
+    deleteCar: {
+        request: {
+            car_id: number;
+        };
+    };
+    updateCarImage: {
+        request: {
+            car_id: number;
+            image: string;
+        };
+    };
+    deleteCarImage: {
+        request: {
+            car_id: number;
+        };
+    };
+    getCarTuning: {
+        request: {
+            car_id:
+            number;
         };
         response: Tuning[];
     };
-
-    getMaintenance: {
-        getMaintenanc: (request: { user_id: string; car_id: string; }) => Promise<Tuning[]>;
+    getCarMaintenance: {
         request: {
-            user_id: string;
-            car_id: string;
+            car_id:
+            number;
         };
         response: Maintenance[];
     };
-}
-
-export interface CarFuelEfficiencyAPI {
-    calculateFuelEfficiency: {
+    getCarFuelEfficiency: {
         request: {
-            car_id: string;
+            car_id: number;
         };
-        response: FuelEfficiencyCalculationResult;
+        response: FuelEfficiency[];
     };
 }
 
-export interface FuelEfficiencyAPI {
+export interface TuningAPIInterface {
+    createTuning: {
+        request: {
+            car_id: number;
+            tuning_name: string;
+            tuning_date: string;
+            tuning_description: string;
+        };
+        response: Tuning;
+    };
+    getTunings: {
+        response: Tuning[];
+    };
+    getTuning: {
+        request: {
+            tuning_id: number;
+        };
+        response: Tuning;
+    };
+    updateTuning: {
+        request: {
+            tuning_id: number;
+            car_id: number;
+            tuning_name: string;
+            tuning_date: string;
+            tuning_description: string;
+        };
+        response: Tuning;
+    };
+    deleteTuning: {
+        request: {
+            tuning_id: number;
+        };
+    };
+}
+
+export interface MaintenanceAPIInterface {
+    createMaintenance: {
+        request: {
+            car_id: number;
+            maint_type: string;
+            maint_date: string;
+            maint_description: string;
+        };
+        response: Maintenance;
+    };
+    getMaintenances: {
+        response: Maintenance[];
+    };
+    getMaintenance: {
+        request: {
+            maint_id: number;
+        };
+        response: Maintenance;
+    };
+    updateMaintenance: {
+        request: {
+            maint_id: number;
+            car_id: number;
+            maint_type: string;
+            maint_date: string;
+            maint_description: string;
+        };
+        response: Maintenance;
+    };
+    deleteMaintenance: {
+        request: {
+            maint_id: number;
+        };
+    };
+}
+
+export interface FuelEfficiencyAPIInterface {
     createFuelEfficiency: {
         request: {
             car_id: number;
@@ -98,18 +338,18 @@ export interface FuelEfficiencyAPI {
         };
         response: FuelEfficiency;
     };
-    getAllFuelEfficiencies: {
+    getFuelEfficiencies: {
         response: FuelEfficiency[];
     };
-    getFuelEfficiencyById: {
+    getFuelEfficiency: {
         request: {
-            id: number;
+            fe_id: number;
         };
         response: FuelEfficiency;
     };
     updateFuelEfficiency: {
         request: {
-            id: number;
+            fe_id: number;
             car_id: number;
             fe_date: string;
             fe_amount: number;
@@ -120,79 +360,92 @@ export interface FuelEfficiencyAPI {
     };
     deleteFuelEfficiency: {
         request: {
-            id: number;
+            fe_id: number;
+        };
+    };
+    calculateFuelEfficiencies: {
+        request: {
+            car_id: number;
+        };
+        response: FuelEfficiencyCalculationResult;
+    };
+}
+
+export interface AccidentAPIInterface {
+    createAccident: {
+        request: {
+            car_id: number;
+            accident_date: string;
+            accident_description: string;
+        };
+        response: any;
+    };
+    getAccidents: {
+        response: any[];
+    };
+    getAccident: {
+        request: {
+            accident_id: number;
+        };
+        response: any;
+    };
+    updateAccident: {
+        request: {
+            accident_id: number;
+            car_id: number;
+            accident_date: string;
+            accident_description: string;
+        };
+        response: any;
+    };
+    deleteAccident: {
+        request: {
+            accident_id: number;
         };
     };
 }
 
-export interface TuningAPI {
-    createTuning: {
+export interface PeriodicInspectionAPIInterface {
+    createPeriodicInspection: {
         request: {
             car_id: number;
-            tuning_name: string;
-            tuning_date: string;
-            tuning_description: string;
+            pi_date: string;
+            pi_description: string;
         };
-        response: Tuning;
+        response: any;
     };
-    getAllTunings: {
-        response: Tuning[];
+    getPeriodicInspections: {
+        response: any[];
     };
-    getTuningById: {
+    getPeriodicInspection: {
         request: {
-            id: number;
+            pi_id: number;
         };
-        response: Tuning;
+        response: any;
     };
-    updateTuning: {
+    updatePeriodicInspection: {
         request: {
-            id: number;
+            pi_id: number;
             car_id: number;
-            tuning_name: string;
-            tuning_date: string;
-            tuning_description: string;
+            pi_date: string;
+            pi_description: string;
         };
-        response: Tuning;
+        response: any;
     };
-    deleteTuning: {
+    deletePeriodicInspection: {
         request: {
-            id: number;
+            pi_id: number;
         };
     };
 }
 
-export interface MaintenanceAPI {
-    createMaintenance: {
+export interface ImageAPIInterface {
+    uploadImage: {
         request: {
-            car_id: number;
-            maint_type: string;
-            maint_date: string;
-            maint_description: string;
+            image: string;
         };
-        response: Maintenance;
-    };
-    getAllMaintenances: {
-        response: Maintenance[];
-    };
-    getMaintenanceById: {
-        request: {
-            id: number;
-        };
-        response: Maintenance;
-    };
-    updateMaintenance: {
-        request: {
-            id: number;
-            car_id: number;
-            maint_type: string;
-            maint_date: string;
-            maint_description: string;
-        };
-        response: Maintenance;
-    };
-    deleteMaintenance: {
-        request: {
-            id: number;
-        };
+        response: {
+            imgURL: string;
+        }
     };
 }

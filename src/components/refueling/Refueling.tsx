@@ -4,10 +4,10 @@ import { carInfo, FuelEfficiency } from "@/api/models/models";
 import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
 import RefuelingCardGroup from "./RefuelingCardGroup";
-import { createClientAPI } from "@/api/clientImplement";
 import styled from "styled-components";
 import AddIcon from "@/public/icons/AddIcon.svg";
 import { useRouter } from "next/navigation";
+import { ClientAPI } from "@/api/clientImplement";
 
 const Container = styled.div`
 	position: relative;
@@ -35,10 +35,11 @@ const SVGButton = styled.button`
 
 interface RefuelingProps {
 	userCars: carInfo[];
+	token: string;
 	userId: string;
 }
 
-const Refueling: React.FC<RefuelingProps> = ({ userCars, userId }) => {
+const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
 	const [fuelEfficiencies, setFuelEfficiencies] = useState<
 		FuelEfficiency[] | null
@@ -51,18 +52,17 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, userId }) => {
 
 	useEffect(() => {
 		const fetchFuelEfficiencies = async () => {
-			const clientAPI = createClientAPI();
-			const response = await clientAPI.user.getFuelEfficiency({
-				user_id: userId,
-				car_id: userCars[selectedCarIndex].car_id.toString(),
+			const clientAPI = ClientAPI(token);
+			const response = await clientAPI.car.getCarFuelEfficiency({
+				car_id: userCars[selectedCarIndex].car_id,
 			});
 			setFuelEfficiencies(response);
 		};
 		fetchFuelEfficiencies();
-	}, [selectedCarIndex, userCars]);
+	}, [selectedCarIndex, userCars, token]);
 
 	const handleAddClick = () => {
-		router.push("/addRefueling");
+		router.push(`/addRefueling?car_id=${userCars[selectedCarIndex].car_id}`);
 	};
 
 	return (

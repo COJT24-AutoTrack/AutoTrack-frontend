@@ -1,10 +1,9 @@
-import { createClientAPI } from "@/api/clientImplement";
-import { carInfo } from "@/api/models/models";
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { clientConfig, serverConfig } from "../../../config";
 import { notFound } from "next/navigation";
 import Refueling from "@/components/refueling/Refueling";
+import { ClientAPI } from "@/api/clientImplement";
 
 const RefuelingPage = async () => {
 	const tokens = await getTokens(cookies(), {
@@ -18,17 +17,23 @@ const RefuelingPage = async () => {
 		return notFound();
 	}
 
-	const clientAPI = createClientAPI();
+	const clientAPI = ClientAPI(tokens.token);
 
-	const response = await clientAPI.user.getCars({
-		user_id: tokens.decodedToken.uid,
+	const response = await clientAPI.user.getUserCars({
+		firebase_user_id: tokens.decodedToken.uid,
 	});
 
 	if (!response) {
 		return notFound();
 	}
 
-	return <Refueling userCars={response} userId={tokens.decodedToken.uid} />;
+	return (
+		<Refueling
+			userCars={response}
+			token={tokens.token}
+			userId={tokens.decodedToken.uid}
+		/>
+	);
 };
 
 export default RefuelingPage;

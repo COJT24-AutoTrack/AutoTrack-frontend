@@ -15,6 +15,7 @@ import {
 	StyledLink,
 } from "../form/FormElements";
 import { LogoText } from "../text/LogoTextComponen";
+import { ClientAPI } from "@/api/clientImplement";
 
 export default function RegisterForm() {
 	const [email, setEmail] = useState("");
@@ -31,7 +32,28 @@ export default function RegisterForm() {
 			return;
 		}
 		try {
-			await createUserWithEmailAndPassword(getAuth(app), email, password);
+			const auth = getAuth(app);
+			const userCredential = await createUserWithEmailAndPassword(
+				auth,
+				email,
+				password,
+			);
+
+			// アカウント作成後にユーザーのIDトークンを取得
+			const jwt = await userCredential.user.getIdToken();
+
+			// JWTトークンを使用してclientAPIを作成
+			const clientAPI = ClientAPI(jwt);
+
+			// バックエンドのユーザー作成apiを叩く
+			const response = await clientAPI.user.createUser({
+				user_email: email,
+				user_name: "John Doe", //ユーザー名って概念は存在しなかったことにさせてくれ(
+				user_password: password,
+				firebase_user_id: userCredential.user.uid,
+			});
+
+			// ユーザー作成が成功したらログインページにリダイレクト
 			router.push("/login");
 		} catch (e) {
 			setError((e as Error).message);
