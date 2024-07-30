@@ -15,7 +15,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	const pathname = usePathname();
-	const noLayoutPages = ["/login", "/signup"];
+	const noLayoutPages = ["/login", "/register"];
 	const shouldUseLayout = !noLayoutPages.includes(pathname);
 
 	return (

@@ -2,10 +2,9 @@ import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { clientConfig, serverConfig } from "../../../config";
 import { notFound } from "next/navigation";
-import Refueling from "@/components/refueling/Refueling";
-import { ClientAPI } from "@/api/clientImplement";
+import Tuning from "@/components/tuning/Tuning";
 
-const RefuelingPage = async () => {
+const TuningPage = async () => {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
@@ -17,9 +16,9 @@ const RefuelingPage = async () => {
 		return notFound();
 	}
 
-	const clientAPI = ClientAPI(tokens.token);
+	const clientAPI = createClientAPI(tokens.token);
 
-	const response = await clientAPI.user.getUserCars({
+	const response = await clientAPI.user.({
 		firebase_user_id: tokens.decodedToken.uid,
 	});
 
@@ -28,7 +27,7 @@ const RefuelingPage = async () => {
 	}
 
 	return (
-		<Refueling
+		<Tuning
 			userCars={response}
 			token={tokens.token}
 			userId={tokens.decodedToken.uid}
@@ -36,4 +35,4 @@ const RefuelingPage = async () => {
 	);
 };
 
-export default RefuelingPage;
+export default TuningPage;

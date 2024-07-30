@@ -37,6 +37,9 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 	const handleAddCarClick = () => {
 		router.push("/add-car");
 	};
+	console.log("--=---");
+	console.log(userCars);
+	console.log("------");
 
 	return (
 		<Swiper

@@ -1,8 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import Link from 'next/link';
-import theme from '@/styles/theme';
-import BackIcon from '@/public/icons/BackIcon.svg';
+import React, { useState } from "react";
+import styled from "styled-components";
+import theme from "@/styles/theme";
 
 interface MaintenanceDetailProps {
 	title: string;
@@ -29,7 +27,7 @@ const Title = styled.div`
 const Explanation = styled.div`
 	background-color: ${theme.colors.background};
 	margin: 0;
-	padding: 20px;
+	padding: 20px 0;
 `;
 
 const DateText = styled.p`
@@ -53,18 +51,32 @@ const DetailButton = styled.button`
 	cursor: pointer;
 `;
 
-const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({ title, lastMaintenanceDate, detail, detailUrl }) => {
+const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({
+	title,
+	lastMaintenanceDate,
+	detail,
+}) => {
+	const [showDetail, setShowDetail] = useState(false);
+
+	const toggleDetail = () => {
+		setShowDetail(!showDetail);
+	};
+
 	return (
 		<Container>
 			<Title>
 				{title}
-				<Link href={detailUrl} passHref>
-					<DetailButton>詳細 <BackIcon fill="#696969" width="10px" height="10px" /></DetailButton>
-				</Link>
+				<DetailButton onClick={toggleDetail}>
+					{showDetail ? "閉じる" : "詳細 >"}
+				</DetailButton>
 			</Title>
 			<Explanation>
 				<DateText>前回メンテナンス日: {lastMaintenanceDate}</DateText>
-				<DetailText>内容: {detail}</DetailText>
+				{showDetail ? (
+					<DetailText>{detail}</DetailText>
+				) : (
+					<DetailText>{detail.substring(0, 20)}...</DetailText>
+				)}
 			</Explanation>
 		</Container>
 	);

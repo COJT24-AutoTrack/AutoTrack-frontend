@@ -1,92 +1,211 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { app } from "../../../firebase";
+import React, { useState } from "react";
+import styled from "styled-components";
+import { carInfo } from "@/api/models/models";
 import { useRouter } from "next/navigation";
-import { Main, Container } from "../form/FormContainer";
-import {
-	Form,
-	Label,
-	Input,
-	ErrorMessage,
-	Button,
-	Paragraph,
-	StyledLink,
-} from "../form/FormElements";
-import { LogoText } from "../text/LogoTextComponen";
+import BackIcon from "../../public/icons/BackIcon.svg";
+import { ContentText } from "@/components/text/TextComponents";
+import { ClientAPI } from "@/api/clientImplement";
+import { Form, Input, Label } from "@/components/form/FormElements";
+import { Anton } from "next/font/google";
 
-export default function RegisterForm() {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [confirmation, setConfirmation] = useState("");
-	const [error, setError] = useState("");
-	const router = useRouter();
+const Anton400 = Anton({
+	weight: "400",
+	subsets: ["latin"],
+});
 
-	async function handleSubmit(event: FormEvent) {
-		event.preventDefault();
-		setError("");
-		if (password !== confirmation) {
-			setError("Passwords don't match");
-			return;
-		}
-		try {
-			await createUserWithEmailAndPassword(getAuth(app), email, password);
-			router.push("/login");
-		} catch (e) {
-			setError((e as Error).message);
-		}
+const Container = styled.div`
+	padding: 20px;
+`;
+
+const TopBar = styled.div`
+	width: 100vw;
+	height: 50px;
+	padding-left: 10px;
+	display: flex;
+	align-items: center;
+	background-color: #2b2b2b;
+`;
+
+const BackButton = styled.button`
+	display: flex;
+	align-items: center;
+	background: none;
+	border: none;
+	color: white;
+	cursor: pointer;
+
+	svg {
+		transform: rotate(180deg);
+		fill: white;
+		width: 24px;
+		height: 24px;
+		margin-right: 8px;
 	}
+`;
+
+const Button = styled.button`
+	padding: 10px;
+	font-size: 16px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	width: 80%;
+	margin-top: 10px;
+`;
+
+const CheckBoxInput = styled.input`
+	margin-right: 10px;
+`;
+
+const CheckboxLabel = styled.label`
+	display: flex;
+`;
+
+interface AddCarPageComponentProps {
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
+}
+
+const AddCarPageComponent: React.FC<AddCarPageComponentProps> = ({
+	tokens,
+}) => {
+	const router = useRouter();
+	const [carData, setCarData] = useState<Partial<carInfo>>({
+		car_name: "",
+		carmodelnum: "",
+		car_color: "",
+		car_mileage: 0,
+		car_isflooding: false,
+		car_issmoked: false,
+		car_image_url: "",
+	});
+	const [image, setImage] = useState<File | null>(null);
+	const [preview, setPreview] = useState<string | null>(null);
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value, type, checked } = e.target;
+		setCarData((prevData) => ({
+			...prevData,
+			[name]:
+				type === "checkbox"
+					? checked
+					: name === "car_mileage"
+						? Number(value)
+						: value,
+		}));
+	};
+
+	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			setImage(file);
+			setPreview(URL.createObjectURL(file));
+		}
+	};
+
+	const handleSaveCar = async (event: React.FormEvent) => {
+		event.preventDefault(); // ページリロードを防ぐ
+
+		const clientAPI = ClientAPI(tokens.token);
+
+		console.log(tokens.token);
+		console.log({
+			firebase_user_id: tokens.decodedToken.uid,
+			car: carData as carInfo,
+		});
+
+		try {
+			console.log(carData);
+			const newCar = await clientAPI.car.createCar({
+				firebase_user_id: tokens.decodedToken.uid,
+				car: carData as carInfo,
+			});
+
+			if (newCar) {
+				router.push("/");
+			}
+		} catch (error) {
+			console.log(error);
+			// console.error("Failed to save car", error);
+		}
+	};
 
 	return (
-		<Main>
+		<>
+			<TopBar>
+				<BackButton onClick={() => router.push("/")}>
+					<BackIcon style={{ fill: "white" }} />
+					<ContentText>戻る</ContentText>
+				</BackButton>
+			</TopBar>
 			<Container>
-				<LogoText />
-				<Form onSubmit={handleSubmit}>
-					<div>
-						<Label htmlFor="email">メールアドレス</Label>
-						<Input
-							type="email"
-							name="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							id="email"
-							placeholder="name@company.com"
-							required
+				<Form onSubmit={handleSaveCar}>
+					<ContentText className={Anton400.className}>Add New Car</ContentText>
+					<Input
+						type="text"
+						name="car_name"
+						placeholder="Car Name"
+						value={carData.car_name}
+						onChange={handleChange}
+					/>
+					<Input
+						type="text"
+						name="carmodelnum"
+						placeholder="Car Model Number"
+						value={carData.carmodelnum}
+						onChange={handleChange}
+					/>
+					<Input
+						type="text"
+						name="car_color"
+						placeholder="Car Color"
+						value={carData.car_color}
+						onChange={handleChange}
+					/>
+					<Input
+						type="number"
+						name="car_mileage"
+						placeholder="Car Mileage"
+						value={carData.car_mileage}
+						onChange={handleChange}
+					/>
+					<CheckboxLabel>
+						<CheckBoxInput
+							type="checkbox"
+							name="car_isflooding"
+							checked={carData.car_isflooding}
+							onChange={handleChange}
 						/>
-					</div>
-					<div>
-						<Label htmlFor="password">パスワード</Label>
-						<Input
-							type="password"
-							name="password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							id="password"
-							placeholder="••••••••"
-							required
+						<Label>Flooding</Label>
+					</CheckboxLabel>
+					<CheckboxLabel>
+						<CheckBoxInput
+							type="checkbox"
+							name="car_issmoked"
+							checked={carData.car_issmoked}
+							onChange={handleChange}
 						/>
-					</div>
-					<div>
-						<Label htmlFor="confirm-password">パスワードを確認する</Label>
-						<Input
-							type="password"
-							name="confirm-password"
-							value={confirmation}
-							onChange={(e) => setConfirmation(e.target.value)}
-							id="confirm-password"
-							placeholder="••••••••"
-							required
+						<Label>Smoked</Label>
+					</CheckboxLabel>
+					<Input type="file" accept="image/*" onChange={handleImageChange} />
+					{preview && (
+						<img
+							src={preview}
+							alt="Car Preview"
+							style={{ width: "80%", marginBottom: "10px" }}
 						/>
-					</div>
-					<Button type="submit">アカウント作成</Button>
-					{error && <ErrorMessage>{error}</ErrorMessage>}
-					<Paragraph>
-						すでにアカウントをお持ちですか?{" "}
-						<StyledLink href="/login">ログインはこちら</StyledLink>
-					</Paragraph>
+					)}
+					<Button type="submit">Save Car</Button> {/* type="submit" に設定 */}
 				</Form>
 			</Container>
-		</Main>
+		</>
 	);
-}
+};
+
+export default AddCarPageComponent;

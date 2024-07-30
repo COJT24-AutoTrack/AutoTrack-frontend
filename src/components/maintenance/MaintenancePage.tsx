@@ -1,14 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import MaintenanceDetail from './MaintenanceDetail';
-import { media } from '@/styles/breakpoints';
-import CarSelect from '@/components/base/CarSelect';
-import { useRouter } from 'next/navigation';
-import AddIcon from '@/public/icons/AddIcon.svg';
-import { carInfo } from '@/api/models/models';
-import { createClientAPI } from '@/api/clientImplement';
+import React from "react";
+import styled from "styled-components";
+import MaintenanceDetail from "./MaintenanceDetail";
+import { media } from "@/styles/breakpoints";
 
 const DetailContainer = styled.div`
 	display: flex;
@@ -77,28 +72,59 @@ const MaintenancePage: React.FC<MaintenanceProps> = ({ userCars, userId }) => {
 	};
 
 	return (
-		<>
-			<DetailContainer>
-				<CarSelect
-					userCars={userCars}
-					selectedCarIndex={selectedCarIndex}
-					switchCar={switchCar}
-				/>
-				
-				{maintenanceDetails.map((detail) => (
-					<MaintenanceDetail
-						key={detail.maint_id}
-						title={detail.maint_type}
-						lastMaintenanceDate={detail.maint_date.toString()} // Date オブジェクトを文字列に変換
-						detail={detail.maint_description}
-						detailUrl={`/maintenance/${detail.maint_id}`}
-					/>
-				))}
-			</DetailContainer>
-			<SVGButton onClick={handleAddClick}>
-				<AddIcon />
-			</SVGButton>
-		</>
+		<DetailContainer>
+			<MaintenanceDetail
+				title="エンジンオイル"
+				lastMaintenanceDate="2021/12/01"
+				detail="オイル交換を行いました。"
+			/>
+			<MaintenanceDetail
+				title="オイルエレメント"
+				lastMaintenanceDate="2021/12/01"
+				detail="エレメント交換を行いました。"
+			/>
+			<MaintenanceDetail title="灯火類" lastMaintenanceDate="" detail="" />
+			<MaintenanceDetail title="洗車" lastMaintenanceDate="" detail="" />
+			<MaintenanceDetail
+				title="ワイパーブレード"
+				lastMaintenanceDate=""
+				detail=""
+			/>
+			<MaintenanceDetail
+				title="ブレーキパッド"
+				lastMaintenanceDate=""
+				detail=""
+			/>
+			<MaintenanceDetail
+				title="ブレーキディスク"
+				lastMaintenanceDate=""
+				detail=""
+			/>
+			<MaintenanceDetail title="タイヤ" lastMaintenanceDate="" detail="" />
+			<MaintenanceDetail title="バッテリー" lastMaintenanceDate="" detail="" />
+			<MaintenanceDetail
+				title="タイミングベルト"
+				lastMaintenanceDate=""
+				detail=""
+			/>
+			<MaintenanceDetail title="クーラント" lastMaintenanceDate="" detail="" />
+			<MaintenanceDetail
+				title="ウォッシャー液"
+				lastMaintenanceDate=""
+				detail=""
+			/>
+			<MaintenanceDetail title="デフオイル" lastMaintenanceDate="" detail="" />
+			<MaintenanceDetail
+				title="パワステオイル"
+				lastMaintenanceDate=""
+				detail=""
+			/>
+			<MaintenanceDetail
+				title="エアコンフィルター"
+				lastMaintenanceDate=""
+				detail=""
+			/>
+		</DetailContainer>
 	);
 };
 

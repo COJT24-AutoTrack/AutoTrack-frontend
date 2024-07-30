@@ -1,17 +1,17 @@
 "use client";
 
-import { carInfo, FuelEfficiency } from "@/api/models/models";
+import { carInfo } from "@/api/models/models";
 import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
-import RefuelingCardGroup from "./RefuelingCardGroup";
+import { createClientAPI } from "@/api/clientImplement";
 import styled from "styled-components";
 import AddIcon from "@/public/icons/AddIcon.svg";
 import { useRouter } from "next/navigation";
-import { ClientAPI } from "@/api/clientImplement";
+import TuningInfoCardGroup from "./TuningInfoCardGroup";
+import type { Tuning } from "@/api/models/models";
 
 const Container = styled.div`
 	position: relative;
-	padding-bottom: 80px;
 `;
 
 const SVGButton = styled.button`
@@ -33,17 +33,15 @@ const SVGButton = styled.button`
 	}
 `;
 
-interface RefuelingProps {
+interface TuningProps {
 	userCars: carInfo[];
 	token: string;
 	userId: string;
 }
 
-const Refueling: React.FC<RefuelingProps> = ({ userCars, token, userId }) => {
+const Tuning: React.FC<TuningProps> = ({ userCars, token, userId }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
-	const [fuelEfficiencies, setFuelEfficiencies] = useState<
-		FuelEfficiency[] | null
-	>(null);
+	const [tunings, setTunings] = useState<Tuning[] | null>(null);
 	const router = useRouter();
 
 	const switchCar = () => {
@@ -51,18 +49,18 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token, userId }) => {
 	};
 
 	useEffect(() => {
-		const fetchFuelEfficiencies = async () => {
-			const clientAPI = ClientAPI(token);
-			const response = await clientAPI.car.getCarFuelEfficiency({
+		const fetchTunings = async () => {
+			const clientAPI = createClientAPI(token);
+			const response = await clientAPI.car.getCarTuning({
 				car_id: userCars[selectedCarIndex].car_id.toString(),
 			});
-			setFuelEfficiencies(response);
+			setTunings(response);
 		};
-		fetchFuelEfficiencies();
+		fetchTunings();
 	}, [selectedCarIndex, userCars, token]);
 
 	const handleAddClick = () => {
-		router.push(`/addRefueling?car_id=${userCars[selectedCarIndex].car_id}`);
+		router.push("/addTuning");
 	};
 
 	return (
@@ -73,8 +71,12 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token, userId }) => {
 					selectedCarIndex={selectedCarIndex}
 					switchCar={switchCar}
 				/>
-				{fuelEfficiencies && (
-					<RefuelingCardGroup fuelEfficiencies={fuelEfficiencies} />
+				{tunings && (
+					<TuningInfoCardGroup
+						tunings={tunings.filter(
+							(tuning) => tuning.car_id === userCars[selectedCarIndex].car_id,
+						)}
+					/>
 				)}
 			</Container>
 			<SVGButton onClick={handleAddClick}>
@@ -84,4 +86,4 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token, userId }) => {
 	);
 };
 
-export default Refueling;
+export default Tuning;
