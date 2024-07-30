@@ -10,6 +10,7 @@ import BackIcon from "../../public/icons/BackIcon.svg";
 import { Anton } from "next/font/google";
 import { FuelEfficiency } from "@/api/models/models";
 import { useRouter } from "next/navigation";
+import { media } from "@/styles/breakpoints";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -18,9 +19,13 @@ const Anton400 = Anton({
 
 const Container = styled.div`
 	display: flex;
-	padding: 0px 30px;
+	${media.SP} {
+		padding: 0px 15px;
+	}
+	${media.PC} {
+		padding: 0px 30px;
+	}
 	align-items: center;
-	gap: 10px;
 	align-self: stretch;
 	border-radius: 8px;
 	border: 1px solid #fff;
@@ -31,7 +36,12 @@ const Container = styled.div`
 const MileageText = styled(TitleText)`
 	color: #fff;
 	text-align: center;
-	font-size: 52px;
+	${media.SP} {
+		font-size: 40px;
+	}
+	${media.PC} {
+		font-size: 64px;
+	}
 	font-weight: 400;
 	line-height: normal;
 	display: flex;
@@ -59,20 +69,25 @@ const TextContainer = styled(SubSubContentText)`
 const ContentContainer = styled.div`
 	display: flex;
 	padding: 10px 5px;
-	flex-direction: column;
-	align-items: flex-end;
 	gap: 5px;
 	flex: 1;
+	${media.SP} {
+		flex-direction: column;
+		align-items: flex-end;
+	}	
+	${media.PC} {
+		flex-direction: row;
+		align-items: center;
+		gap: 20px;
+	}	
 `;
 
 const ButtonContainer = styled.div`
-	position: absolute;
 	right: 10px;
 	top: 50%;
-	transform: translateY(-50%);
 	display: flex;
-	align-items: center;
 	width: 30px;
+	align-items: end;
 `;
 
 const NextPageSVG = styled.button`
