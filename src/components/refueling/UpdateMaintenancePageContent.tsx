@@ -88,6 +88,7 @@ const UpdateMaintenancePageContent: React.FC<UpdateMaintenancePageContentProps> 
           maint_type: maintType,
           maint_date: formattedDate,
           maint_description: maintDescription,
+          maint_title: "",
         });
       } 
       router.push(`/maintenance/${carId}/${maintType}`);

@@ -10,7 +10,7 @@ interface UpdateMaintenancePageContentProps {
   carId: number;
   token: string;
   maintTypes: MaintType[];
-  maintenance: Maintenance;
+  maintenance: Maintenance | null;
 }
 
 const Container = styled.div`
@@ -47,25 +47,15 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const DeleteButton = styled.button`
-  padding: 12px;
-  font-size: 16px;
-  background-color: red;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-`;
-
 const UpdateMaintenancePageContent: React.FC<UpdateMaintenancePageContentProps> = ({
   carId,
   token,
   maintTypes,
   maintenance,
 }) => {
-  const [maintType, setMaintType] = useState<MaintType>(maintenance.maint_type);
-  const [maintDate, setMaintDate] = useState(maintenance.maint_date);
-  const [maintDescription, setMaintDescription] = useState(maintenance.maint_description);
+  const [maintType, setMaintType] = useState<MaintType>(maintenance?.maint_type || maintTypes[0]);
+  const [maintDate, setMaintDate] = useState(maintenance?.maint_date || "");
+  const [maintDescription, setMaintDescription] = useState(maintenance?.maint_description || "");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,31 +66,30 @@ const UpdateMaintenancePageContent: React.FC<UpdateMaintenancePageContentProps> 
     const clientAPI = ClientAPI(token);
 
     try {
-      const response = await clientAPI.maintenance.updateMaintenance({
-        maint_id: maintenance.maint_id,
+      await clientAPI.maintenance.updateMaintenance({
+        maint_id: maintenance?.maint_id!,
         car_id: carId,
         maint_type: maintType,
         maint_date: formattedDate,
         maint_description: maintDescription,
-        maint_title: "",
+        maint_title: ""
       });
 
-      if (response) {
-        router.push(`/maintenance/${carId}/${maintType}`);
-      }
+      router.push(`/maintenance/${carId}/${maintType}`);
     } catch (error) {
       console.error("Error updating maintenance record:", error);
     }
   };
 
   const handleDelete = async () => {
-    const clientAPI = ClientAPI(token);
-
-    try {
-      await clientAPI.maintenance.deleteMaintenance({ maint_id: maintenance.maint_id });
-      router.push(`/maintenance/${carId}/${maintenance.maint_type}`);
-    } catch (error) {
-      console.error("Error deleting maintenance record:", error);
+    if (maintenance) {
+      const clientAPI = ClientAPI(token);
+      try {
+        await clientAPI.maintenance.deleteMaintenance({ maint_id: maintenance.maint_id });
+        router.push(`/maintenance/${carId}/${maintenance.maint_type}`);
+      } catch (error) {
+        console.error("Error deleting maintenance record:", error);
+      }
     }
   };
 
@@ -118,24 +107,14 @@ const UpdateMaintenancePageContent: React.FC<UpdateMaintenancePageContentProps> 
         </Label>
         <Label>
           メンテナンス日:
-          <Input
-            type="date"
-            value={new Date(maintDate).toISOString().split("T")[0]}
-            onChange={(e) => setMaintDate(e.target.value)}
-            required
-          />
+          <Input type="date" value={maintDate} onChange={(e) => setMaintDate(e.target.value)} required />
         </Label>
         <Label>
           メンテナンス詳細:
-          <Input
-            type="text"
-            value={maintDescription}
-            onChange={(e) => setMaintDescription(e.target.value)}
-            required
-          />
+          <Input type="text" value={maintDescription} onChange={(e) => setMaintDescription(e.target.value)} required />
         </Label>
         <Button type="submit">更新</Button>
-        <DeleteButton type="button" onClick={handleDelete}>削除</DeleteButton>
+        <Button type="button" onClick={handleDelete}>削除</Button>
       </Form>
     </Container>
   );

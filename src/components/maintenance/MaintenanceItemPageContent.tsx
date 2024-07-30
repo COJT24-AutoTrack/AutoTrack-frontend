@@ -26,6 +26,25 @@ const TopBar = styled.div`
 	background-color: #2b2b2b;
 `;
 
+const SVGButton = styled.button`
+	position: absolute;
+	right: 14px;
+	bottom: 100px;
+	width: 80px;
+	height: 80px;
+	background-color: transparent;
+	border: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+
+	svg {
+		width: 100px;
+		height: 100px;
+	}
+`;
+
 const BackButton = styled.button`
 	display: flex;
 	align-items: center;

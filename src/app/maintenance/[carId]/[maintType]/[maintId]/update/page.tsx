@@ -24,8 +24,8 @@ const UpdateMaintenancePage = async ({ params }: { params: Params }) => {
   }
 
   const clientAPI = ClientAPI(tokens.token);
-
   let maintenance: Maintenance | null = null;
+
   if (params.maintId) {
     maintenance = await clientAPI.maintenance.getMaintenance({
       maint_id: Number(params.maintId),
