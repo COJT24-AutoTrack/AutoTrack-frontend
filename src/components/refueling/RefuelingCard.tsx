@@ -157,10 +157,12 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 
 	return (
 		<Container>
-			<MileageText className={Anton400.className}>
-				{calculateFuelEfficiency()}
-				<MileageSpan className={Anton400.className}>km/L</MileageSpan>
-			</MileageText>
+			{fuelEfficiency && (
+				<MileageText className={Anton400.className}>
+					{fuelEfficiency.fe_mileage}
+					<MileageSpan className={Anton400.className}>km/l</MileageSpan>
+				</MileageText>
+			)}
 			<ContentContainer>
 				<TextContainer>
 					{fuelEfficiency ? formatDate(fuelEfficiency.fe_date) : ""}
