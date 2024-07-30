@@ -52,6 +52,59 @@ export default async function Home() {
 		return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 	};
 
+	const calculateMonthlyValues = (
+		fuelEfficiencies: FuelEfficiency[],
+	): {
+		averageFuelEfficiency: number;
+		totalGasCost: number;
+		totalMileage: number;
+	} => {
+		const now = new Date();
+		const oneMonthAgo = new Date();
+		oneMonthAgo.setMonth(now.getMonth() - 1);
+
+		const monthlyFuelEfficiencies = fuelEfficiencies.filter(
+			(fe) => new Date(fe.fe_date) >= oneMonthAgo,
+		);
+
+		const totalMileage = monthlyFuelEfficiencies.reduce(
+			(acc, fe) => acc + fe.fe_mileage,
+			0,
+		);
+		const totalFuelAmount = monthlyFuelEfficiencies.reduce(
+			(acc, fe) => acc + fe.fe_amount,
+			0,
+		);
+		const totalGasCost = monthlyFuelEfficiencies.reduce(
+			(total, fe) => total + fe.fe_amount * fe.fe_unitprice,
+			0,
+		);
+
+		const averageFuelEfficiency =
+			totalFuelAmount > 0 ? totalMileage / totalFuelAmount : 0;
+
+		return { averageFuelEfficiency, totalGasCost, totalMileage };
+	};
+
+	const calculateOddAfterMaintenance = (
+		maintenanceType: string,
+		maintenances: Maintenance[],
+		fuelEfficiencies: FuelEfficiency[],
+	): number => {
+		const lastMaintenanceDate = maintenances
+			.filter((m) => m.maint_type === maintenanceType)
+			.sort(
+				(a, b) =>
+					new Date(b.maint_date).getTime() - new Date(a.maint_date).getTime(),
+			)[0]?.maint_date;
+
+		if (!lastMaintenanceDate) return 0;
+
+		return fuelEfficiencies
+			.filter((fe) => new Date(fe.fe_date) >= new Date(lastMaintenanceDate))
+			.reduce((acc, fe) => acc + fe.fe_mileage, 0);
+	};
+
 	const carInfos: carInfo[] = userCars.map((car) => {
 		const carFuelEfficiencies = allFuelEfficiencies.filter(
 			(fe) => fe.car_id === car.car_id,
@@ -60,18 +113,32 @@ export default async function Home() {
 			(m) => m.car_id === car.car_id,
 		);
 
+		console.log("carFuelEfficiencies: ", carFuelEfficiencies);
+		console.log("carMaintenances: ", carMaintenances);
+
+		const { averageFuelEfficiency, totalGasCost, totalMileage } =
+			calculateMonthlyValues(carFuelEfficiencies);
+
 		return {
 			...car,
 			fuel_efficiency: carFuelEfficiencies,
-			odd_after_wash: parseDateToDays(
-				carMaintenances.find((m) => m.maint_type === "wash")?.maint_date || "0",
+			odd_after_wash: calculateOddAfterMaintenance(
+				"Car Wash",
+				carMaintenances,
+				carFuelEfficiencies,
 			),
-			odd_after_exchange: parseDateToDays(
-				carMaintenances.find((m) => m.maint_type === "exchange")?.maint_date ||
-					"0",
+			odd_after_exchange: calculateOddAfterMaintenance(
+				"Oil Change",
+				carMaintenances,
+				carFuelEfficiencies,
 			),
+			monthly_fuel_efficiency: averageFuelEfficiency.toFixed(2),
+			total_gas_cost: totalGasCost,
+			total_mileage: totalMileage,
 		};
 	});
+
+	console.log("carInfos: ", carInfos);
 
 	return <HomeClient userCars={carInfos} />;
 }

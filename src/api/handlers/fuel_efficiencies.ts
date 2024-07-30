@@ -8,9 +8,7 @@ import { fetchWithToken } from "@/api/module/fetchWithToken";
 const AUTOTRACK_API_BASE_URL = process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL;
 const AUTOTRACK_API_FUELEFFICIENCIES_URL = `${AUTOTRACK_API_BASE_URL}/fuel_efficiencies`;
 
-export const FuelEfficiencyAPI = (
-	jwt: string,
-) => ({
+export const FuelEfficiencyAPI = (jwt: string) => ({
 	createFuelEfficiency: async (
 		request: FuelEfficiencyAPIInterface["createFuelEfficiency"]["request"],
 	): Promise<

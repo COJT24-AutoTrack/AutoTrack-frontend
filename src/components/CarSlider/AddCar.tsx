@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import styled from "styled-components";
-import { carInfo } from "@/api/models/models";
+import { Car } from "@/api/models/models";
 import { useRouter } from "next/navigation";
 import BackIcon from "../../public/icons/BackIcon.svg";
 import { ContentText } from "@/components/text/TextComponents";
@@ -74,7 +74,7 @@ interface AddCarPageComponentProps {
 
 const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 	const router = useRouter();
-	const [carData, setCarData] = useState<Partial<carInfo>>({
+	const [carData, setCarData] = useState<Partial<Car>>({
 		car_name: "",
 		carmodelnum: "",
 		car_color: "",
@@ -104,6 +104,10 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		if (file) {
 			setImage(file);
 			setPreview(URL.createObjectURL(file));
+			setCarData((prevData) => ({
+				...prevData,
+				car_image_url: `https://r2.autotrack.work/images/${file.name}`,
+			}));
 		}
 	};
 
@@ -111,37 +115,31 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		event.preventDefault(); // ページリロードを防ぐ
 
 		const clientAPI = ClientAPI(tokens.token);
+		if (image) {
+			const formData = new FormData();
+			formData.append("file", image);
 
+			try {
+				await clientAPI.image.uploadImage({
+					formData: formData,
+				});
+				console.log(`image_url was set: ${JSON.stringify(carData)}`);
+			} catch (e) {
+				alert((e as Error).message);
+				return;
+			}
+		}
 		try {
-			// if (image) {
-			// 	const formData = new FormData();
-			// 	formData.append("file", image);
-			// 	const response = await fetch("http://localhost:8369/images", {
-			// 		method: "POST",
-			// 		headers: {
-			// 			Authorization: `Bearer ${tokens.token}`,
-			// 		},
-			// 		body: formData,
-			// 	});
-
-			// 	if (!response.ok) {
-			// 		throw new Error("Failed to upload image");
-			// 	}
-
-			// 	const data = await response.json();
-			// 	carData.car_image_url = data.url;
-			// }
-
 			const newCar = await clientAPI.car.createCar({
 				firebase_user_id: tokens.decodedToken.uid,
-				car: carData as carInfo,
+				car: carData as Car,
 			});
 
 			if (newCar) {
 				router.push("/");
 			}
-		} catch (error) {
-			console.log(error);
+		} catch (e) {
+			alert((e as Error).message);
 		}
 	};
 

@@ -4,9 +4,7 @@ import { fetchWithToken } from "@/api/module/fetchWithToken";
 const AUTOTRACK_API_BASE_URL = process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL;
 const AUTOTRACK_API_INSPECTIONS_URL = `${AUTOTRACK_API_BASE_URL}/inspections`;
 
-export const PeriodicInspectionAPI = (
-	jwt: string,
-) => ({
+export const PeriodicInspectionAPI = (jwt: string) => ({
 	createPeriodicInspection: async (
 		request: PeriodicInspectionAPIInterface["createPeriodicInspection"]["request"],
 	): Promise<

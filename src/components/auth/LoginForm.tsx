@@ -15,6 +15,7 @@ import {
 	StyledLink,
 } from "../form/FormElements";
 import { LogoText } from "../text/LogoTextComponen";
+import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 export default function LoginForm() {
 	const [email, setEmail] = useState("");
@@ -32,14 +33,14 @@ export default function LoginForm() {
 				password,
 			);
 			const idToken = await credential.user.getIdToken();
-			await fetch("/api/login", {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${idToken}`,
-					"Content-Type": "application/json",
+			await fetchWithToken(
+				"api/login",
+				{
+					method: "POST",
+					body: JSON.stringify({ idToken }),
 				},
-				body: JSON.stringify({ idToken }),
-			});
+				idToken,
+			);
 			router.push("/");
 		} catch (e) {
 			setError((e as Error).message);

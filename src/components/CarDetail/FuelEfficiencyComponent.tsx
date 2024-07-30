@@ -55,39 +55,12 @@ const FuelEfficiencyComponent: React.FC<FuelEfficiencyComponentProps> = ({
 	isSelected,
 	onClick,
 }) => {
-	// 直近1ヶ月分の燃費の平均を計算
-	const calculateMonthlyAverage = () => {
-		if (!userCar || !userCar.fuel_efficiency.length) return 0;
-		const now = new Date();
-		const oneMonthAgo = new Date(now);
-		oneMonthAgo.setMonth(now.getMonth() - 1);
-
-		const lastMonthFuelEfficiencies = userCar.fuel_efficiency.filter(
-			(fe) => new Date(fe.fe_date) >= oneMonthAgo,
-		);
-
-		if (lastMonthFuelEfficiencies.length === 0) return 0;
-
-		const totalMileage = lastMonthFuelEfficiencies.reduce(
-			(total, fe) => total + fe.fe_mileage,
-			0,
-		);
-		const totalAmount = lastMonthFuelEfficiencies.reduce(
-			(total, fe) => total + fe.fe_amount,
-			0,
-		);
-
-		return totalMileage / totalAmount;
-	};
-
-	const averageFuelEfficiency = calculateMonthlyAverage();
-
 	return (
 		<Card isSelected={isSelected} onClick={onClick}>
 			{userCar && (
 				<Text>
 					<Value className={Anton400.className}>
-						{averageFuelEfficiency.toFixed(2)}
+						{userCar.monthly_fuel_efficiency}
 					</Value>
 					<Unit className={Anton400.className}>km/L</Unit>
 				</Text>

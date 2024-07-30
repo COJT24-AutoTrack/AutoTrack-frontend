@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import theme from "@/styles/theme";
 
@@ -6,6 +6,7 @@ interface MaintenanceDetailProps {
 	title: string;
 	lastMaintenanceDate: string;
 	detail: string;
+	onDetailClick: () => void;
 }
 
 const Container = styled.div`
@@ -54,28 +55,17 @@ const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({
 	title,
 	lastMaintenanceDate,
 	detail,
+	onDetailClick,
 }) => {
-	const [showDetail, setShowDetail] = useState(false);
-
-	const toggleDetail = () => {
-		setShowDetail(!showDetail);
-	};
-
 	return (
 		<Container>
 			<Title>
 				{title}
-				<DetailButton onClick={toggleDetail}>
-					{showDetail ? "閉じる" : "詳細 >"}
-				</DetailButton>
+				<DetailButton onClick={onDetailClick}>詳細</DetailButton>
 			</Title>
 			<Explanation>
 				<DateText>前回メンテナンス日: {lastMaintenanceDate}</DateText>
-				{showDetail ? (
-					<DetailText>{detail}</DetailText>
-				) : (
-					<DetailText>{detail.substring(0, 20)}...</DetailText>
-				)}
+				<DetailText>{detail}</DetailText>
 			</Explanation>
 		</Container>
 	);

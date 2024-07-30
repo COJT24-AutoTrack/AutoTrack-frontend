@@ -1,6 +1,6 @@
 "use client";
 
-import { carInfo, FuelEfficiency } from "@/api/models/models";
+import { Car, carInfo, FuelEfficiency } from "@/api/models/models";
 import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
 import RefuelingCardGroup from "./RefuelingCardGroup";
@@ -34,7 +34,7 @@ const SVGButton = styled.button`
 `;
 
 interface RefuelingProps {
-	userCars: carInfo[];
+	userCars: Car[];
 	token: string;
 	userId: string;
 }
