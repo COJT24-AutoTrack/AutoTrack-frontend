@@ -3,7 +3,7 @@ export const runtime = "edge";
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { clientConfig, serverConfig } from "../../config";
+import { clientConfig, serverConfig } from "@/../config";
 import HomeClient from "@/components/HomeClient";
 import { ClientAPI } from "@/api/clientImplement";
 import { Car, FuelEfficiency, Maintenance, carInfo } from "@/api/models/models";
@@ -20,7 +20,7 @@ export default async function Home() {
 		console.log(tokens);
 		return redirect("/login");
 	} else {
-		console.log("おけ");
+		console.log("Hello");
 	}
 
 	const clientAPI = ClientAPI(tokens.token);
