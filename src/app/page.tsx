@@ -15,7 +15,11 @@ export default async function Home() {
 	});
 
 	if (!tokens) {
+		console.log(tokens);
+
 		return notFound();
+	} else {
+		console.log("おけ");
 	}
 
 	const clientAPI = ClientAPI(tokens.token);
@@ -23,10 +27,6 @@ export default async function Home() {
 	const userCars: Car[] = await clientAPI.user.getUserCars({
 		firebase_user_id: tokens.decodedToken.uid,
 	});
-
-	if (!userCars || userCars.length === 0) {
-		return notFound();
-	}
 
 	// すべての車のメンテナンスデータを取得
 	const allMaintenances: Maintenance[] = [];
