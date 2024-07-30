@@ -31,7 +31,15 @@ export default function LoginForm() {
 				email,
 				password,
 			);
-
+			const idToken = await credential.user.getIdToken();
+			await fetch("/api/login", {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${idToken}`,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ idToken }),
+			});
 			router.push("/");
 		} catch (e) {
 			setError((e as Error).message);

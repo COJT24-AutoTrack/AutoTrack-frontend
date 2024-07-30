@@ -42,6 +42,7 @@ export default async function Home() {
 			});
 		allMaintenances.push(...carMaintenances);
 		allFuelEfficiencies.push(...carFuelEfficiencies);
+		console.log(userCars);
 	}
 
 	const parseDateToDays = (dateStr: string): number => {
