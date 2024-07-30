@@ -121,7 +121,7 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 			{fuelEfficiency && (
 				<MileageText className={Anton400.className}>
 					{fuelEfficiency.fe_mileage}
-					<MileageSpan className={Anton400.className}>km/m</MileageSpan>
+					<MileageSpan className={Anton400.className}>km/l</MileageSpan>
 				</MileageText>
 			)}
 			<ContentContainer>
