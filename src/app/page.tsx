@@ -16,7 +16,6 @@ export default async function Home() {
 
 	if (!tokens) {
 		console.log(tokens);
-
 		return notFound();
 	} else {
 		console.log("おけ");
@@ -45,6 +44,13 @@ export default async function Home() {
 		allFuelEfficiencies.push(...carFuelEfficiencies);
 	}
 
+	const parseDateToDays = (dateStr: string): number => {
+		const date = new Date(dateStr);
+		const now = new Date();
+		const diffTime = Math.abs(now.getTime() - date.getTime());
+		return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+	};
+
 	const carInfos: carInfo[] = userCars.map((car) => {
 		const carFuelEfficiencies = allFuelEfficiencies.filter(
 			(fe) => fe.car_id === car.car_id,
@@ -56,11 +62,13 @@ export default async function Home() {
 		return {
 			...car,
 			fuel_efficiency: carFuelEfficiencies,
-			odd_after_wash:
+			odd_after_wash: parseDateToDays(
 				carMaintenances.find((m) => m.maint_type === "wash")?.maint_date || "0",
-			odd_after_exchange:
+			),
+			odd_after_exchange: parseDateToDays(
 				carMaintenances.find((m) => m.maint_type === "exchange")?.maint_date ||
-				"0",
+					"0",
+			),
 		};
 	});
 

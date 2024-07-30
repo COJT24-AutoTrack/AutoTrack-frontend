@@ -39,7 +39,7 @@ interface RefuelingProps {
 	userId: string;
 }
 
-const Refueling: React.FC<RefuelingProps> = ({ userCars, token, userId }) => {
+const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
 	const [fuelEfficiencies, setFuelEfficiencies] = useState<
 		FuelEfficiency[] | null
