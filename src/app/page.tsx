@@ -2,7 +2,7 @@ export const runtime = "edge";
 
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { clientConfig, serverConfig } from "../../config";
 import HomeClient from "@/components/HomeClient";
 import { ClientAPI } from "@/api/clientImplement";
@@ -18,7 +18,7 @@ export default async function Home() {
 
 	if (!tokens) {
 		console.log(tokens);
-		return notFound();
+		return redirect("/login");
 	} else {
 		console.log("おけ");
 	}
