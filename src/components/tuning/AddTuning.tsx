@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Tuning } from "@/api/models/models";
 import BackHeader from "@/components/base/BackHeader";
-import BorderButton from "@/components/buttons/BorderButton";
 import MainButton from "@/components/buttons/MainButton";
 import {
 	BigLabel,
@@ -21,62 +19,69 @@ const Anton400 = Anton({
 	subsets: ["latin"],
 });
 
-interface UpdateTuningProps {
-	tunings: Tuning[];
-	token: string;
+interface AddTuningProps {
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
+	carId: string;
 }
 
-const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings, token }) => {
-	const [tuning, setTuning] = useState<Tuning | null>(null);
-	const [date, setDate] = useState("");
-	const [title, setTitle] = useState("");
-	const [description, setDescription] = useState("");
+const AddTuning: React.FC<AddTuningProps> = ({ tokens, carId }) => {
+	const [date, setDate] = useState<string>("");
+	const [title, setTitle] = useState<string>("");
+	const [description, setDescription] = useState<string>("");
 
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const tuId = searchParams.get("id");
 
 	useEffect(() => {
-		if (tunings) {
-			const tu = tunings.find((tu) => tu.tuning_id === Number(tuId));
+		const fetchTunings = async () => {
+			const clientAPI = ClientAPI(tokens.token);
+
+			const response = await clientAPI.car.getCarTuning({
+				car_id: parseInt(carId, 10),
+			});
+			const tu = response.find((tu) => tu.tuning_id === Number(tuId));
 			if (tu) {
-				setTuning(tu);
-				setDate(tu.tuning_date);
+				setDate(tu.tuning_date.substr(0, 10));
 				setTitle(tu.tuning_name);
 				setDescription(tu.tuning_description);
 			}
-		}
-	}, [tuId, tunings]);
+		};
+		fetchTunings();
+	}, [tokens.token, carId, tuId]);
 
-	const handleUpdate = async () => {
-		if (tuning) {
-			const clientAPI = ClientAPI(token);
-			await clientAPI.tuning.updateTuning({
-				tuning_id: tuning.tuning_id,
-				car_id: tuning.car_id,
-				tuning_date: date,
-				tuning_name: title,
-				tuning_description: description,
-			});
-			router.push("/tuning");
-		}
-	};
+	const handleRegister = async (event: React.FormEvent) => {
+		event.preventDefault();
 
-	const handleDelete = async () => {
-		if (tuning) {
-			const clientAPI = ClientAPI(token);
-			await clientAPI.tuning.deleteTuning({
-				tuning_id: tuning.tuning_id,
-			});
-			router.push("/tuning");
-		}
+		const clientAPI = ClientAPI(tokens.token);
+		const offsetDateTime = new Date(date).toISOString();
+
+		console.log(tokens.token);
+		console.log({
+			car_id: carId,
+			tuning_date: offsetDateTime,
+			tuning_name: title,
+			tuning_description: description,
+		});
+
+		await clientAPI.tuning.createTuning({
+			car_id: parseInt(carId, 10),
+			tuning_date: offsetDateTime,
+			tuning_name: title,
+			tuning_description: description,
+		});
+		router.push("/tuning");
 	};
 
 	return (
 		<>
 			<BackHeader route="/tuning" />
 			<FormContainer>
-				<Form>
+				<Form onSubmit={handleRegister}>
+					<BigLabel>チューニング記録追加</BigLabel>
 					<FormElementContainer>
 						<BigLabel>日付</BigLabel>
 						<input
@@ -94,15 +99,15 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings, token }) => {
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
-						<BigLabel>説明</BigLabel>
+						<BigLabel>内容</BigLabel>
 						<input
+							type="text"
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
 						/>
 					</FormElementContainer>
 					<ButtonsContainer>
-						<MainButton label="更新" onClick={handleUpdate} />
-						<BorderButton label="削除" onClick={handleDelete} />
+						<MainButton label="登録" type="submit" />
 					</ButtonsContainer>
 				</Form>
 			</FormContainer>
@@ -110,4 +115,4 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings, token }) => {
 	);
 };
 
-export default UpdateTuning;
+export default AddTuning;

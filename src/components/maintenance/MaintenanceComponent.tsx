@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ClientAPI } from "@/api/clientImplement";
-import { carInfo, Maintenance } from "@/api/models/models";
+import { Car, Maintenance, MaintType } from "@/api/models/models";
 import CarSelect from "@/components/base/CarSelect";
 import MaintenanceDetail from "./MaintenanceDetail";
 import { media } from "@/styles/breakpoints";
+import { useRouter } from "next/navigation";
+import { ClientAPI } from "@/api/clientImplement";
 
 const DetailContainer = styled.div`
 	display: flex;
@@ -27,17 +28,17 @@ const Container = styled.div`
 `;
 
 interface MaintenancePageProps {
-	userCars: carInfo[];
+	userCars: Car[];
 	token: string;
-	userId: string;
 }
 
-const MaintenancePage: React.FC<MaintenancePageProps> = ({
+const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 	userCars,
 	token,
 }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
 	const [maintenances, setMaintenances] = useState<Maintenance[] | null>(null);
+	const router = useRouter();
 
 	const switchCar = () => {
 		setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
@@ -54,6 +55,24 @@ const MaintenancePage: React.FC<MaintenancePageProps> = ({
 		fetchMaintenances();
 	}, [selectedCarIndex, userCars, token]);
 
+	const getMaintTypeDetails = (maintType: MaintType) => {
+		const maintenance = maintenances?.find(
+			(maintenance) => maintenance.maint_type === maintType,
+		);
+		return maintenance
+			? {
+					lastMaintenanceDate: new Date(
+						maintenance.maint_date,
+					).toLocaleDateString(),
+					detail: maintenance.maint_description,
+				}
+			: { lastMaintenanceDate: "", detail: "" };
+	};
+
+	const handleDetailClick = (carId: number, maintType: MaintType) => {
+		router.push(`/maintenance/${carId}/${maintType}`);
+	};
+
 	return (
 		<Container>
 			<CarSelect
@@ -62,20 +81,24 @@ const MaintenancePage: React.FC<MaintenancePageProps> = ({
 				switchCar={switchCar}
 			/>
 			<DetailContainer>
-				{maintenances &&
-					maintenances.map((maintenance) => (
+				{Object.values(MaintType).map((maintType) => {
+					const { lastMaintenanceDate, detail } =
+						getMaintTypeDetails(maintType);
+					return (
 						<MaintenanceDetail
-							key={maintenance.maint_id}
-							title={maintenance.maint_title}
-							lastMaintenanceDate={new Date(
-								maintenance.maint_date,
-							).toLocaleDateString()}
-							detail={maintenance.maint_description}
+							key={maintType}
+							title={maintType}
+							lastMaintenanceDate={lastMaintenanceDate}
+							detail={detail}
+							onDetailClick={() =>
+								handleDetailClick(userCars[selectedCarIndex].car_id, maintType)
+							}
 						/>
-					))}
+					);
+				})}
 			</DetailContainer>
 		</Container>
 	);
 };
 
-export default MaintenancePage;
+export default MaintenanceComponent;

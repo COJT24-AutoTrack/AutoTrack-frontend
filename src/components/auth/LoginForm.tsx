@@ -23,6 +23,11 @@ export default function LoginForm() {
 	const [error, setError] = useState("");
 	const router = useRouter();
 
+	console.log(
+		"NEXT_PUBLIC_AUTOTRACK_API_BASE_URL: ",
+		process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL,
+	);
+
 	async function handleSubmit(event: FormEvent) {
 		event.preventDefault();
 		setError("");
