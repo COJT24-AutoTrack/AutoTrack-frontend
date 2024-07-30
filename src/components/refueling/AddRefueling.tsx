@@ -29,13 +29,7 @@ interface AddFuelEfficiencyProps {
 }
 
 const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
-	const [fuelEfficiencies, setFuelEfficiencies] = useState<
-		FuelEfficiency[] | null
-	>(null);
-	const [fuelEfficiency, setFuelEfficiency] = useState<FuelEfficiency | null>(
-		null,
-	);
-	const [date, setDate] = useState<Date | null>(null);
+	const [date, setDate] = useState<string>("");
 	const [amount, setAmount] = useState<number>(0);
 	const [mileage, setMileage] = useState<number>(0);
 	const [unitPrice, setUnitPrice] = useState<number>(0);
@@ -45,24 +39,41 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 	const feId = searchParams.get("id");
 
 	useEffect(() => {
-		if (fuelEfficiencies) {
-			const fe = fuelEfficiencies.find((fe) => fe.fe_id === Number(feId));
+		const fetchFuelEfficiencies = async () => {
+			const clientAPI = ClientAPI(tokens.token);
+
+			const response = await clientAPI.car.getCarFuelEfficiency({
+				car_id: parseInt(carId, 10),
+			});
+			const fe = response.find((fe) => fe.fe_id === Number(feId));
 			if (fe) {
-				setDate(new Date(fe.fe_date));
+				setDate(fe.fe_date.substr(0, 10)); // 日付をYYYY-MM-DD形式で設定
 				setAmount(fe.fe_amount);
 				setMileage(fe.fe_mileage);
 				setUnitPrice(fe.fe_unitprice);
 			}
-		}
-	}, [feId, fuelEfficiencies]);
+		};
+		fetchFuelEfficiencies();
+	}, [tokens.token, carId, feId]);
 
 	const handleRegister = async (event: React.FormEvent) => {
 		event.preventDefault();
 
 		const clientAPI = ClientAPI(tokens.token);
+		const offsetDateTime = new Date(date).toISOString();
+
+		console.log(tokens.token);
+		console.log({
+			car_id: parseInt(carId, 10),
+			fe_date: offsetDateTime,
+			fe_amount: amount,
+			fe_unitprice: unitPrice,
+			fe_mileage: mileage,
+		});
+
 		await clientAPI.fuelEfficiency.createFuelEfficiency({
-			car_id: Number(carId),
-			fe_date: date?.toISOString() || "",
+			car_id: parseInt(carId, 10),
+			fe_date: offsetDateTime,
 			fe_amount: amount,
 			fe_unitprice: unitPrice,
 			fe_mileage: mileage,
@@ -80,8 +91,8 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 						<BigLabel>日付</BigLabel>
 						<input
 							type="date"
-							value={date ? date.toISOString().substr(0, 10) : ""}
-							onChange={(e) => setDate(new Date(e.target.value))}
+							value={date}
+							onChange={(e) => setDate(e.target.value)}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>

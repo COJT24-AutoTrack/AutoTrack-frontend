@@ -4,7 +4,11 @@ import { clientConfig, serverConfig } from "../../../config";
 import { notFound } from "next/navigation";
 import AddRefueling from "@/components/refueling/AddRefueling";
 
-export default async function AddRefuelingPage() {
+export default async function AddRefuelingPage({
+	searchParams,
+}: {
+	searchParams: { car_id: string };
+}) {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
@@ -16,5 +20,7 @@ export default async function AddRefuelingPage() {
 		return notFound();
 	}
 
-	return <AddRefueling tokens={tokens} />;
+	const { car_id } = searchParams;
+
+	return <AddRefueling tokens={tokens} carId={car_id} />;
 }

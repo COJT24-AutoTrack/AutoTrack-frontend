@@ -1,11 +1,11 @@
-import { ClientAPI, TuningAPIInterface } from "@/api/client";
+import { TuningAPIInterface } from "@/api/client";
 import { Tuning } from "@/api/models/models";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 const AUTOTRACK_API_BASE_URL = process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL;
 const AUTOTRACK_API_TUNINGS_URL = `${AUTOTRACK_API_BASE_URL}/tunings`;
 
-export const TuningAPI = (jwt: string): ClientAPI["tuning"] => ({
+export const TuningAPI = (jwt: string) => ({
 	createTuning: async (
 		request: TuningAPIInterface["createTuning"]["request"],
 	): Promise<TuningAPIInterface["createTuning"]["response"]> => {

@@ -54,7 +54,7 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token, userId }) => {
 		const fetchFuelEfficiencies = async () => {
 			const clientAPI = ClientAPI(token);
 			const response = await clientAPI.car.getCarFuelEfficiency({
-				car_id: userCars[selectedCarIndex].car_id.toString(),
+				car_id: userCars[selectedCarIndex].car_id,
 			});
 			setFuelEfficiencies(response);
 		};

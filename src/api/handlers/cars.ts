@@ -152,7 +152,7 @@ export const CarAPI = (jwt: string): ClientAPIInterface["car"] => ({
 		request: CarAPIInterface["getCarFuelEfficiency"]["request"],
 	): Promise<CarAPIInterface["getCarFuelEfficiency"]["response"]> => {
 		const response = await fetchWithToken(
-			`${AUTOTRACK_API_CARS_URL}/${request.car_id}/fuel-efficiency`,
+			`${AUTOTRACK_API_CARS_URL}/${request.car_id}/fuel_efficiency`,
 			{
 				method: "GET",
 			},

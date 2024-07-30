@@ -148,7 +148,7 @@ export interface ClientAPIInterface {
     image: {
         uploadImage(
             request: ImageAPIInterface["uploadImage"]["request"],
-        ): Promise<void>;
+        ): Promise<ImageAPIInterface["uploadImage"]["response"]>;
     };
 }
 
@@ -189,7 +189,7 @@ export interface UserAPIInterface {
         request: {
             firebase_user_id: string;
         };
-        response: carInfo[];
+        response: Car[];
     };
 }
 
@@ -206,48 +206,50 @@ export interface CarAPIInterface {
     };
     getCar: {
         request: {
-            car_id: string;
+            car_id: number;
         };
         response: Car;
     };
     updateCar: {
         request: {
-            car_id: string;
+            car_id: number;
             car: Car;
         };
         response: Car;
     };
     deleteCar: {
         request: {
-            car_id: string;
+            car_id: number;
         };
     };
     updateCarImage: {
         request: {
-            car_id: string;
+            car_id: number;
             image: string;
         };
     };
     deleteCarImage: {
         request: {
-            car_id: string;
+            car_id: number;
         };
     };
     getCarTuning: {
         request: {
-            car_id: string;
+            car_id:
+            number;
         };
         response: Tuning[];
     };
     getCarMaintenance: {
         request: {
-            car_id: string;
+            car_id:
+            number;
         };
         response: Maintenance[];
     };
     getCarFuelEfficiency: {
         request: {
-            car_id: string;
+            car_id: number;
         };
         response: FuelEfficiency[];
     };
@@ -363,7 +365,7 @@ export interface FuelEfficiencyAPIInterface {
     };
     calculateFuelEfficiencies: {
         request: {
-            car_id: string;
+            car_id: number;
         };
         response: FuelEfficiencyCalculationResult;
     };
@@ -442,5 +444,8 @@ export interface ImageAPIInterface {
         request: {
             image: string;
         };
+        response: {
+            imgURL: string;
+        }
     };
 }

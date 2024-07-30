@@ -1,10 +1,10 @@
-import { ClientAPI, AccidentAPIInterface } from "@/api/client";
+import { AccidentAPIInterface } from "@/api/client";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 const AUTOTRACK_API_BASE_URL = process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL;
 const AUTOTRACK_API_ACCIDENTS_URL = `${AUTOTRACK_API_BASE_URL}/accidents`;
 
-export const AccidentAPI = (jwt: string): ClientAPI["accident"] => ({
+export const AccidentAPI = (jwt: string) => ({
 	createAccident: async (
 		request: AccidentAPIInterface["createAccident"]["request"],
 	): Promise<AccidentAPIInterface["createAccident"]["response"]> => {

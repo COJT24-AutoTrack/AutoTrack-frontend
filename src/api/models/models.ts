@@ -77,8 +77,8 @@ export interface PeriodicInspection {
 
 export interface carInfo extends Car {
 	fuel_efficiency: FuelEfficiency[];
-	odd_after_wash: number;
-	odd_after_exchange: number;
+	odd_after_wash: string;
+	odd_after_exchange: string;
 }
 
 export interface FuelEfficiencyCalculationResult {

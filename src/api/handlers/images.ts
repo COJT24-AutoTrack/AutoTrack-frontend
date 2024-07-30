@@ -1,13 +1,13 @@
-import { ClientAPI, ImageAPIInterface } from "@/api/client";
+import { ImageAPIInterface } from "@/api/client";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 const AUTOTRACK_API_BASE_URL = process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL;
 const AUTOTRACK_API_IMAGES_URL = `${AUTOTRACK_API_BASE_URL}/images`;
 
-export const ImageAPI = (jwt: string): ClientAPI["image"] => ({
+export const ImageAPI = (jwt: string) => ({
 	uploadImage: async (
 		request: ImageAPIInterface["uploadImage"]["request"],
-	): Promise<void> => {
+	): Promise<ImageAPIInterface["uploadImage"]["response"]> => {
 		const response = await fetchWithToken(
 			`${AUTOTRACK_API_IMAGES_URL}`,
 			{
@@ -19,5 +19,7 @@ export const ImageAPI = (jwt: string): ClientAPI["image"] => ({
 		if (!response.ok) {
 			throw new Error("Failed to upload image");
 		}
+
+		return { imgURL: "" }
 	},
 });
