@@ -57,13 +57,15 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 
 	const getMaintTypeDetails = (maintType: MaintType) => {
 		const maintenance = maintenances?.find(
-			(maintenance) => maintenance.maint_type === maintType
+			(maintenance) => maintenance.maint_type === maintType,
 		);
 		return maintenance
 			? {
-					lastMaintenanceDate: new Date(maintenance.maint_date).toLocaleDateString(),
+					lastMaintenanceDate: new Date(
+						maintenance.maint_date,
+					).toLocaleDateString(),
 					detail: maintenance.maint_description,
-			  }
+				}
 			: { lastMaintenanceDate: "", detail: "" };
 	};
 
@@ -80,7 +82,8 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 			/>
 			<DetailContainer>
 				{Object.values(MaintType).map((maintType) => {
-					const { lastMaintenanceDate, detail } = getMaintTypeDetails(maintType);
+					const { lastMaintenanceDate, detail } =
+						getMaintTypeDetails(maintType);
 					return (
 						<MaintenanceDetail
 							key={maintType}

@@ -20,7 +20,7 @@ const Anton400 = Anton({
 });
 
 interface AddTuningProps {
-    tokens: {
+	tokens: {
 		token: string;
 		decodedToken: { uid: string };
 	};
@@ -37,43 +37,43 @@ const AddTuning: React.FC<AddTuningProps> = ({ tokens, carId }) => {
 	const tuId = searchParams.get("id");
 
 	useEffect(() => {
-        const fetchTunings = async () => {
-            const clientAPI = ClientAPI(tokens.token);
-            
-            const response = await clientAPI.car.getCarTuning({
-                car_id: parseInt(carId, 10),
-            });
-            const tu = response.find((tu) => tu.tuning_id === Number(tuId));
-            if (tu) {
-                setDate(tu.tuning_date.substr(0, 10));
-                setTitle(tu.tuning_name);
-                setDescription(tu.tuning_description);
-            }
-        };
-        fetchTunings();
-    }, [tokens.token, carId, tuId]);
+		const fetchTunings = async () => {
+			const clientAPI = ClientAPI(tokens.token);
+
+			const response = await clientAPI.car.getCarTuning({
+				car_id: parseInt(carId, 10),
+			});
+			const tu = response.find((tu) => tu.tuning_id === Number(tuId));
+			if (tu) {
+				setDate(tu.tuning_date.substr(0, 10));
+				setTitle(tu.tuning_name);
+				setDescription(tu.tuning_description);
+			}
+		};
+		fetchTunings();
+	}, [tokens.token, carId, tuId]);
 
 	const handleRegister = async (event: React.FormEvent) => {
-        event.preventDefault();
+		event.preventDefault();
 
-        const clientAPI = ClientAPI(tokens.token);
-        const offsetDateTime = new Date(date).toISOString();
+		const clientAPI = ClientAPI(tokens.token);
+		const offsetDateTime = new Date(date).toISOString();
 
-        console.log(tokens.token);
-        console.log({
-            car_id: carId,
-            tuning_date: offsetDateTime,
-            tuning_name: title,
-            tuning_description: description,
-        });
+		console.log(tokens.token);
+		console.log({
+			car_id: carId,
+			tuning_date: offsetDateTime,
+			tuning_name: title,
+			tuning_description: description,
+		});
 
-        await clientAPI.tuning.createTuning({
-            car_id: parseInt(carId, 10),
-            tuning_date: offsetDateTime,
-            tuning_name: title,
-            tuning_description: description,
-        });
-        router.push("/tuning");
+		await clientAPI.tuning.createTuning({
+			car_id: parseInt(carId, 10),
+			tuning_date: offsetDateTime,
+			tuning_name: title,
+			tuning_description: description,
+		});
+		router.push("/tuning");
 	};
 
 	return (
