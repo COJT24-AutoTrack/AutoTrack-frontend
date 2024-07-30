@@ -1,11 +1,13 @@
-import { ClientAPI, MaintenanceAPIInterface } from "@/api/client";
+import { ClientAPIInterface, MaintenanceAPIInterface } from "@/api/client";
 import { Maintenance } from "@/api/models/models";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 const AUTOTRACK_API_BASE_URL = process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL;
 const AUTOTRACK_API_MAINTENANCES_URL = `${AUTOTRACK_API_BASE_URL}/maintenances`;
 
-export const MaintenanceAPI = (jwt: string): ClientAPI["maintenance"] => ({
+export const MaintenanceAPI = (
+	jwt: string,
+): ClientAPIInterface["maintenance"] => ({
 	createMaintenance: async (
 		request: MaintenanceAPIInterface["createMaintenance"]["request"],
 	): Promise<MaintenanceAPIInterface["createMaintenance"]["response"]> => {
