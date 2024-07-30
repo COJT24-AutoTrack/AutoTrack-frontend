@@ -1,6 +1,6 @@
 "use client";
 
-import { carInfo } from "@/api/models/models";
+import { Car } from "@/api/models/models";
 import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
 import styled from "styled-components";
@@ -34,7 +34,7 @@ const SVGButton = styled.button`
 `;
 
 interface TuningProps {
-	userCars: carInfo[];
+	userCars: Car[];
 	token: string;
 	userId: string;
 }
