@@ -116,6 +116,10 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 		}
 	};
 
+	const formatDate = (dateString: string) => {
+		return dateString.split("T")[0];
+	};
+
 	return (
 		<Container>
 			{fuelEfficiency && (
@@ -125,7 +129,9 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 				</MileageText>
 			)}
 			<ContentContainer>
-				<ContainerText>日付：{fuelEfficiency?.fe_date}</ContainerText>
+				<ContainerText>
+					日付：{fuelEfficiency ? formatDate(fuelEfficiency.fe_date) : ""}
+				</ContainerText>
 				<ContainerText>金額：{fuelEfficiency?.fe_amount}円</ContainerText>
 				<ContainerText>走行距離：{fuelEfficiency?.fe_mileage}km</ContainerText>
 				<ButtonConainer onClick={handleDetailClick}>
