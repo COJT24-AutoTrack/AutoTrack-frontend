@@ -1,11 +1,12 @@
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { ClientAPI } from "@/api/clientImplement";
 import { clientConfig, serverConfig } from "../../../config";
-import MaintenanceComponent from "@/components/maintenance/MaintenanceComponent";
+import { ClientAPI } from "@/api/clientImplement";
+import { FuelEfficiency } from "@/api/models/models";
+import UpdateRefueling from "@/components/refueling/UpdateRefueling";
 
-const MaintenancePage = async () => {
+export default async function UpdateFuelingPage() {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
@@ -18,16 +19,10 @@ const MaintenancePage = async () => {
 	}
 
 	const clientAPI = ClientAPI(tokens.token);
+	const fuelEfficiencies: FuelEfficiency[] =
+		await clientAPI.fuelEfficiency.getFuelEfficiencies();
 
-	const userCars = await clientAPI.user.getUserCars({
-		firebase_user_id: tokens.decodedToken.uid,
-	});
-
-	if (!userCars) {
-		return notFound();
-	}
-
-	return <MaintenanceComponent userCars={userCars} token={tokens.token} />;
-};
-
-export default MaintenancePage;
+	return (
+		<UpdateRefueling fuelEfficiencies={fuelEfficiencies} token={tokens.token} />
+	);
+}
