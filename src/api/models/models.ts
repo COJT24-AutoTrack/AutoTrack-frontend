@@ -65,7 +65,6 @@ export interface Maintenance {
 	updated_at: string;
 }
 
-
 export interface FuelEfficiency {
 	fe_id: number;
 	car_id: number;
@@ -106,7 +105,6 @@ export interface carInfo extends Car {
 	total_gas_cost: number;
 	total_mileage: number;
 }
-
 
 export interface FuelEfficiencyCalculationResult {
 	car_id: number;
