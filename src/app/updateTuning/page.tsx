@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
-import { createClientAPI } from "@/api/clientImplement";
+import { ClientAPI } from "@/api/clientImplement";
 import { Tuning } from "@/api/models/models";
 import BackHeader from "@/components/base/BackHeader";
 import BorderButton from "@/components/buttons/BorderButton";
@@ -63,7 +63,7 @@ const UpdateTuning: React.FC<UpdateTuningProps> = async ({ tunings }) => {
 
 	const handleUpdate = async () => {
 		if (tuning) {
-			const clientAPI = createClientAPI(tokens.token);
+			const clientAPI = ClientAPI(tokens.token);
 			await clientAPI.tuning.updateTuning({
 				tuning_id: tuning.tuning_id,
 				car_id: tuning.car_id,
@@ -77,7 +77,7 @@ const UpdateTuning: React.FC<UpdateTuningProps> = async ({ tunings }) => {
 
 	const handleDelete = async () => {
 		if (tuning) {
-			const clientAPI = createClientAPI(tokens.token);
+			const clientAPI = ClientAPI(tokens.token);
 			await clientAPI.tuning.deleteTuning({
 				tuning_id: tuning.tuning_id,
 			});
