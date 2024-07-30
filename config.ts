@@ -1,8 +1,5 @@
 // config.ts
 
-console.log('AUTH_COOKIE_SIGNATURE_KEY_CURRENT:', process.env.AUTH_COOKIE_SIGNATURE_KEY_CURRENT);
-console.log('AUTH_COOKIE_SIGNATURE_KEY_PREVIOUS:', process.env.AUTH_COOKIE_SIGNATURE_KEY_PREVIOUS);
-
 export const serverConfig = {
     cookieName: process.env.AUTH_COOKIE_NAME!,
     cookieSignatureKeys: [

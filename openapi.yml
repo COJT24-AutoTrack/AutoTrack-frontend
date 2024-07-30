@@ -1,0 +1,367 @@
+openapi: 3.0.0
+info:
+  title: Car Management API
+  version: 1.0.0
+paths:
+  /users/{user_id}/cars:
+    get:
+      summary: Get all cars associated with a user
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        "200":
+          description: A list of cars
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    car_id:
+                      type: integer
+                      example: 1
+                    car_name:
+                      type: string
+                      example: "Toyota Prius"
+                    carmodelnum:
+                      type: string
+                      example: "X123"
+                    car_color:
+                      type: string
+                      example: "Blue"
+                    car_mileage:
+                      type: integer
+                      example: 10000
+                    car_isflooding:
+                      type: boolean
+                      example: false
+                    car_issmoked:
+                      type: boolean
+                      example: false
+                    car_image_url:
+                      type: string
+                      format: uri
+                      example: "https://cdn.autoc-one.jp/images/article/202103/18020439026_fbc4_o.jpg"
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2023-06-21T10:20:30Z"
+                    updated_at:
+                      type: string
+                      format: date-time
+                      example: "2023-06-21T10:20:30Z"
+                    fuel_efficiency:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          fe_id:
+                            type: integer
+                            example: 1
+                          car_id:
+                            type: integer
+                            example: 1
+                          fe_date:
+                            type: string
+                            format: date-time
+                            example: "2023-07-01T10:20:30Z"
+                          fe_amount:
+                            type: number
+                            example: 10
+                          fe_unitprice:
+                            type: number
+                            example: 150
+                          fe_mileage:
+                            type: number
+                            example: 100
+                          created_at:
+                            type: string
+                            format: date-time
+                            example: "2023-07-01T10:20:30Z"
+                          updated_at:
+                            type: string
+                            format: date-time
+                            example: "2023-07-01T10:20:30Z"
+                    odd_after_wash:
+                      type: number
+                      example: 500
+                    odd_after_exchange:
+                      type: number
+                      example: 300
+              example:
+                - car_id: 1
+                  car_name: "Toyota Prius"
+                  carmodelnum: "X123"
+                  car_color: "Blue"
+                  car_mileage: 10000
+                  car_isflooding: false
+                  car_issmoked: false
+                  car_image_url: "https://cdn.autoc-one.jp/images/article/202103/18020439026_fbc4_o.jpg"
+                  created_at: "2023-06-21T10:20:30Z"
+                  updated_at: "2023-06-21T10:20:30Z"
+                  fuel_efficiency:
+                    - fe_id: 1
+                      car_id: 1
+                      fe_date: "2023-07-01T10:20:30Z"
+                      fe_amount: 10
+                      fe_unitprice: 150
+                      fe_mileage: 100
+                      created_at: "2023-07-01T10:20:30Z"
+                      updated_at: "2023-07-01T10:20:30Z"
+                  odd_after_wash: 500
+                  odd_after_exchange: 300
+                - car_id: 2
+                  car_name: "Honda Accord"
+                  carmodelnum: "Y456"
+                  car_color: "Red"
+                  car_mileage: 20000
+                  car_isflooding: false
+                  car_issmoked: false
+                  car_image_url: "https://www.toyota-body.co.jp/images/auto/minivan.jpg"
+                  created_at: "2023-06-21T10:20:30Z"
+                  updated_at: "2023-06-21T10:20:30Z"
+                  fuel_efficiency:
+                    - fe_id: 2
+                      car_id: 2
+                      fe_date: "2023-07-02T10:20:30Z"
+                      fe_amount: 20
+                      fe_unitprice: 140
+                      fe_mileage: 200
+                      created_at: "2023-07-02T10:20:30Z"
+                      updated_at: "2023-07-02T10:20:30Z"
+                  odd_after_wash: 300
+                  odd_after_exchange: 340
+  /cars/{car_id}/fuel_efficiencies/calculate:
+    get:
+      summary: Calculate and get the fuel efficiency for a specific car
+      parameters:
+        - in: path
+          name: car_id
+          required: true
+          schema:
+            type: integer
+          description: Car ID
+      responses:
+        "200":
+          description: Fuel efficiency calculation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  car_id:
+                    type: integer
+                    example: 1
+                  total_fuel_efficiency:
+                    type: number
+                    example: 8.6
+                  fuel_efficiencies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        fe_id:
+                          type: integer
+                          example: 1
+                        fuel_efficiency:
+                          type: number
+                          example: 8.6
+              example:
+                car_id: 1
+                total_fuel_efficiency: 8.6
+                fuel_efficiencies:
+                  - fe_id: 1
+                    fuel_efficiency: 8.6
+                  - fe_id: 2
+                    fuel_efficiency: 9.0
+
+  /cars/{car_id}/fuel_efficiency:
+    get:
+      summary: Get all fuel efficiencies for a specific car
+      parameters:
+        - in: path
+          name: car_id
+          required: true
+          schema:
+            type: integer
+          description: Car ID
+      responses:
+        "200":
+          description: A list of fuel efficiencies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    fe_id:
+                      type: integer
+                      example: 1
+                    car_id:
+                      type: integer
+                      example: 1
+                    fe_date:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    fe_amount:
+                      type: number
+                      example: 10
+                    fe_unitprice:
+                      type: number
+                      example: 150
+                    fe_mileage:
+                      type: number
+                      example: 10
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    updated_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+              example:
+                - fe_id: 1
+                  car_id: 1
+                  fe_date: "2023-07-01T10:20:30Z"
+                  fe_amount: 10
+                  fe_unitprice: 150
+                  fe_mileage: 10
+                  created_at: "2023-07-01T10:20:30Z"
+                  updated_at: "2023-07-01T10:20:30Z"
+                - fe_id: 2
+                  car_id: 1
+                  fe_date: "2023-07-02T10:20:30Z"
+                  fe_amount: 20
+                  fe_unitprice: 140
+                  fe_mileage: 20
+                  created_at: "2023-07-02T10:20:30Z"
+                  updated_at: "2023-07-02T10:20:30Z"
+
+  /cars/{car_id}/tuning:
+    get:
+      summary: Get all tunings for a specific car
+      parameters:
+        - in: path
+          name: car_id
+          required: true
+          schema:
+            type: integer
+          description: Car ID
+      responses:
+        "200":
+          description: A list of tunings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tuning_id:
+                      type: integer
+                      example: 1
+                    car_id:
+                      type: integer
+                      example: 1
+                    tuning_date:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    tuning_name:
+                      type: string
+                      example: "エンジンオイル交換"
+                    tuning_description:
+                      type: string
+                      example: "エンジンオイルを新しいものに交換しました。"
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    updated_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+              example:
+                - tuning_id: 1
+                  car_id: 1
+                  tuning_date: "2023-07-01T10:20:30Z"
+                  tuning_name: "エンジンオイル交換"
+                  tuning_description: "エンジンオイルを新しいものに交換しました。"
+                  created_at: "2023-07-01T10:20:30Z"
+                  updated_at: "2023-07-01T10:20:30Z"
+                - tuning_id: 2
+                  car_id: 1
+                  tuning_date: "2023-07-02T10:20:30Z"
+                  tuning_name: "ブレーキパッド交換"
+                  tuning_description: "ブレーキパッドを新しいものに交換しました。"
+                  created_at: "2023-07-02T10:20:30Z"
+                  updated_at: "2023-07-02T10:20:30Z"
+
+  /cars/{car_id}/maintenance:
+    get:
+      summary: Get all maintenances for a specific car
+      parameters:
+        - in: path
+          name: car_id
+          required: true
+          schema:
+            type: integer
+          description: Car ID
+      responses:
+        "200":
+          description: A list of maintenances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    maint_id:
+                      type: integer
+                      example: 1
+                    car_id:
+                      type: integer
+                      example: 1
+                    maint_date:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    maint_type:
+                      type: string
+                      example: "エンジンオイル交換"
+                    maint_description:
+                      type: string
+                      example: "エンジンオイルを新しいものに交換しました。"
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+                    updated_at:
+                      type: string
+                      format: date-time
+                      example: "2023-07-01T10:20:30Z"
+              example:
+                - maint_id: 1
+                  car_id: 1
+                  maint_date: "2023-07-01T10:20:30Z"
+                  maint_type: "エンジンオイル交換"
+                  maint_description: "エンジンオイルを新しいものに交換しました。"
+                  created_at: "2023-07-01T10:20:30Z"
+                  updated_at: "2023-07-01T10:20:30Z"
+                - maint_id: 2
+                  car_id: 1
+                  maint_date: "2023-07-02T10:20:30Z"
+                  maint_type: "ブレーキパッド交換"
+                  maint_description: "ブレーキパッドを新しいものに交換しました。"
+                  created_at: "2023-07-02T10:20:30Z"
+                  updated_at: "2023-07-02T10:20:30Z"
