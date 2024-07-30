@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
