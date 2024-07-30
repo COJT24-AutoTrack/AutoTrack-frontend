@@ -1,4 +1,4 @@
-import { carInfo } from "@/api/models/models";
+import { Car, carInfo } from "@/api/models/models";
 import styled from "styled-components";
 import BackIcon from "../../public/icons/BackIcon.svg";
 import { ContentText } from "../text/TextComponents";
@@ -41,7 +41,7 @@ const ChangeCarLeftButton = styled(ChangeCarButton)`
 `;
 
 interface CarSelectProps {
-	userCars: carInfo[];
+	userCars: Car[];
 	selectedCarIndex: number;
 	switchCar: () => void;
 }

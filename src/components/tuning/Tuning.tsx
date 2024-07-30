@@ -1,6 +1,6 @@
 "use client";
 
-import { carInfo } from "@/api/models/models";
+import { Car } from "@/api/models/models";
 import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
 import styled from "styled-components";
@@ -34,12 +34,12 @@ const SVGButton = styled.button`
 `;
 
 interface TuningProps {
-	userCars: carInfo[];
+	userCars: Car[];
 	token: string;
 	userId: string;
 }
 
-const Tuning: React.FC<TuningProps> = ({ userCars, token, userId }) => {
+const Tuning: React.FC<TuningProps> = ({ userCars, token }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
 	const [tunings, setTunings] = useState<Tuning[] | null>(null);
 	const router = useRouter();
@@ -52,7 +52,7 @@ const Tuning: React.FC<TuningProps> = ({ userCars, token, userId }) => {
 		const fetchTunings = async () => {
 			const clientAPI = ClientAPI(token);
 			const response = await clientAPI.car.getCarTuning({
-				car_id: userCars[selectedCarIndex].car_id.toString(),
+				car_id: userCars[selectedCarIndex].car_id,
 			});
 			setTunings(response);
 		};
@@ -60,7 +60,7 @@ const Tuning: React.FC<TuningProps> = ({ userCars, token, userId }) => {
 	}, [selectedCarIndex, userCars, token]);
 
 	const handleAddClick = () => {
-		router.push("/addTuning");
+		router.push(`/addTuning?car_id=${userCars[selectedCarIndex].car_id}`);
 	};
 
 	return (
