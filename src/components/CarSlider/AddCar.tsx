@@ -113,24 +113,14 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		const clientAPI = ClientAPI(tokens.token);
 
 		try {
-			// if (image) {
-			// 	const formData = new FormData();
-			// 	formData.append("file", image);
-			// 	const response = await fetch("http://localhost:8369/images", {
-			// 		method: "POST",
-			// 		headers: {
-			// 			Authorization: `Bearer ${tokens.token}`,
-			// 		},
-			// 		body: formData,
-			// 	});
+			if (image) {
+				const formData = new FormData();
+				formData.append("file", image);
 
-			// 	if (!response.ok) {
-			// 		throw new Error("Failed to upload image");
-			// 	}
-
-			// 	const data = await response.json();
-			// 	carData.car_image_url = data.url;
-			// }
+				const response = await clientAPI.image.uploadImage({
+					formData: formData,
+				});
+			}
 
 			const newCar = await clientAPI.car.createCar({
 				firebase_user_id: tokens.decodedToken.uid,

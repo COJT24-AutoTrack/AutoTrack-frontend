@@ -31,7 +31,7 @@ export default function LoginForm() {
 				email,
 				password,
 			);
-
+			await credential.user.getIdToken();
 			router.push("/");
 		} catch (e) {
 			setError((e as Error).message);

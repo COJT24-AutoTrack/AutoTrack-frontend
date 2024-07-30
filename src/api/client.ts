@@ -442,7 +442,7 @@ export interface PeriodicInspectionAPIInterface {
 export interface ImageAPIInterface {
     uploadImage: {
         request: {
-            image: string;
+            formData: FormData;
         };
         response: {
             imgURL: string;
