@@ -1,16 +1,14 @@
-export const runtime = "edge";
-
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { clientConfig, serverConfig } from "../../../config";
 import { ClientAPI } from "@/api/clientImplement";
 import { Maintenance, MaintType } from "@/api/models/models";
 import UpdateMaintenancePageContent from "@/components/maintenance/UpdateMaintenance";
+import { clientConfig, serverConfig } from "../../../../../../../config";
 
 interface Params {
   carId: string;
-  maintId: string;
+  maintId?: string;
 }
 
 const UpdateMaintenancePage = async ({ params }: { params: Params }) => {
@@ -27,12 +25,11 @@ const UpdateMaintenancePage = async ({ params }: { params: Params }) => {
 
   const clientAPI = ClientAPI(tokens.token);
 
-  const maintenance = await clientAPI.maintenance.getMaintenance({
-    maint_id: Number(params.maintId),
-  });
-
-  if (!maintenance) {
-    return notFound();
+  let maintenance: Maintenance | null = null;
+  if (params.maintId) {
+    maintenance = await clientAPI.maintenance.getMaintenance({
+      maint_id: Number(params.maintId),
+    });
   }
 
   const maintTypes: MaintType[] = Object.values(MaintType);

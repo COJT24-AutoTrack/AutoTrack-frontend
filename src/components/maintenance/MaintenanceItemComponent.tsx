@@ -2,11 +2,13 @@
 
 import React from "react";
 import styled from "styled-components";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Maintenance } from "@/api/models/models";
 
 interface MaintenanceItemComponentProps {
 	maintenances: Maintenance[];
+	carId: string;
+	maintType: string;
 }
 
 const Container = styled.div`
@@ -23,9 +25,14 @@ const MaintenanceCard = styled.div`
 
 const MaintenanceItemComponent: React.FC<MaintenanceItemComponentProps> = ({
 	maintenances,
+	carId,
+	maintType,
 }) => {
-	const params = useParams();
-	console.log(params); // デバッグ用、paramsが正しく受け取れているか確認
+	const router = useRouter();
+
+	const handleDetailClick = (maintId: number) => {
+		router.push(`/maintenance/${carId}/${maintType}/update?maintId=${maintId}`);
+	};
 
 	return (
 		<Container>
@@ -34,6 +41,7 @@ const MaintenanceItemComponent: React.FC<MaintenanceItemComponentProps> = ({
 					<h3>{maintenance.maint_title}</h3>
 					<p>日付: {new Date(maintenance.maint_date).toLocaleDateString()}</p>
 					<p>詳細: {maintenance.maint_description}</p>
+					<button onClick={() => handleDetailClick(maintenance.maint_id)}>詳細</button>
 				</MaintenanceCard>
 			))}
 		</Container>
