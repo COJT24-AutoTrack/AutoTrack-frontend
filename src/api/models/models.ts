@@ -33,15 +33,38 @@ export interface Tuning {
 	updated_at: string;
 }
 
+export enum MaintType {
+	OilChange = "Oil Change",
+	OilFilterChange = "Oil Filter Change",
+	HeadlightChange = "Headlight Change",
+	PositionLightChange = "Position Light Change",
+	FogLightChange = "Fog Light Change",
+	TurnSignalChange = "Turn Signal Change",
+	BrakeLightChange = "Brake Light Change",
+	LicensePlateLightChange = "License Plate Light Change",
+	BackupLightChange = "Backup Light Change",
+	CarWash = "Car Wash",
+	WiperBladeChange = "Wiper Blade Change",
+	BrakePadChange = "Brake Pad Change",
+	BrakeDiscChange = "Brake Disc Change",
+	TireChange = "Tire Change",
+	BatteryChange = "Battery Change",
+	TimingBeltChange = "Timing Belt Change",
+	CoolantRefill = "Coolant Refill",
+	WasherFluidRefill = "Washer Fluid Refill",
+}
+
 export interface Maintenance {
 	maint_id: number;
 	car_id: number;
-	maint_type: string;
+	maint_type: MaintType;
+	maint_title: string;
 	maint_date: string;
 	maint_description: string;
 	created_at: string;
 	updated_at: string;
 }
+
 
 export interface FuelEfficiency {
 	fe_id: number;
@@ -79,7 +102,11 @@ export interface carInfo extends Car {
 	fuel_efficiency: FuelEfficiency[];
 	odd_after_wash: number;
 	odd_after_exchange: number;
+	monthly_fuel_efficiency: string;
+	total_gas_cost: number;
+	total_mileage: number;
 }
+
 
 export interface FuelEfficiencyCalculationResult {
 	car_id: number;

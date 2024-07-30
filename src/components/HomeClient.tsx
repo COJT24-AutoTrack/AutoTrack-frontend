@@ -55,34 +55,6 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 
 	console.log(selectedCar);
 
-	// 直近1ヶ月でかかったガソリン代を計算
-	const calculateMonthlyGasCost = () => {
-		if (
-			!selectedCar ||
-			!selectedCar.fuel_efficiency ||
-			!selectedCar.fuel_efficiency.length
-		)
-			return 0;
-		const now = new Date();
-		const oneMonthAgo = new Date(now);
-		oneMonthAgo.setMonth(now.getMonth() - 1);
-
-		const lastMonthFuelEfficiencies = selectedCar.fuel_efficiency.filter(
-			(fe) => new Date(fe.fe_date) >= oneMonthAgo,
-		);
-
-		if (lastMonthFuelEfficiencies.length === 0) return 0;
-
-		const totalGasCost = lastMonthFuelEfficiencies.reduce(
-			(total, fe) => total + fe.fe_amount * fe.fe_unitprice,
-			0,
-		);
-
-		return totalGasCost;
-	};
-
-	const gasCost = calculateMonthlyGasCost();
-
 	return (
 		<main style={{ paddingTop: "10px" }}>
 			<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
@@ -100,10 +72,14 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 					<BlockMenus>
 						{isSP && (
 							<HStack>
-								<DetailCardComponent label={"ODO"} value={0} unit={"Km"} />
+								<DetailCardComponent
+									label={"ODO"}
+									value={selectedCar ? selectedCar.total_mileage : 0}
+									unit={"Km"}
+								/>
 								<DetailCardComponent
 									label={"GAS COST"}
-									value={gasCost}
+									value={selectedCar ? selectedCar.total_gas_cost : 0}
 									unit={"Yen"}
 								/>
 							</HStack>
@@ -116,7 +92,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 									unit={"Km"}
 								/>
 								<DetailCardComponent
-									label={"ODO AFTER exchange"}
+									label={"ODO AFTER EXCHANGE"}
 									value={selectedCar ? selectedCar.odd_after_exchange : 0}
 									unit={"Km"}
 								/>
@@ -131,21 +107,25 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 										// ここにクリック時の動作を実装
 									}}
 								/>
-								<DetailCardComponent label={"ODO"} value={0} unit={"Km"} />
+								<DetailCardComponent
+									label={"ODO"}
+									value={selectedCar ? selectedCar.total_mileage : 0}
+									unit={"Km"}
+								/>
 								<DetailCardComponent
 									label={"GAS COST"}
-									value={gasCost}
+									value={selectedCar ? selectedCar.total_gas_cost : 0}
 									unit={"Yen"}
 								/>
 								<DetailCardComponent
 									label={"ODO AFTER WASH"}
 									value={selectedCar ? selectedCar.odd_after_wash : 0}
-									unit={"Km"}
+									unit={"days"}
 								/>
 								<DetailCardComponent
-									label={"ODO AFTER exchange"}
+									label={"ODO AFTER EXCHANGE"}
 									value={selectedCar ? selectedCar.odd_after_exchange : 0}
-									unit={"Km"}
+									unit={"days"}
 								/>
 							</HStack>
 						)}

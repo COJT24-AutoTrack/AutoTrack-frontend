@@ -1,7 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { ClientAPI } from "@/api/clientImplement";
+import { carInfo, Maintenance } from "@/api/models/models";
+import CarSelect from "@/components/base/CarSelect";
 import MaintenanceDetail from "./MaintenanceDetail";
 import { media } from "@/styles/breakpoints";
 
@@ -15,64 +18,63 @@ const DetailContainer = styled.div`
 	${media.PC} {
 		padding: 20px;
 	}
-	mergin: 0;
+	margin: 0;
 `;
 
-const MaintenancePage = () => {
+const Container = styled.div`
+	position: relative;
+	padding-bottom: 80px;
+`;
+
+interface MaintenancePageProps {
+	userCars: carInfo[];
+	token: string;
+	userId: string;
+}
+
+const MaintenancePage: React.FC<MaintenancePageProps> = ({
+	userCars,
+	token,
+}) => {
+	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
+	const [maintenances, setMaintenances] = useState<Maintenance[] | null>(null);
+
+	const switchCar = () => {
+		setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
+	};
+
+	useEffect(() => {
+		const fetchMaintenances = async () => {
+			const clientAPI = ClientAPI(token);
+			const response = await clientAPI.car.getCarMaintenance({
+				car_id: userCars[selectedCarIndex].car_id,
+			});
+			setMaintenances(response);
+		};
+		fetchMaintenances();
+	}, [selectedCarIndex, userCars, token]);
+
 	return (
-		<DetailContainer>
-			<MaintenanceDetail
-				title="エンジンオイル"
-				lastMaintenanceDate="2021/12/01"
-				detail="オイル交換を行いました。"
+		<Container>
+			<CarSelect
+				userCars={userCars}
+				selectedCarIndex={selectedCarIndex}
+				switchCar={switchCar}
 			/>
-			<MaintenanceDetail
-				title="オイルエレメント"
-				lastMaintenanceDate="2021/12/01"
-				detail="エレメント交換を行いました。"
-			/>
-			<MaintenanceDetail title="灯火類" lastMaintenanceDate="" detail="" />
-			<MaintenanceDetail title="洗車" lastMaintenanceDate="" detail="" />
-			<MaintenanceDetail
-				title="ワイパーブレード"
-				lastMaintenanceDate=""
-				detail=""
-			/>
-			<MaintenanceDetail
-				title="ブレーキパッド"
-				lastMaintenanceDate=""
-				detail=""
-			/>
-			<MaintenanceDetail
-				title="ブレーキディスク"
-				lastMaintenanceDate=""
-				detail=""
-			/>
-			<MaintenanceDetail title="タイヤ" lastMaintenanceDate="" detail="" />
-			<MaintenanceDetail title="バッテリー" lastMaintenanceDate="" detail="" />
-			<MaintenanceDetail
-				title="タイミングベルト"
-				lastMaintenanceDate=""
-				detail=""
-			/>
-			<MaintenanceDetail title="クーラント" lastMaintenanceDate="" detail="" />
-			<MaintenanceDetail
-				title="ウォッシャー液"
-				lastMaintenanceDate=""
-				detail=""
-			/>
-			<MaintenanceDetail title="デフオイル" lastMaintenanceDate="" detail="" />
-			<MaintenanceDetail
-				title="パワステオイル"
-				lastMaintenanceDate=""
-				detail=""
-			/>
-			<MaintenanceDetail
-				title="エアコンフィルター"
-				lastMaintenanceDate=""
-				detail=""
-			/>
-		</DetailContainer>
+			<DetailContainer>
+				{maintenances &&
+					maintenances.map((maintenance) => (
+						<MaintenanceDetail
+							key={maintenance.maint_id}
+							title={maintenance.maint_title}
+							lastMaintenanceDate={new Date(
+								maintenance.maint_date,
+							).toLocaleDateString()}
+							detail={maintenance.maint_description}
+						/>
+					))}
+			</DetailContainer>
+		</Container>
 	);
 };
 

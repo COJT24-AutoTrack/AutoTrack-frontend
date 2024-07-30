@@ -95,7 +95,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
-						<BigLabel>金額(円)</BigLabel>
+						<BigLabel>単価(円/L)</BigLabel>
 						<input
 							type="number"
 							value={amount}
@@ -103,7 +103,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
-						<BigLabel>給油量</BigLabel>
+						<BigLabel>給油量(L)</BigLabel>
 						<input
 							type="number"
 							value={unitPrice}

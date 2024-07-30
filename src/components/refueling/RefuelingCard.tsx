@@ -120,19 +120,31 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 		return dateString.split("T")[0];
 	};
 
+	const calculateFuelEfficiency = () => {
+		if (!fuelEfficiency || fuelEfficiency.fe_amount === 0) return 0;
+		return (fuelEfficiency.fe_mileage / fuelEfficiency.fe_amount).toFixed(2);
+	};
+
+	const calculateTotalCost = () => {
+		if (!fuelEfficiency) return 0;
+		return (fuelEfficiency.fe_amount * fuelEfficiency.fe_unitprice).toFixed(2);
+	};
+
 	return (
 		<Container>
 			{fuelEfficiency && (
 				<MileageText className={Anton400.className}>
-					{fuelEfficiency.fe_mileage}
-					<MileageSpan className={Anton400.className}>km/m</MileageSpan>
+					{calculateFuelEfficiency()}
+					<MileageSpan className={Anton400.className}>km/L</MileageSpan>
 				</MileageText>
 			)}
 			<ContentContainer>
 				<ContainerText>
 					日付：{fuelEfficiency ? formatDate(fuelEfficiency.fe_date) : ""}
 				</ContainerText>
-				<ContainerText>金額：{fuelEfficiency?.fe_amount}円</ContainerText>
+				<ContainerText>
+					金額：{fuelEfficiency ? calculateTotalCost() : 0}円
+				</ContainerText>
 				<ContainerText>走行距離：{fuelEfficiency?.fe_mileage}km</ContainerText>
 				<ButtonConainer onClick={handleDetailClick}>
 					<SubSubContentText>詳細</SubSubContentText>
