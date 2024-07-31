@@ -74,7 +74,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 							<HStack>
 								<DetailCardComponent
 									label={"Mileage"}
-									value={selectedCar ? selectedCar.total_mileage : 0}
+									value={selectedCar ? selectedCar.car_mileage : 0}
 									unit={"Km"}
 								/>
 								<DetailCardComponent
