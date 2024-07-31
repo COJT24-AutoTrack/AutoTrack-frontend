@@ -36,7 +36,12 @@ const Card = styled.div<{ isSelected: boolean }>`
 `;
 
 const CarImage = styled.img`
-	height: 20dvh;
+	${media.SP} {
+		height: 20dvh;
+	}
+	${media.PC} {
+		height: 60dvh;
+	}	
 	width: auto;
 	object-fit: cover;
 	align-self: stretch;
