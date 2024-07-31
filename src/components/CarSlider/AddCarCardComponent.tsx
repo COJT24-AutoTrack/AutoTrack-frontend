@@ -20,6 +20,7 @@ const CardContainer = styled.div`
 `;
 
 const Card = styled.div`
+	padding: 20px;
 	display: flex;
 	height: 192px;
 	flex-direction: column;
@@ -35,7 +36,7 @@ const Card = styled.div`
 const AddTextSpan = styled.span`
 	color: #2b2b2b;
 	text-align: center;
-	font-size: 25px;
+	font-size: 40px;
 	font-style: normal;
 	font-weight: 400;
 	line-height: normal;

@@ -41,6 +41,7 @@ export default function RegisterForm() {
 
 			// アカウント作成後にユーザーのIDトークンを取得
 			const jwt = await userCredential.user.getIdToken();
+			console.log(jwt);
 
 			// JWTトークンを使用してclientAPIを作成
 			const clientAPI = ClientAPI(jwt);
@@ -56,6 +57,7 @@ export default function RegisterForm() {
 			// ユーザー作成が成功したらログインページにリダイレクト
 			router.push("/login");
 		} catch (e) {
+			console.log("Error creating user: ", e);
 			setError((e as Error).message);
 		}
 	}

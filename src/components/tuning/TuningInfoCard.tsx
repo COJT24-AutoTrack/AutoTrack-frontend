@@ -9,28 +9,38 @@ import {
 import BackIcon from "../../public/icons/BackIcon.svg";
 import { Tuning } from "@/api/models/models";
 import { useRouter } from "next/navigation";
+import { media } from "@/styles/breakpoints";
 
 const Container = styled.div`
 	display: flex;
-	padding: 10px 15px;
-	flex-direction: column;
-	justify-content: center;
-	align-items: flex-start;
+	padding: 0px 30px;
+	align-items: center;
 	gap: 10px;
 	align-self: stretch;
 	border-radius: 8px;
 	border: 1px solid #fff;
 	background: #2b2b2b;
+	position: relative;
 `;
 
-const ButtonConainer = styled.div`
+const ContentContainer = styled.div`
 	display: flex;
-	justify-content: flex-end;
-	align-items: center;
+	padding: 10px 5px;
 	gap: 5px;
-	align-self: stretch;
+	flex: 1;
+	flex-direction: column;
+    align-items: flex-start;
 `;
 
+const ButtonContainer = styled.div`
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	display: flex;
+	align-items: center;
+	width: 30px;
+`;
 const NextPageSVG = styled.button`
 	display: flex;
 	align-items: center;
@@ -81,15 +91,16 @@ const TuningInfoCard: React.FC<TuningInfoCardProps> = ({ tuning }) => {
 
 	return (
 		<Container>
-			<SubSubContentText>日付：{tuning.tuning_date}</SubSubContentText>
-			<SubSubContentText>タイトル：{tuning.tuning_name}</SubSubContentText>
-			<SubSubContentText>内容：{tuning.tuning_description}</SubSubContentText>
-			<ButtonConainer onClick={handleDetailClick}>
-				<SubSubContentText>詳細</SubSubContentText>
+			<ContentContainer>
+				<SubSubContentText>{tuning.tuning_date}</SubSubContentText>
+				<SubSubContentText>{tuning.tuning_name}</SubSubContentText>
+				<SubSubContentText>{tuning.tuning_description}</SubSubContentText>
+			</ContentContainer>
+			<ButtonContainer onClick={handleDetailClick}>
 				<NextPageSVG>
 					<BackIcon style={{ fill: "white" }} />
 				</NextPageSVG>
-			</ButtonConainer>
+			</ButtonContainer>
 		</Container>
 	);
 };

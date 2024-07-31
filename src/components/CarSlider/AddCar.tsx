@@ -94,8 +94,8 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 				type === "checkbox"
 					? checked
 					: name === "car_mileage"
-						? Number(value)
-						: value,
+					? value === "" ? 0 : Number(value)
+					: value,
 		}));
 	};
 
@@ -179,7 +179,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 						type="number"
 						name="car_mileage"
 						placeholder="Car Mileage"
-						value={carData.car_mileage}
+						value={carData.car_mileage === 0 ? "" : carData.car_mileage}
 						onChange={handleChange}
 					/>
 					<CheckboxLabel>
@@ -189,7 +189,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 							checked={carData.car_isflooding}
 							onChange={handleChange}
 						/>
-						<Label>Flooding</Label>
+						<Label>浸水車</Label>
 					</CheckboxLabel>
 					<CheckboxLabel>
 						<CheckBoxInput
@@ -198,7 +198,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 							checked={carData.car_issmoked}
 							onChange={handleChange}
 						/>
-						<Label>Smoked</Label>
+						<Label>喫煙車</Label>
 					</CheckboxLabel>
 					<Input type="file" accept="image/*" onChange={handleImageChange} />
 					{preview && (
