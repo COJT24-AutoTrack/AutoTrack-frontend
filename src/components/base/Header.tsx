@@ -17,7 +17,7 @@ const HeaderContainer = styled.div`
 	${media.PC} {
 		height: 80px;
 		justify-content: left;
-		padding-left: 20px;
+		padding-left: 5dvw;
 	}
 `;
 
