@@ -10,6 +10,7 @@ import BackIcon from "../../public/icons/BackIcon.svg";
 import { Anton } from "next/font/google";
 import { FuelEfficiency } from "@/api/models/models";
 import { useRouter } from "next/navigation";
+import { media } from "@/styles/breakpoints";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -18,22 +19,34 @@ const Anton400 = Anton({
 
 const Container = styled.div`
 	display: flex;
-	padding: 0px 15px;
+	${media.SP} {
+		padding: 0px 15px;
+	}
+	${media.PC} {
+		padding: 0px 30px;
+	}
 	align-items: center;
-	gap: 10px;
 	align-self: stretch;
 	border-radius: 8px;
 	border: 1px solid #fff;
 	background: #2b2b2b;
+	position: relative;
 `;
 
 const MileageText = styled(TitleText)`
 	color: #fff;
 	text-align: center;
-	font-size: 64px;
+	${media.SP} {
+		font-size: 40px;
+	}
+	${media.PC} {
+		font-size: 64px;
+	}
 	font-weight: 400;
 	line-height: normal;
 	display: flex;
+	flex: 1;
+	justify-content: center;
 	flex-direction: row;
 	align-items: baseline;
 `;
@@ -41,31 +54,40 @@ const MileageText = styled(TitleText)`
 const MileageSpan = styled(SubContentText)`
 	color: #fff;
 	font-size: 20px;
+	line-height: 1;
+	margin-left: 8px;
 `;
 
-const ContainerText = styled(SubSubContentText)`
+const TextContainer = styled(SubSubContentText)`
 	color: #fff;
-	text-align: center;
+	text-align: right;
 	font-size: 15px;
+	overflow: hidden;
+	white-space: nowrap;
 `;
 
 const ContentContainer = styled.div`
 	display: flex;
 	padding: 10px 5px;
-	flex-direction: column;
-	justify-content: center;
-	align-items: flex-start;
 	gap: 5px;
-	flex: 1 0 0;
-	align-self: stretch;
+	flex: 1;
+	${media.SP} {
+		flex-direction: column;
+		align-items: flex-end;
+	}	
+	${media.PC} {
+		flex-direction: row;
+		align-items: center;
+		gap: 20px;
+	}	
 `;
 
-const ButtonConainer = styled.div`
+const ButtonContainer = styled.div`
+	right: 10px;
+	top: 50%;
 	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	gap: 5px;
-	align-self: stretch;
+	width: 30px;
+	align-items: end;
 `;
 
 const NextPageSVG = styled.button`
@@ -78,9 +100,8 @@ const NextPageSVG = styled.button`
 
 	svg {
 		fill: white;
-		width: 12px;
-		height: 12px;
-		margin-right: 8px;
+		width: 20px;
+		height: 20px;
 	}
 `;
 
@@ -120,39 +141,42 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 		return dateString.split("T")[0];
 	};
 
+	const formatNumber = (number: number) => {
+		return number.toFixed(2).padStart(5, "0");
+	};
+
 	const calculateFuelEfficiency = () => {
-		if (!fuelEfficiency || fuelEfficiency.fe_amount === 0) return 0;
-		return (fuelEfficiency.fe_mileage / fuelEfficiency.fe_amount).toFixed(2);
+		if (!fuelEfficiency || fuelEfficiency.fe_amount === 0) return "00.00";
+		return formatNumber(fuelEfficiency.fe_mileage / fuelEfficiency.fe_amount);
 	};
 
 	const calculateTotalCost = () => {
-		if (!fuelEfficiency) return 0;
-		return (fuelEfficiency.fe_amount * fuelEfficiency.fe_unitprice).toFixed(2);
+		if (!fuelEfficiency) return "0";
+		return (fuelEfficiency.fe_amount * fuelEfficiency.fe_unitprice).toFixed(0);
 	};
 
 	return (
 		<Container>
 			{fuelEfficiency && (
 				<MileageText className={Anton400.className}>
-					{calculateFuelEfficiency()}
-					<MileageSpan className={Anton400.className}>km/L</MileageSpan>
+					{fuelEfficiency.fe_mileage}
+					<MileageSpan className={Anton400.className}>km/l</MileageSpan>
 				</MileageText>
 			)}
 			<ContentContainer>
-				<ContainerText>
-					日付：{fuelEfficiency ? formatDate(fuelEfficiency.fe_date) : ""}
-				</ContainerText>
-				<ContainerText>
-					金額：{fuelEfficiency ? calculateTotalCost() : 0}円
-				</ContainerText>
-				<ContainerText>走行距離：{fuelEfficiency?.fe_mileage}km</ContainerText>
-				<ButtonConainer onClick={handleDetailClick}>
-					<SubSubContentText>詳細</SubSubContentText>
-					<NextPageSVG>
-						<BackIcon style={{ fill: "white" }} />
-					</NextPageSVG>
-				</ButtonConainer>
+				<TextContainer>
+					{fuelEfficiency ? formatDate(fuelEfficiency.fe_date) : ""}
+				</TextContainer>
+				<TextContainer>
+					{fuelEfficiency ? calculateTotalCost() : 0} 円
+				</TextContainer>
+				<TextContainer>{fuelEfficiency?.fe_mileage} km</TextContainer>
 			</ContentContainer>
+			<ButtonContainer>
+				<NextPageSVG onClick={handleDetailClick}>
+					<BackIcon style={{ fill: "white" }} />
+				</NextPageSVG>
+			</ButtonContainer>
 		</Container>
 	);
 };

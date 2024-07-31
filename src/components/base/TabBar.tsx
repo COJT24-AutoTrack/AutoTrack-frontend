@@ -10,9 +10,10 @@ import { media } from "@/styles/breakpoints";
 const TabBarContainer = styled.nav`
 	background-color: ${(props) => props.theme.colors.baseBackground};
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-evenly;
 	align-items: center;
-	padding: 16px 0;
+	padding-top: 20px;
+	padding-bottom: 14px;
 	width: 100vw;
 `;
 
@@ -44,7 +45,6 @@ const TabBarItem = styled.a<{ isActive: boolean }>`
 	svg {
 		width: 24px;
 		height: 24px;
-		margin-bottom: 8px;
 		fill: ${(props) =>
 			props.isActive
 				? props.theme.colors.link

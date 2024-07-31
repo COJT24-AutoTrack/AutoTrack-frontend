@@ -61,8 +61,17 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 					/>
 				</SwiperSlide>
 			))}
-			<SwiperSlide style={{ width: "280px" }}>
+			<SwiperSlide
+				style={{
+					width: "280px",
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
 				<AddCarCardComponent onClick={handleAddCarClick} />
+				<div style={{ height: "80px", width: "280px" }}></div>
 			</SwiperSlide>
 		</Swiper>
 	);
