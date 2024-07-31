@@ -1,4 +1,4 @@
-import { Car, carInfo } from "@/api/models/models";
+import { Car } from "@/api/models/models";
 import styled from "styled-components";
 import BackIcon from "../../public/icons/BackIcon.svg";
 import { ContentText } from "../text/TextComponents";
@@ -41,7 +41,7 @@ const ChangeCarLeftButton = styled(ChangeCarButton)`
 `;
 
 interface CarSelectProps {
-	userCars: Car[];
+	userCars: Car[] | null;
 	selectedCarIndex: number;
 	switchCar: () => void;
 }
@@ -51,6 +51,10 @@ const CarSelect: React.FC<CarSelectProps> = ({
 	selectedCarIndex,
 	switchCar,
 }) => {
+	if (!userCars || userCars.length === 0) {
+		return <Container>車が見つかりません</Container>;
+	}
+
 	return (
 		<Container>
 			<ChangeIconContainer>
@@ -58,7 +62,7 @@ const CarSelect: React.FC<CarSelectProps> = ({
 					<BackIcon style={{ fill: "white" }} />
 				</ChangeCarLeftButton>
 			</ChangeIconContainer>
-			<ContentText>{userCars[selectedCarIndex].car_name}</ContentText>
+			<ContentText>{userCars[selectedCarIndex]?.car_name}</ContentText>
 			<ChangeIconContainer>
 				<ChangeCarButton onClick={switchCar}>
 					<BackIcon style={{ fill: "white" }} />
