@@ -73,7 +73,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 						{isSP && (
 							<HStack>
 								<DetailCardComponent
-									label={"Mirage"}
+									label={"Mileage"}
 									value={selectedCar ? selectedCar.total_mileage : 0}
 									unit={"Km"}
 								/>
@@ -108,7 +108,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 									}}
 								/>
 								<DetailCardComponent
-									label={"Mirage"}
+									label={"Mileage"}
 									value={selectedCar ? selectedCar.total_mileage : 0}
 									unit={"Km"}
 								/>
