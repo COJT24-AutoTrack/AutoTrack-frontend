@@ -34,7 +34,7 @@ const SVGButton = styled.button`
 `;
 
 interface TuningProps {
-	userCars: Car[];
+	userCars: Car[] | null;
 	token: string;
 	userId: string;
 }
@@ -45,23 +45,33 @@ const Tuning: React.FC<TuningProps> = ({ userCars, token }) => {
 	const router = useRouter();
 
 	const switchCar = () => {
-		setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
+		if (userCars) {
+			setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
+		}
 	};
 
 	useEffect(() => {
 		const fetchTunings = async () => {
-			const clientAPI = ClientAPI(token);
-			const response = await clientAPI.car.getCarTuning({
-				car_id: userCars[selectedCarIndex].car_id,
-			});
-			setTunings(response);
+			if (userCars && userCars.length !== 0) {
+				const clientAPI = ClientAPI(token);
+				const response = await clientAPI.car.getCarTuning({
+					car_id: userCars[selectedCarIndex].car_id,
+				});
+				setTunings(response);
+			}
 		};
 		fetchTunings();
 	}, [selectedCarIndex, userCars, token]);
 
 	const handleAddClick = () => {
-		router.push(`/addTuning?car_id=${userCars[selectedCarIndex].car_id}`);
+		if (userCars) {
+			router.push(`/addTuning?car_id=${userCars[selectedCarIndex].car_id}`);
+		}
 	};
+
+	if (!userCars) {
+		return <div>ユーザーの車が見つかりません</div>;
+	}
 
 	return (
 		<>

@@ -55,26 +55,18 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({ c
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Format the date to match '2024-08-07T00:00:00.000Z'
     const formattedDate = new Date(maintDate).toISOString();
 
     const clientAPI = ClientAPI(token);
 
     try {
-        console.log({
-            car_id: carId,
-            maint_type: maintType,
-            maint_date: formattedDate,
-            maint_description: maintDescription,
-          })
       const response = await clientAPI.maintenance.createMaintenance({
         car_id: carId,
         maint_type: maintType,
         maint_date: formattedDate,
         maint_description: maintDescription,
-        maint_title: "",
+        maint_title: maintType,
       });
-
 
       if (response) {
         router.push(`/maintenance/${carId}/${maintType}`);

@@ -1,6 +1,6 @@
 "use client";
 
-import { Car, carInfo, FuelEfficiency } from "@/api/models/models";
+import { Car, FuelEfficiency } from "@/api/models/models";
 import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
 import RefuelingCardGroup from "./RefuelingCardGroup";
@@ -34,36 +34,44 @@ const SVGButton = styled.button`
 `;
 
 interface RefuelingProps {
-	userCars: Car[];
+	userCars: Car[] | null;
 	token: string;
 	userId: string;
 }
 
 const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
-	const [fuelEfficiencies, setFuelEfficiencies] = useState<
-		FuelEfficiency[] | null
-	>(null);
+	const [fuelEfficiencies, setFuelEfficiencies] = useState<FuelEfficiency[] | null>(null);
 	const router = useRouter();
 
 	const switchCar = () => {
-		setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
+		if (userCars) {
+			setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
+		}
 	};
 
 	useEffect(() => {
 		const fetchFuelEfficiencies = async () => {
-			const clientAPI = ClientAPI(token);
-			const response = await clientAPI.car.getCarFuelEfficiency({
-				car_id: userCars[selectedCarIndex].car_id,
-			});
-			setFuelEfficiencies(response);
+			if (userCars && userCars.length !== 0) {
+				const clientAPI = ClientAPI(token);
+				const response = await clientAPI.car.getCarFuelEfficiency({
+					car_id: userCars[selectedCarIndex].car_id,
+				});
+				setFuelEfficiencies(response);
+			}
 		};
 		fetchFuelEfficiencies();
 	}, [selectedCarIndex, userCars, token]);
 
 	const handleAddClick = () => {
-		router.push(`/addRefueling?car_id=${userCars[selectedCarIndex].car_id}`);
+		if (userCars) {
+			router.push(`/addRefueling?car_id=${userCars[selectedCarIndex].car_id}`);
+		}
 	};
+
+	if (!userCars) {
+		return <div>ユーザーの車が見つかりません</div>;
+	}
 
 	return (
 		<>

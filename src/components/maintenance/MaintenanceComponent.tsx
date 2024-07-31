@@ -28,7 +28,7 @@ const Container = styled.div`
 `;
 
 interface MaintenancePageProps {
-	userCars: Car[];
+	userCars: Car[] | null;
 	token: string;
 }
 
@@ -41,16 +41,20 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 	const router = useRouter();
 
 	const switchCar = () => {
-		setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
+		if (userCars) {
+			setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
+		}
 	};
 
 	useEffect(() => {
 		const fetchMaintenances = async () => {
-			const clientAPI = ClientAPI(token);
-			const response = await clientAPI.car.getCarMaintenance({
-				car_id: userCars[selectedCarIndex].car_id,
-			});
-			setMaintenances(response);
+			if (userCars && userCars.length !== 0) {
+				const clientAPI = ClientAPI(token);
+				const response = await clientAPI.car.getCarMaintenance({
+					car_id: userCars[selectedCarIndex].car_id,
+				});
+				setMaintenances(response);
+			}
 		};
 		fetchMaintenances();
 	}, [selectedCarIndex, userCars, token]);
@@ -72,6 +76,10 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 	const handleDetailClick = (carId: number, maintType: MaintType) => {
 		router.push(`/maintenance/${carId}/${maintType}`);
 	};
+
+	if (!userCars) {
+		return <div>ユーザーの車が見つかりません</div>;
+	}
 
 	return (
 		<Container>
