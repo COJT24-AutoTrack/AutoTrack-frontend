@@ -21,13 +21,13 @@ const Title = styled.div`
 	height: 50px;
 	align-items: center;
 	margin: 0;
-	padding: 0 0 0 10px;
+	padding: 0 20px;
 `;
 
 const Explanation = styled.div`
 	background-color: ${theme.colors.background};
 	margin: 0;
-	padding: 20px 0;
+	padding: 20px 30px 20px 20px;
 `;
 
 const DateText = styled.p`
@@ -49,6 +49,7 @@ const DetailButton = styled.button`
 	border: none;
 	padding: 10px;
 	cursor: pointer;
+	font-size: ${theme.fontSizes.subContent};
 `;
 
 const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({
@@ -61,7 +62,7 @@ const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({
 		<Container>
 			<Title>
 				{title}
-				<DetailButton onClick={onDetailClick}>詳細</DetailButton>
+				<DetailButton onClick={onDetailClick}>&gt;</DetailButton>
 			</Title>
 			<Explanation>
 				<DateText>前回メンテナンス日: {lastMaintenanceDate}</DateText>

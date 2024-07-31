@@ -73,12 +73,12 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 						{isSP && (
 							<HStack>
 								<DetailCardComponent
-									label={"ODO"}
+									label={"Mirage"}
 									value={selectedCar ? selectedCar.total_mileage : 0}
 									unit={"Km"}
 								/>
 								<DetailCardComponent
-									label={"GAS COST"}
+									label={"Fuel Cost"}
 									value={selectedCar ? selectedCar.total_gas_cost : 0}
 									unit={"Yen"}
 								/>
@@ -87,12 +87,12 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 						{isSP && (
 							<HStack>
 								<DetailCardComponent
-									label={"ODO AFTER WASH"}
+									label={"Car Wash"}
 									value={selectedCar ? selectedCar.odd_after_wash : 0}
 									unit={"Km"}
 								/>
 								<DetailCardComponent
-									label={"ODO AFTER EXCHANGE"}
+									label={"Tires"}
 									value={selectedCar ? selectedCar.odd_after_exchange : 0}
 									unit={"Km"}
 								/>
@@ -108,24 +108,24 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 									}}
 								/>
 								<DetailCardComponent
-									label={"ODO"}
+									label={"Mirage"}
 									value={selectedCar ? selectedCar.total_mileage : 0}
 									unit={"Km"}
 								/>
 								<DetailCardComponent
-									label={"GAS COST"}
+									label={"Total Fuel Cost"}
 									value={selectedCar ? selectedCar.total_gas_cost : 0}
 									unit={"Yen"}
 								/>
 								<DetailCardComponent
-									label={"ODO AFTER WASH"}
+									label={"Car Wash"}
 									value={selectedCar ? selectedCar.odd_after_wash : 0}
-									unit={"days"}
+									unit={"Km"}
 								/>
 								<DetailCardComponent
-									label={"ODO AFTER EXCHANGE"}
+									label={"Tires"}
 									value={selectedCar ? selectedCar.odd_after_exchange : 0}
-									unit={"days"}
+									unit={"Km"}
 								/>
 							</HStack>
 						)}
