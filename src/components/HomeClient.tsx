@@ -53,8 +53,6 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 		setSelectedCar(car);
 	};
 
-	console.log(selectedCar);
-
 	return (
 		<main style={{ paddingTop: "10px" }}>
 			<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
@@ -74,7 +72,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 							<HStack>
 								<DetailCardComponent
 									label={"Mileage"}
-									value={selectedCar ? selectedCar.total_mileage : 0}
+									value={selectedCar ? selectedCar.car_mileage : 0}
 									unit={"Km"}
 								/>
 								<DetailCardComponent
@@ -109,7 +107,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 								/>
 								<DetailCardComponent
 									label={"Mileage"}
-									value={selectedCar ? selectedCar.total_mileage : 0}
+									value={selectedCar ? selectedCar.car_mileage : 0}
 									unit={"Km"}
 								/>
 								<DetailCardComponent
