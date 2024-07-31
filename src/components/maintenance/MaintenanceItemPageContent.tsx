@@ -142,11 +142,11 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
   };
 
   const handleAddClick = () => {
-    router.push(`/maintenance/${carId}/${maintType}/update`);
+    router.push(`/maintenance/${carId}/${maintType}/add`);
   };
 
   const handleDetailClick = (maintId: number) => {
-    router.push(`/maintenance/${carId}/${maintType}`);
+    router.push(`/maintenance/${carId}/${maintType}/${maintId}/add`);
   };
 
   return (
