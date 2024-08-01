@@ -21,7 +21,6 @@ export const ImageAPI = (jwt: string) => ({
 	uploadImage: async (
 		request: ImageAPIInterface["uploadImage"]["request"],
 	): Promise<ImageAPIInterface["uploadImage"]["response"]> => {
-		console.log(request.formData);
 		const response = await fetchWithToken(
 			`${AUTOTRACK_API_IMAGES_URL}`,
 			{

@@ -125,7 +125,6 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 				await clientAPI.image.uploadImage({
 					formData: formData,
 				});
-				console.log(`image_url was set: ${JSON.stringify(carData)}`);
 			} catch (e) {
 				alert((e as Error).message);
 				return;

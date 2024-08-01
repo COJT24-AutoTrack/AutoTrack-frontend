@@ -62,15 +62,6 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		const clientAPI = ClientAPI(tokens.token);
 		const offsetDateTime = new Date(date).toISOString();
 
-		console.log(tokens.token);
-		console.log({
-			car_id: parseInt(carId, 10),
-			fe_date: offsetDateTime,
-			fe_amount: amount,
-			fe_unitprice: unitPrice,
-			fe_mileage: mileage,
-		});
-
 		await clientAPI.fuelEfficiency.createFuelEfficiency({
 			car_id: parseInt(carId, 10),
 			fe_date: offsetDateTime,

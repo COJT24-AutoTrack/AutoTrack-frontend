@@ -59,14 +59,6 @@ const AddTuning: React.FC<AddTuningProps> = ({ tokens, carId }) => {
 		const clientAPI = ClientAPI(tokens.token);
 		const offsetDateTime = new Date(date).toISOString();
 
-		console.log(tokens.token);
-		console.log({
-			car_id: carId,
-			tuning_date: offsetDateTime,
-			tuning_name: title,
-			tuning_description: description,
-		});
-
 		await clientAPI.tuning.createTuning({
 			car_id: parseInt(carId, 10),
 			tuning_date: offsetDateTime,
