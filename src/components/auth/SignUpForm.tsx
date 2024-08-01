@@ -1,7 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+	getAuth,
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
+} from "firebase/auth";
 import { app } from "../../../firebase";
 import { useRouter } from "next/navigation";
 import { Main, Container } from "../form/FormContainer";
@@ -16,6 +20,7 @@ import {
 } from "../form/FormElements";
 import { LogoText } from "../text/LogoTextComponen";
 import { ClientAPI } from "@/api/clientImplement";
+import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 export default function SignUpForm() {
 	const [email, setEmail] = useState("");
@@ -55,7 +60,25 @@ export default function SignUpForm() {
 			});
 
 			// ユーザー作成が成功したらログインページにリダイレクト
-			router.push("/signin");
+			try {
+				const credential = await signInWithEmailAndPassword(
+					getAuth(app),
+					email,
+					password,
+				);
+				const idToken = await credential.user.getIdToken();
+				await fetchWithToken(
+					"api/signin",
+					{
+						method: "POST",
+						body: JSON.stringify({ idToken }),
+					},
+					idToken,
+				);
+				router.push("/");
+			} catch (e) {
+				setError((e as Error).message);
+			}
 		} catch (e) {
 			console.log("Error creating user: ", e);
 			setError((e as Error).message);
