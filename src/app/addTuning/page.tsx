@@ -9,7 +9,7 @@ import AddTuning from "@/components/tuning/AddTuning";
 export default async function AddTuningPage({
 	searchParams,
 }: {
-	searchParams: { car_id: string };
+	searchParams: { car_id: number };
 }) {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
