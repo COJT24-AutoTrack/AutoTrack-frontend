@@ -18,7 +18,7 @@ export default async function Home() {
 
 	if (!tokens) {
 		console.log(tokens);
-		return redirect("/login");
+		return redirect("/signin");
 	} else {
 		console.log("Hello");
 	}

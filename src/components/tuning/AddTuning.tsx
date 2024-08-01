@@ -53,7 +53,7 @@ const AddTuning: React.FC<AddTuningProps> = ({ tokens, carId }) => {
 		fetchTunings();
 	}, [tokens.token, carId, tuId]);
 
-	const handleRegister = async (event: React.FormEvent) => {
+	const handleSignUp = async (event: React.FormEvent) => {
 		event.preventDefault();
 
 		const clientAPI = ClientAPI(tokens.token);
@@ -80,7 +80,7 @@ const AddTuning: React.FC<AddTuningProps> = ({ tokens, carId }) => {
 		<>
 			<BackHeader route="/tuning" />
 			<FormContainer>
-				<Form onSubmit={handleRegister}>
+				<Form onSubmit={handleSignUp}>
 					<BigLabel>チューニング記録追加</BigLabel>
 					<FormElementContainer>
 						<BigLabel>日付</BigLabel>

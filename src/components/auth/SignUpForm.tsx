@@ -17,7 +17,7 @@ import {
 import { LogoText } from "../text/LogoTextComponen";
 import { ClientAPI } from "@/api/clientImplement";
 
-export default function RegisterForm() {
+export default function SignUpForm() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmation, setConfirmation] = useState("");
@@ -55,7 +55,7 @@ export default function RegisterForm() {
 			});
 
 			// ユーザー作成が成功したらログインページにリダイレクト
-			router.push("/login");
+			router.push("/signin");
 		} catch (e) {
 			console.log("Error creating user: ", e);
 			setError((e as Error).message);
@@ -107,7 +107,7 @@ export default function RegisterForm() {
 					{error && <ErrorMessage>{error}</ErrorMessage>}
 					<Paragraph>
 						すでにアカウントをお持ちですか?{" "}
-						<StyledLink href="/login">ログインはこちら</StyledLink>
+						<StyledLink href="/signin">ログインはこちら</StyledLink>
 					</Paragraph>
 				</Form>
 			</Container>
