@@ -133,7 +133,7 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 
 	const handleDetailClick = () => {
 		if (fuelEfficiency) {
-			router.push(`/updateFueling?id=${fuelEfficiency.fe_id}`);
+			router.push(`refueling/updateFueling`);
 		}
 	};
 
