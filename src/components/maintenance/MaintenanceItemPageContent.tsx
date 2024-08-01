@@ -11,7 +11,7 @@ import { ContentText } from "../text/TextComponents";
 interface MaintenanceItemPageContentProps {
 	maintenances: Maintenance[];
 	maintType: string;
-	carId: string;
+	carId: number;
 	token: string;
 }
 
