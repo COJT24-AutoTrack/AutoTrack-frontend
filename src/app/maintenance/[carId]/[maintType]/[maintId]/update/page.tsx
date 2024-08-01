@@ -9,7 +9,7 @@ import UpdateMaintenancePageContent from "@/components/maintenance/UpdateMainten
 import { clientConfig, serverConfig } from "../../../../../../../config";
 
 interface Params {
-	carId: string;
+	carId: number;
 	maintId?: string;
 }
 

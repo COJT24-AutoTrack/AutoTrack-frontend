@@ -25,7 +25,7 @@ interface AddFuelEfficiencyProps {
 		token: string;
 		decodedToken: { uid: string };
 	};
-	carId: string;
+	carId: number;
 }
 const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 	const [date, setDate] = useState<string>("");
@@ -49,7 +49,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		const offsetDateTime = new Date(date).toISOString();
 
 		await clientAPI.fuelEfficiency.createFuelEfficiency({
-			car_id: parseInt(carId, 10),
+			car_id: carId,
 			fe_date: offsetDateTime,
 			fe_amount: amount,
 			fe_unitprice: unitPrice,

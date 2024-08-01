@@ -4,7 +4,7 @@ export const checkIsUserCars = async ({
 	carId,
 	tokens,
 }: {
-	carId: string;
+	carId: number;
 	tokens: {
 		token: string;
 		decodedToken: { uid: string };
@@ -21,7 +21,7 @@ export const checkIsUserCars = async ({
 	const userCarIds = response.map((car) => car.car_id);
 
 	// carId がユーザーの車に含まれているかどうかをチェック
-	if (!userCarIds.includes(parseInt(carId, 10))) {
+	if (!userCarIds.includes(carId, 10)) {
 		return false;
 	} else {
 		return true;
