@@ -67,7 +67,9 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 
 	const handleAddClick = () => {
 		if (userCars) {
-			router.push(`/addRefueling?car_id=${userCars[selectedCarIndex].car_id}`);
+			router.push(
+				`/refueling/addRefueling?car_id=${userCars[selectedCarIndex].car_id}`,
+			);
 		}
 	};
 
