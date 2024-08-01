@@ -17,16 +17,11 @@ import {
 import { LogoText } from "../text/LogoTextComponen";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
-export default function LoginForm() {
+export default function SignInForm() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 	const router = useRouter();
-
-	console.log(
-		"NEXT_PUBLIC_AUTOTRACK_API_BASE_URL: ",
-		process.env.NEXT_PUBLIC_AUTOTRACK_API_BASE_URL,
-	);
 
 	async function handleSubmit(event: FormEvent) {
 		event.preventDefault();
@@ -39,7 +34,7 @@ export default function LoginForm() {
 			);
 			const idToken = await credential.user.getIdToken();
 			await fetchWithToken(
-				"api/login",
+				"api/signin",
 				{
 					method: "POST",
 					body: JSON.stringify({ idToken }),
@@ -85,7 +80,7 @@ export default function LoginForm() {
 					{error && <ErrorMessage>{error}</ErrorMessage>}
 					<Paragraph>
 						アカウントをお持ちでない場合は
-						<StyledLink href="/register">こちら</StyledLink>
+						<StyledLink href="/signup">こちら</StyledLink>
 						から登録してください。
 					</Paragraph>
 				</Form>

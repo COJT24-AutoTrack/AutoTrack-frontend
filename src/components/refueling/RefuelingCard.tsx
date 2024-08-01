@@ -74,12 +74,12 @@ const ContentContainer = styled.div`
 	${media.SP} {
 		flex-direction: column;
 		align-items: flex-end;
-	}	
+	}
 	${media.PC} {
 		flex-direction: row;
 		align-items: center;
 		gap: 20px;
-	}	
+	}
 `;
 
 const ButtonContainer = styled.div`

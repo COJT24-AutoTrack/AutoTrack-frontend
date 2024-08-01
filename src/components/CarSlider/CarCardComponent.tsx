@@ -41,7 +41,7 @@ const CarImage = styled.img`
 	}
 	${media.PC} {
 		height: 60dvh;
-	}	
+	}
 	width: auto;
 	object-fit: cover;
 	align-self: stretch;

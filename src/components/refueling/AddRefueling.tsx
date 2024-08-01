@@ -56,20 +56,11 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		fetchFuelEfficiencies();
 	}, [tokens.token, carId, feId]);
 
-	const handleRegister = async (event: React.FormEvent) => {
+	const handleSignUp = async (event: React.FormEvent) => {
 		event.preventDefault();
 
 		const clientAPI = ClientAPI(tokens.token);
 		const offsetDateTime = new Date(date).toISOString();
-
-		console.log(tokens.token);
-		console.log({
-			car_id: parseInt(carId, 10),
-			fe_date: offsetDateTime,
-			fe_amount: amount,
-			fe_unitprice: unitPrice,
-			fe_mileage: mileage,
-		});
 
 		await clientAPI.fuelEfficiency.createFuelEfficiency({
 			car_id: parseInt(carId, 10),
@@ -85,7 +76,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		<>
 			<BackHeader route="/refueling" />
 			<FormContainer>
-				<Form onSubmit={handleRegister}>
+				<Form onSubmit={handleSignUp}>
 					<BigLabel>給油記録追加</BigLabel>
 					<FormElementContainer>
 						<BigLabel>日付</BigLabel>

@@ -44,20 +44,21 @@ const ButtonsContainer = styled.div`
 	flex-direction: row;
 `;
 
-const UpdateMaintenancePageContent: React.FC<UpdateMaintenancePageContentProps> = ({
-	carId,
-	token,
-	maintTypes,
-	maintenance,
-}) => {
-	const [maintType, setMaintType] = useState<MaintType>(maintenance?.maint_type || maintTypes[0]);
+const UpdateMaintenancePageContent: React.FC<
+	UpdateMaintenancePageContentProps
+> = ({ carId, token, maintTypes, maintenance }) => {
+	const [maintType, setMaintType] = useState<MaintType>(
+		maintenance?.maint_type || maintTypes[0],
+	);
 	const [maintDate, setMaintDate] = useState(maintenance?.maint_date || "");
-	const [maintDescription, setMaintDescription] = useState(maintenance?.maint_description || "");
+	const [maintDescription, setMaintDescription] = useState(
+		maintenance?.maint_description || "",
+	);
 	const router = useRouter();
 
 	const handleUpdate = async (e: React.FormEvent) => {
 		e.preventDefault();
-		
+
 		const formattedDate = new Date(maintDate).toISOString();
 
 		const clientAPI = ClientAPI(token);
@@ -69,7 +70,7 @@ const UpdateMaintenancePageContent: React.FC<UpdateMaintenancePageContentProps> 
 				maint_type: maintType,
 				maint_date: formattedDate,
 				maint_description: maintDescription,
-				maint_title: ""
+				maint_title: "",
 			});
 
 			router.push(`/maintenance/${carId}/${maintType}`);
@@ -82,7 +83,9 @@ const UpdateMaintenancePageContent: React.FC<UpdateMaintenancePageContentProps> 
 		if (maintenance) {
 			const clientAPI = ClientAPI(token);
 			try {
-				await clientAPI.maintenance.deleteMaintenance({ maint_id: maintenance.maint_id });
+				await clientAPI.maintenance.deleteMaintenance({
+					maint_id: maintenance.maint_id,
+				});
 				router.push(`/maintenance/${carId}/${maintenance.maint_type}`);
 			} catch (error) {
 				console.error("Error deleting maintenance record:", error);
@@ -96,17 +99,34 @@ const UpdateMaintenancePageContent: React.FC<UpdateMaintenancePageContentProps> 
 			<Form onSubmit={handleUpdate}>
 				<Label>
 					メンテナンスタイプ:
-					<Select value={maintType} onChange={(e) => setMaintType(e.target.value as MaintType)}>
-						{maintTypes.map((type) => (<option key={type} value={type}>{type}</option>))}
+					<Select
+						value={maintType}
+						onChange={(e) => setMaintType(e.target.value as MaintType)}
+					>
+						{maintTypes.map((type) => (
+							<option key={type} value={type}>
+								{type}
+							</option>
+						))}
 					</Select>
 				</Label>
 				<Label>
 					メンテナンス日:
-					<Input type="date" value={maintDate} onChange={(e) => setMaintDate(e.target.value)} required />
+					<Input
+						type="date"
+						value={maintDate}
+						onChange={(e) => setMaintDate(e.target.value)}
+						required
+					/>
 				</Label>
 				<Label>
 					メンテナンス詳細:
-					<Input type="text" value={maintDescription} onChange={(e) => setMaintDescription(e.target.value)} required />
+					<Input
+						type="text"
+						value={maintDescription}
+						onChange={(e) => setMaintDescription(e.target.value)}
+						required
+					/>
 				</Label>
 				<ButtonsContainer>
 					<BorderButton label="更新" onClick={() => handleUpdate} />

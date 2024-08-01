@@ -29,7 +29,7 @@ const ContentContainer = styled.div`
 	gap: 5px;
 	flex: 1;
 	flex-direction: column;
-    align-items: flex-start;
+	align-items: flex-start;
 `;
 
 const ButtonContainer = styled.div`

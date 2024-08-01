@@ -1,7 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+	getAuth,
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
+} from "firebase/auth";
 import { app } from "../../../firebase";
 import { useRouter } from "next/navigation";
 import { Main, Container } from "../form/FormContainer";
@@ -16,8 +20,9 @@ import {
 } from "../form/FormElements";
 import { LogoText } from "../text/LogoTextComponen";
 import { ClientAPI } from "@/api/clientImplement";
+import { fetchWithToken } from "@/api/module/fetchWithToken";
 
-export default function RegisterForm() {
+export default function SignUpForm() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmation, setConfirmation] = useState("");
@@ -41,7 +46,6 @@ export default function RegisterForm() {
 
 			// アカウント作成後にユーザーのIDトークンを取得
 			const jwt = await userCredential.user.getIdToken();
-			console.log(jwt);
 
 			// JWTトークンを使用してclientAPIを作成
 			const clientAPI = ClientAPI(jwt);
@@ -55,9 +59,26 @@ export default function RegisterForm() {
 			});
 
 			// ユーザー作成が成功したらログインページにリダイレクト
-			router.push("/login");
+			try {
+				const credential = await signInWithEmailAndPassword(
+					getAuth(app),
+					email,
+					password,
+				);
+				const idToken = await credential.user.getIdToken();
+				await fetchWithToken(
+					"api/signin",
+					{
+						method: "POST",
+						body: JSON.stringify({ idToken }),
+					},
+					idToken,
+				);
+				router.push("/");
+			} catch (e) {
+				setError((e as Error).message);
+			}
 		} catch (e) {
-			console.log("Error creating user: ", e);
 			setError((e as Error).message);
 		}
 	}
@@ -107,7 +128,7 @@ export default function RegisterForm() {
 					{error && <ErrorMessage>{error}</ErrorMessage>}
 					<Paragraph>
 						すでにアカウントをお持ちですか?{" "}
-						<StyledLink href="/login">ログインはこちら</StyledLink>
+						<StyledLink href="/signin">ログインはこちら</StyledLink>
 					</Paragraph>
 				</Form>
 			</Container>
