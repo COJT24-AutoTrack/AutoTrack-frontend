@@ -5,10 +5,14 @@ import styled from "styled-components";
 import { Maintenance, MaintType } from "@/api/models/models";
 import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
+import { checkIsUserCars } from "@/module/checkUserCars";
 
 interface AddMaintenancePageContentProps {
 	carId: number;
-	token: string;
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
 	maintTypes: MaintType[];
 }
 
@@ -48,7 +52,7 @@ const Button = styled.button`
 
 const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 	carId,
-	token,
+	tokens,
 	maintTypes,
 }) => {
 	const [maintType, setMaintType] = useState<MaintType>(maintTypes[0]);
@@ -59,9 +63,16 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
+		const isUserCar = await checkIsUserCars({ carId, tokens });
+		if (!isUserCar) {
+			alert("この車両は登録されていません");
+			router.push("/");
+			return;
+		}
+
 		const formattedDate = new Date(maintDate).toISOString();
 
-		const clientAPI = ClientAPI(token);
+		const clientAPI = ClientAPI(tokens.token);
 
 		try {
 			const response = await clientAPI.maintenance.createMaintenance({

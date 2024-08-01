@@ -30,7 +30,7 @@ const AddMaintenancePage = async ({ params }: { params: Params }) => {
 	return (
 		<AddMaintenancePageContent
 			carId={Number(params.carId)}
-			token={tokens.token}
+			tokens={tokens}
 			maintTypes={maintTypes}
 		/>
 	);
