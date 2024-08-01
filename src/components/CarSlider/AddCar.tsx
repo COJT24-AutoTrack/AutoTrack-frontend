@@ -94,8 +94,10 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 				type === "checkbox"
 					? checked
 					: name === "car_mileage"
-					? value === "" ? 0 : Number(value)
-					: value,
+						? value === ""
+							? 0
+							: Number(value)
+						: value,
 		}));
 	};
 

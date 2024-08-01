@@ -18,7 +18,7 @@ export const MaintenanceAPI = (jwt: string) => ({
 			jwt,
 		);
 		if (!response.ok) {
-			console.log(response)
+			console.log(response);
 			throw new Error("Failed to create Maintenance record");
 		}
 		const result: Maintenance = await response.json();

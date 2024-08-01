@@ -41,7 +41,9 @@ interface RefuelingProps {
 
 const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
-	const [fuelEfficiencies, setFuelEfficiencies] = useState<FuelEfficiency[] | null>(null);
+	const [fuelEfficiencies, setFuelEfficiencies] = useState<
+		FuelEfficiency[] | null
+	>(null);
 	const router = useRouter();
 
 	const switchCar = () => {
