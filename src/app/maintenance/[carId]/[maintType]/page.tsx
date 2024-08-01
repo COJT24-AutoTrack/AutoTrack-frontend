@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import { Maintenance } from "@/api/models/models";
-import { clientConfig, serverConfig } from "../../../../../config";
+import { clientConfig, serverConfig } from "@/../config";
 import MaintenanceItemPageContent from "@/components/maintenance/MaintenanceItemPageContent";
 
 interface Params {

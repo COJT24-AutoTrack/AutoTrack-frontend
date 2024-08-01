@@ -6,7 +6,7 @@ import {
 	SubSubContentText,
 	TitleText,
 } from "../text/TextComponents";
-import BackIcon from "../../public/icons/BackIcon.svg";
+import BackIcon from "/public/icons/BackIcon.svg";
 import { Anton } from "next/font/google";
 import { FuelEfficiency } from "@/api/models/models";
 import { useRouter } from "next/navigation";

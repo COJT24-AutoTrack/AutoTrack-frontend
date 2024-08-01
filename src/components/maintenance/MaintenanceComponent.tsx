@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Car, Maintenance, MaintType } from "@/api/models/models";
 import CarSelect from "@/components/base/CarSelect";
-import MaintenanceDetail from "./MaintenanceDetail";
+import MaintenanceDetail from "@/components/maintenance/MaintenanceDetail";
 import { media } from "@/styles/breakpoints";
 import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";

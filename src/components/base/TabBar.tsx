@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { useRouter } from "next/navigation";
-import HomeIcon from "../../public/icons/HomeIcon.svg";
-import RefuelingIcon from "../../public/icons/RefuelingIcon.svg";
-import MaintenaneIcon from "../../public/icons/MaintenanceIcon.svg";
-import TuningIcon from "../../public/icons/TuningIcon.svg";
+import HomeIcon from "/public/icons/HomeIcon.svg";
+import RefuelingIcon from "/public/icons/RefuelingIcon.svg";
+import MaintenaneIcon from "/public/icons/MaintenanceIcon.svg";
+import TuningIcon from "/public/icons/TuningIcon.svg";
 import { media } from "@/styles/breakpoints";
 
 const TabBarContainer = styled.nav`

@@ -2,7 +2,7 @@
 
 import styled from "styled-components";
 import { Tuning } from "@/api/models/models";
-import TuningInfoCard from "./TuningInfoCard";
+import TuningInfoCard from "@/components/tuning/TuningInfoCard";
 
 const Container = styled.div`
 	display: flex;

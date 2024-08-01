@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import CarSliderComponent from "./CarSlider/CarSliderComponent";
+import CarSliderComponent from "@/components/CarSlider/CarSliderComponent";
 import styled from "styled-components";
-import FuelEfficiencyComponent from "./CarDetail/FuelEfficiencyComponent";
-import DetailCardComponent from "./CarDetail/DetailCardComponent";
+import FuelEfficiencyComponent from "@/components/CarDetail/FuelEfficiencyComponent";
+import DetailCardComponent from "@/components/CarDetail/DetailCardComponent";
 import { carInfo } from "@/api/models/models";
-import { useSPQuery, usePCQuery } from "../hooks/useBreakpoints";
+import { useSPQuery, usePCQuery } from "@/hooks/useBreakpoints";
 
 const MenuContainer = styled.div`
 	display: flex;

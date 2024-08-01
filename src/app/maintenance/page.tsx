@@ -4,7 +4,7 @@ import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
-import { clientConfig, serverConfig } from "../../../config";
+import { clientConfig, serverConfig } from "@/../config";
 import MaintenanceComponent from "@/components/maintenance/MaintenanceComponent";
 
 const MaintenancePage = async () => {

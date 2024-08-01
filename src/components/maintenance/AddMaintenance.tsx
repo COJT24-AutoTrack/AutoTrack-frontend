@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Maintenance, MaintType } from "@/api/models/models";
+import { MaintType } from "@/api/models/models";
 import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";

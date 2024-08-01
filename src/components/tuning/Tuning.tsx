@@ -6,7 +6,7 @@ import CarSelect from "@/components/base/CarSelect";
 import styled from "styled-components";
 import AddIcon from "@/public/icons/AddIcon.svg";
 import { useRouter } from "next/navigation";
-import TuningInfoCardGroup from "./TuningInfoCardGroup";
+import TuningInfoCardGroup from "@/components/tuning/TuningInfoCardGroup";
 import type { Tuning } from "@/api/models/models";
 import { ClientAPI } from "@/api/clientImplement";
 

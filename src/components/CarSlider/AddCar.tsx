@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Car } from "@/api/models/models";
 import { useRouter } from "next/navigation";
-import BackIcon from "../../public/icons/BackIcon.svg";
+import BackIcon from "/public/icons/BackIcon.svg";
 import { ContentText } from "@/components/text/TextComponents";
 import { ClientAPI } from "@/api/clientImplement";
 import { Form, Input, Label } from "@/components/form/FormElements";

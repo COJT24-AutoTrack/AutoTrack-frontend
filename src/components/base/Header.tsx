@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import Link from "next/link";
-import { LogoText } from "../text/LogoTextComponen";
-import { media } from "../../styles/breakpoints";
+import { LogoText } from "@/components/text/LogoTextComponen";
+import { media } from "@/styles/breakpoints";
 import { usePCQuery } from "@/hooks/useBreakpoints";
-import TabBar from "./TabBar";
+import TabBar from "@/components/base/TabBar";
 
 const HeaderContainer = styled.div`
 	display: flex;
