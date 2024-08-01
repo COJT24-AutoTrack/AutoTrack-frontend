@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { FuelEfficiency } from "@/api/models/models";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import BackHeader from "@/components/base/BackHeader";
 import MainButton from "@/components/buttons/MainButton";
 import {
@@ -14,6 +13,7 @@ import {
 } from "@/components/form/FormElements";
 import { Anton } from "next/font/google";
 import { ClientAPI } from "@/api/clientImplement";
+import { checkIsUserCars } from "@/module/checkUserCars";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -27,7 +27,6 @@ interface AddFuelEfficiencyProps {
 	};
 	carId: string;
 }
-
 const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 	const [date, setDate] = useState<string>("");
 	const [amount, setAmount] = useState<number>(0);
@@ -35,28 +34,19 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 	const [unitPrice, setUnitPrice] = useState<number>(0);
 
 	const router = useRouter();
-	const searchParams = useSearchParams();
-	const feId = searchParams.get("id");
-
-	useEffect(() => {
-		const checkUserCars = async () => {};
-	}, [tokens.token, carId, feId]);
 
 	const handleSignUp = async (event: React.FormEvent) => {
 		event.preventDefault();
 
-		const clientAPI = ClientAPI(tokens.token);
-		const offsetDateTime = new Date(date).toISOString();
-
-		const response = await clientAPI.user.getUserCars({
-			firebase_user_id: tokens.decodedToken.uid,
-		});
-		const userCarIds = response.map((car) => car.car_id);
-		if (!userCarIds.includes(parseInt(carId, 10))) {
-			alert("その車両は登録されていません");
+		const isUserCar = await checkIsUserCars({ carId, tokens });
+		if (!isUserCar) {
+			alert("この車両は登録されていません");
 			router.push("/");
 			return;
 		}
+
+		const clientAPI = ClientAPI(tokens.token);
+		const offsetDateTime = new Date(date).toISOString();
 
 		await clientAPI.fuelEfficiency.createFuelEfficiency({
 			car_id: parseInt(carId, 10),
