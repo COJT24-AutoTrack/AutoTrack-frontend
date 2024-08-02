@@ -9,6 +9,7 @@ import { Form, Input, Label } from "@/components/form/FormElements";
 import Image from "next/image";
 import theme from "@/styles/theme";
 import router from "next/router";
+import { checkIsUserCars } from "@/module/checkUserCars";
 
 const EditContainer = styled.div`
 	display: flex;
@@ -87,6 +88,13 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 		e.preventDefault();
 		if (!car) return;
 		const clientAPI = ClientAPI(tokens.token);
+
+		const isUserCar = await checkIsUserCars({ carId, tokens });
+		if (!isUserCar) {
+			alert("この車両は登録されていません");
+			window.location.href = "/";
+			return;
+		}
 
 		if (image) {
 			const formData = new FormData();

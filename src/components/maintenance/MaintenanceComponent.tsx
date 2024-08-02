@@ -2,12 +2,18 @@
 
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Car, Maintenance, MaintType } from "@/api/models/models";
+import {
+	Car,
+	Maintenance,
+	MaintType,
+	maintenanceTypeMap,
+} from "@/api/models/models";
 import CarSelect from "@/components/base/CarSelect";
 import MaintenanceDetail from "@/components/maintenance/MaintenanceDetail";
 import { media } from "@/styles/breakpoints";
 import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
+import { checkIsUserCars } from "@/module/checkUserCars";
 
 const DetailContainer = styled.div`
 	display: flex;
@@ -29,12 +35,15 @@ const Container = styled.div`
 
 interface MaintenancePageProps {
 	userCars: Car[] | null;
-	token: string;
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
 }
 
 const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 	userCars,
-	token,
+	tokens,
 }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
 	const [maintenances, setMaintenances] = useState<Maintenance[] | null>(null);
@@ -49,7 +58,7 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 	useEffect(() => {
 		const fetchMaintenances = async () => {
 			if (userCars && userCars.length !== 0) {
-				const clientAPI = ClientAPI(token);
+				const clientAPI = ClientAPI(tokens.token);
 				const response = await clientAPI.car.getCarMaintenance({
 					car_id: userCars[selectedCarIndex].car_id,
 				});
@@ -57,7 +66,7 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 			}
 		};
 		fetchMaintenances();
-	}, [selectedCarIndex, userCars, token]);
+	}, [selectedCarIndex, userCars, tokens.token]);
 
 	const getMaintTypeDetails = (maintType: MaintType) => {
 		const maintenance = maintenances?.find(
@@ -73,7 +82,13 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 			: { lastMaintenanceDate: "", detail: "" };
 	};
 
-	const handleDetailClick = (carId: number, maintType: MaintType) => {
+	const handleDetailClick = async (carId: number, maintType: MaintType) => {
+		const isUserCar = await checkIsUserCars({ carId, tokens });
+		if (!isUserCar) {
+			alert("この車両は登録されていません");
+			router.push("/");
+			return;
+		}
 		router.push(`/maintenance/${carId}/${maintType}`);
 	};
 
@@ -95,7 +110,7 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 					return (
 						<MaintenanceDetail
 							key={maintType}
-							title={maintType}
+							title={maintenanceTypeMap[maintType] || maintType}
 							lastMaintenanceDate={lastMaintenanceDate}
 							detail={detail}
 							onDetailClick={() =>

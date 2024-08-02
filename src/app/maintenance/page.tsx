@@ -29,7 +29,7 @@ const MaintenancePage = async () => {
 		return notFound();
 	}
 
-	return <MaintenanceComponent userCars={userCars} token={tokens.token} />;
+	return <MaintenanceComponent userCars={userCars} tokens={tokens} />;
 };
 
 export default MaintenancePage;
