@@ -14,6 +14,7 @@ const Form = styled.form`
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
+	margin-top: 3dvh;
 `;
 
 const FormElementContainer = styled.div`
@@ -37,7 +38,8 @@ const Label = styled.label`
 	display: block;
 	font-size: 14px;
 	font-weight: 500;
-	color: ${(props) => props.theme.colors.textPrimary};
+	margin-bottom: 0.5rem;
+	color: ${(props) => props.theme.colors.textSecondary};
 `;
 
 const ButtonsContainer = styled.div`
@@ -49,6 +51,8 @@ const ButtonsContainer = styled.div`
 const Input = styled.input`
 	width: 100%;
 	padding: 12px;
+	background-color: ${(props) => props.theme.colors.baseBackground};
+	color: ${(props) => props.theme.colors.textPrimary};
 	border: 1px solid ${(props) => props.theme.colors.border};
 	border-radius: 4px;
 	font-size: 14px;
