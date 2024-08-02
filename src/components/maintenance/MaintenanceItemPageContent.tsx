@@ -131,7 +131,6 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 	maintenances,
 	maintType,
 	carId,
-	token,
 }) => {
 	const router = useRouter();
 	const decodedMaintType = decodeURIComponent(maintType);
