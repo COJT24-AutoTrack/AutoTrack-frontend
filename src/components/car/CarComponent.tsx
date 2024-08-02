@@ -139,7 +139,7 @@ const CarComponent = ({ carId, tokens }: CarComponentProps) => {
 		const isUserCar = await checkIsUserCars({ carId, tokens });
 		if (!isUserCar) {
 			alert("この車両は登録されていません");
-			router.push("/");
+			window.location.href = "/";
 			return;
 		}
 		window.location.href = "/car/edit/" + carId;

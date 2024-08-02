@@ -20,10 +20,8 @@ export const checkIsUserCars = async ({
 	});
 	const userCarIds = response.map((car) => car.car_id);
 
-	// carId がユーザーの車に含まれているかどうかをチェック
-	if (!userCarIds.includes(carId, 10)) {
-		return false;
-	} else {
-		return true;
-	}
+	// 明示的に数値に変換して比較
+	const result = userCarIds.includes(Number(carId));
+
+	return result;
 };
