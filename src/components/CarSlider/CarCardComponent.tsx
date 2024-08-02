@@ -31,6 +31,7 @@ const Card = styled.div`
 		width: 800px;
 	}
 	height: auto;
+	cursor: pointer;
 `;
 
 const CarImage = styled.img`

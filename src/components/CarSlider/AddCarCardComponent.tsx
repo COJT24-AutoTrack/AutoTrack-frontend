@@ -17,6 +17,7 @@ const CardContainer = styled.div`
 	flex-shrink: 0;
 	border-radius: 8px;
 	background: #1a1a1a;
+	cursor: pointer;
 `;
 
 const Card = styled.div`

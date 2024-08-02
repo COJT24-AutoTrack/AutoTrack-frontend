@@ -21,14 +21,15 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 }) => {
 	const router = useRouter();
 
-	const handleSelectCar = (userCar: carInfo) => {
+	const carCardOnClick = (userCar: carInfo) => {
 		onSelectCar(userCar);
+		router.push(`car/${userCar.car_id}`);
 	};
 
 	const handleSlideChange = (swiper: { realIndex: any }) => {
 		const activeIndex = swiper.realIndex;
 		const newSelectedCar = userCars[activeIndex];
-		handleSelectCar(newSelectedCar);
+		onSelectCar(newSelectedCar);
 	};
 
 	const isSP = useSPQuery();
@@ -51,7 +52,7 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 				<SwiperSlide key={userCar.car_id} style={{ width: "auto" }}>
 					<CarCardComponent
 						userCar={userCar}
-						onClick={() => handleSelectCar(userCar)}
+						onClick={() => carCardOnClick(userCar)}
 					/>
 				</SwiperSlide>
 			))}
