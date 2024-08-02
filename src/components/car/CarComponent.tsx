@@ -19,15 +19,14 @@ const CarInfoContainer = styled.div`
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 	color: ${theme.colors.textPrimary};
 	font-family: ${theme.fontFamily.primary};
+	padding: 20px;
 
 	${media.SP} {
-		padding: 0px;
 		width: 100dvw;
 		border-radius: 0;
 		box-shadow: none;
 	}
 	${media.PC} {
-		padding: 20px;
 		margin-top: 2rem;
 	}
 `;
@@ -50,11 +49,9 @@ const CarInfoGrid = styled.div`
 
 	${media.SP} {
 		grid-template-columns: 1fr;
-		padding: 0 1rem;
 	}
 	${media.PC} {
 		grid-template-columns: repeat(2, 1fr);
-		padding: 0;
 	}
 `;
 
@@ -138,7 +135,7 @@ const CarComponent = ({ carId, tokens }: CarComponentProps) => {
 	}, [carId, tokens]);
 
 	const handleEdit = () => {
-		window.location.href = "/car/" + carId + "/edit";
+		window.location.href = "/car/edit/" + carId;
 	};
 
 	const handleDelete = async () => {
@@ -204,8 +201,8 @@ const CarComponent = ({ carId, tokens }: CarComponentProps) => {
 				</CarInfoItem>
 			</CarInfoGrid>
 			<ButtonContainer>
-				<EditButton onClick={handleEdit}>Edit</EditButton>
 				<DeleteButton onClick={handleDelete}>Delete</DeleteButton>
+				<EditButton onClick={handleEdit}>Edit</EditButton>
 			</ButtonContainer>
 		</CarInfoContainer>
 	);
