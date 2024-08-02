@@ -27,7 +27,7 @@ const MaintenanceItemPage = async ({ params }: { params: Params }) => {
 
 	const clientAPI = ClientAPI(tokens.token);
 	const maintenances: Maintenance[] = await clientAPI.car.getCarMaintenance({
-		car_id: Number(params.carId),
+		car_id: params.carId,
 	});
 
 	const filteredMaintenances = maintenances.filter(
