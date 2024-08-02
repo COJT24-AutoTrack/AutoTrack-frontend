@@ -5,6 +5,7 @@ import { media } from "@/styles/breakpoints";
 import theme from "@/styles/theme";
 import { Anton } from "next/font/google";
 import { ContentText } from "@/components/text/TextComponents";
+import Image from "next/image";
 
 interface CarCardComponentProps {
 	userCar: carInfo;
@@ -34,7 +35,7 @@ const Card = styled.div`
 	cursor: pointer;
 `;
 
-const CarImage = styled.img`
+const CarImage = styled(Image)`
 	${media.SP} {
 		height: 20dvh;
 	}
@@ -68,7 +69,12 @@ const CarCardComponent: React.FC<CarCardComponentProps> = ({
 	onClick,
 }) => (
 	<Card onClick={onClick}>
-		<CarImage src={userCar.car_image_url} alt={userCar.car_name} />
+		<CarImage
+			src={userCar.car_image_url}
+			alt={userCar.car_name}
+			width={1200}
+			height={720}
+		/>
 		<ContentText>
 			{userCar.car_name} - {userCar.carmodelnum}
 		</ContentText>
