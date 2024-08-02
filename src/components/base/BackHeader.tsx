@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import BackIcon from "../../public/icons/BackIcon.svg";
-import { ContentText } from "../text/TextComponents";
+import BackIcon from "/public/icons/BackIcon.svg";
+import { ContentText } from "@/components/text/TextComponents";
 import { useRouter } from "next/navigation";
 
 const TopBar = styled.div`

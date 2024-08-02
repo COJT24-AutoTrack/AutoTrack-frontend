@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "styled-components";
-import RefuelingCard from "./RefuelingCard";
+import RefuelingCard from "@/components/refueling/RefuelingCard";
 import { FuelEfficiency } from "@/api/models/models";
 
 const Container = styled.div`

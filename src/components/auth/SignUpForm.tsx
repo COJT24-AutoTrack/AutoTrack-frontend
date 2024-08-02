@@ -6,9 +6,9 @@ import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
 } from "firebase/auth";
-import { app } from "../../../firebase";
+import { app } from "@/../firebase";
 import { useRouter } from "next/navigation";
-import { Main, Container } from "../form/FormContainer";
+import { Main, Container } from "@/components/form/FormContainer";
 import {
 	Form,
 	Label,
@@ -17,8 +17,8 @@ import {
 	Button,
 	Paragraph,
 	StyledLink,
-} from "../form/FormElements";
-import { LogoText } from "../text/LogoTextComponen";
+} from "@/components/form/FormElements";
+import { LogoText } from "@/components/text/LogoTextComponen";
 import { ClientAPI } from "@/api/clientImplement";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 

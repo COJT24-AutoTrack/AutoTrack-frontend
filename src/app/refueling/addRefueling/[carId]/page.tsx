@@ -4,12 +4,12 @@ import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { clientConfig, serverConfig } from "@/../config";
 import { notFound } from "next/navigation";
-import AddTuning from "@/components/tuning/AddTuning";
+import AddRefueling from "@/components/refueling/AddRefueling";
 
-export default async function AddTuningPage({
-	searchParams,
+export default async function AddRefuelingPage({
+	params,
 }: {
-	searchParams: { car_id: number };
+	params: { carId: number };
 }) {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
@@ -22,7 +22,5 @@ export default async function AddTuningPage({
 		return notFound();
 	}
 
-	const { car_id } = searchParams;
-
-	return <AddTuning tokens={tokens} carId={car_id} />;
+	return <AddRefueling tokens={tokens} carId={params.carId} />;
 }

@@ -6,10 +6,10 @@ import { notFound } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import { Maintenance, MaintType } from "@/api/models/models";
 import UpdateMaintenancePageContent from "@/components/maintenance/UpdateMaintenance";
-import { clientConfig, serverConfig } from "../../../../../../../config";
+import { clientConfig, serverConfig } from "@/../config";
 
 interface Params {
-	carId: string;
+	carId: number;
 	maintId?: string;
 }
 

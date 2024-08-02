@@ -2,12 +2,12 @@
 
 import React from "react";
 import styled from "styled-components";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Maintenance } from "@/api/models/models";
 
 interface MaintenanceItemComponentProps {
 	maintenances: Maintenance[];
-	carId: string;
+	carId: number;
 	maintType: string;
 }
 

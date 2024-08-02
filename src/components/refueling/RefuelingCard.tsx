@@ -6,7 +6,7 @@ import {
 	SubSubContentText,
 	TitleText,
 } from "../text/TextComponents";
-import BackIcon from "../../public/icons/BackIcon.svg";
+import BackIcon from "/public/icons/BackIcon.svg";
 import { Anton } from "next/font/google";
 import { FuelEfficiency } from "@/api/models/models";
 import { useRouter } from "next/navigation";
@@ -133,7 +133,7 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 
 	const handleDetailClick = () => {
 		if (fuelEfficiency) {
-			router.push(`/updateFueling?id=${fuelEfficiency.fe_id}`);
+			router.push(`refueling/updateFueling/${fuelEfficiency.fe_id}`);
 		}
 	};
 
@@ -159,8 +159,10 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 		<Container>
 			{fuelEfficiency && (
 				<MileageText className={Anton400.className}>
-					{fuelEfficiency.fe_mileage}
-					<MileageSpan className={Anton400.className}>km/l</MileageSpan>
+					{fuelEfficiency.fe_amount > 0
+						? (fuelEfficiency.fe_mileage / fuelEfficiency.fe_amount).toFixed(2)
+						: 0}
+					<MileageSpan className={Anton400.className}>km/L</MileageSpan>
 				</MileageText>
 			)}
 			<ContentContainer>

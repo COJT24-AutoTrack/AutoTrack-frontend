@@ -1,15 +1,10 @@
 "use client";
 
 import styled from "styled-components";
-import {
-	SubContentText,
-	SubSubContentText,
-	TitleText,
-} from "../text/TextComponents";
-import BackIcon from "../../public/icons/BackIcon.svg";
+import { SubSubContentText } from "../text/TextComponents";
+import BackIcon from "/public/icons/BackIcon.svg";
 import { Tuning } from "@/api/models/models";
 import { useRouter } from "next/navigation";
-import { media } from "@/styles/breakpoints";
 
 const Container = styled.div`
 	display: flex;

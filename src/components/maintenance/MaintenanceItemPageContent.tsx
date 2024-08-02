@@ -3,15 +3,15 @@
 import React from "react";
 import styled from "styled-components";
 import { Maintenance } from "@/api/models/models";
-import BackIcon from "../../public/icons/BackIcon.svg";
+import BackIcon from "/public/icons/BackIcon.svg";
 import { useRouter } from "next/navigation";
-import AddIcon from "../../public/icons/AddIcon.svg";
-import { ContentText } from "../text/TextComponents";
+import AddIcon from "/public/icons/AddIcon.svg";
+import { ContentText } from "@/components/text/TextComponents";
 
 interface MaintenanceItemPageContentProps {
 	maintenances: Maintenance[];
 	maintType: string;
-	carId: string;
+	carId: number;
 	token: string;
 }
 
@@ -131,7 +131,6 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 	maintenances,
 	maintType,
 	carId,
-	token,
 }) => {
 	const router = useRouter();
 	const decodedMaintType = decodeURIComponent(maintType);

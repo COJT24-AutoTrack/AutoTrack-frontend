@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Anton } from "@next/font/google";
-import AddCarIcon from "../../public/icons/AddIcon.svg";
+import AddCarIcon from "/public/icons/AddIcon.svg";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -17,6 +17,7 @@ const CardContainer = styled.div`
 	flex-shrink: 0;
 	border-radius: 8px;
 	background: #1a1a1a;
+	cursor: pointer;
 `;
 
 const Card = styled.div`

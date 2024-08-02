@@ -1,15 +1,14 @@
-import { Car, carInfo } from "@/api/models/models";
+import { carInfo } from "@/api/models/models";
 import React from "react";
 import styled from "styled-components";
-import { media } from "../../styles/breakpoints";
-import theme from "../../styles/theme";
-import { usePCQuery, useSPQuery } from "../../hooks/useBreakpoints";
+import { media } from "@/styles/breakpoints";
+import theme from "@/styles/theme";
 import { Anton } from "next/font/google";
-import { ContentText } from "../text/TextComponents";
+import { ContentText } from "@/components/text/TextComponents";
+import Image from "next/image";
 
 interface CarCardComponentProps {
 	userCar: carInfo;
-	isSelected: boolean;
 	onClick: () => void;
 }
 
@@ -18,7 +17,7 @@ const Anton400 = Anton({
 	subsets: ["latin"],
 });
 
-const Card = styled.div<{ isSelected: boolean }>`
+const Card = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -33,9 +32,10 @@ const Card = styled.div<{ isSelected: boolean }>`
 		width: 800px;
 	}
 	height: auto;
+	cursor: pointer;
 `;
 
-const CarImage = styled.img`
+const CarImage = styled(Image)`
 	${media.SP} {
 		height: 20dvh;
 	}
@@ -66,11 +66,15 @@ const CarName = styled.div`
 
 const CarCardComponent: React.FC<CarCardComponentProps> = ({
 	userCar,
-	isSelected,
 	onClick,
 }) => (
-	<Card isSelected={isSelected} onClick={onClick}>
-		<CarImage src={userCar.car_image_url} alt={userCar.car_name} />
+	<Card onClick={onClick}>
+		<CarImage
+			src={userCar.car_image_url}
+			alt={userCar.car_name}
+			width={1200}
+			height={720}
+		/>
 		<ContentText>
 			{userCar.car_name} - {userCar.carmodelnum}
 		</ContentText>

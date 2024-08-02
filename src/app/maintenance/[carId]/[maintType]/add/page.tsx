@@ -2,14 +2,13 @@ export const runtime = "edge";
 
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
-import { ClientAPI } from "@/api/clientImplement";
-import { Maintenance, MaintType } from "@/api/models/models";
+import { MaintType } from "@/api/models/models";
 import { notFound } from "next/navigation";
 import AddMaintenancePageContent from "@/components/maintenance/AddMaintenance";
-import { clientConfig, serverConfig } from "../../../../../../config";
+import { clientConfig, serverConfig } from "@/../config";
 
 interface Params {
-	carId: string;
+	carId: number;
 	maintType: string;
 }
 
@@ -30,7 +29,7 @@ const AddMaintenancePage = async ({ params }: { params: Params }) => {
 	return (
 		<AddMaintenancePageContent
 			carId={Number(params.carId)}
-			token={tokens.token}
+			tokens={tokens}
 			maintTypes={maintTypes}
 		/>
 	);

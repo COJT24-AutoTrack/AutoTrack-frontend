@@ -2,7 +2,7 @@ export const runtime = "edge";
 
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { clientConfig, serverConfig } from "@/../config";
 import HomeClient from "@/components/HomeClient";
 import { ClientAPI } from "@/api/clientImplement";
