@@ -213,7 +213,13 @@ export interface CarAPIInterface {
 	updateCar: {
 		request: {
 			car_id: number;
-			car: Car;
+			car_name: string;
+			carmodelnum: string;
+			car_color: string;
+			car_mileage: number;
+			car_isflooding: boolean;
+			car_issmoked: boolean;
+			car_image_url: string;
 		};
 		response: Car;
 	};
