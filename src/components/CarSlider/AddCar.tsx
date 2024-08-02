@@ -81,7 +81,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		car_mileage: 0,
 		car_isflooding: false,
 		car_issmoked: false,
-		car_image_url: "",
+		car_image_url: "https://r2.autotrack.work/images/No_Image9e6034d5.png",
 	});
 	const [image, setImage] = useState<File | null>(null);
 	const [preview, setPreview] = useState<string | null>(null);
