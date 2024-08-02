@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CarSliderComponent from "@/components/CarSlider/CarSliderComponent";
 import styled from "styled-components";
 import FuelEfficiencyComponent from "@/components/CarDetail/FuelEfficiencyComponent";
@@ -45,6 +45,14 @@ const HStack = styled.div`
 
 const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 	const [selectedCar, setSelectedCar] = useState<carInfo | null>(null);
+
+	useEffect(() => {
+		if (userCars.length > 0) {
+			setSelectedCar(userCars[0]);
+		} else {
+			setSelectedCar(null);
+		}
+	}, [userCars]);
 
 	const isSP = useSPQuery();
 	const isPC = usePCQuery();

@@ -8,7 +8,6 @@ import { ContentText } from "@/components/text/TextComponents";
 
 interface CarCardComponentProps {
 	userCar: carInfo;
-	isSelected: boolean;
 	onClick: () => void;
 }
 
@@ -17,7 +16,7 @@ const Anton400 = Anton({
 	subsets: ["latin"],
 });
 
-const Card = styled.div<{ isSelected: boolean }>`
+const Card = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -65,10 +64,9 @@ const CarName = styled.div`
 
 const CarCardComponent: React.FC<CarCardComponentProps> = ({
 	userCar,
-	isSelected,
 	onClick,
 }) => (
-	<Card isSelected={isSelected} onClick={onClick}>
+	<Card onClick={onClick}>
 		<CarImage src={userCar.car_image_url} alt={userCar.car_name} />
 		<ContentText>
 			{userCar.car_name} - {userCar.carmodelnum}

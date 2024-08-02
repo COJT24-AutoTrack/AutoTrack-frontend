@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -19,11 +19,9 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 	userCars,
 	onSelectCar,
 }) => {
-	const [selectedCar, setSelectedCar] = useState<carInfo | null>(null);
 	const router = useRouter();
 
 	const handleSelectCar = (userCar: carInfo) => {
-		setSelectedCar(userCar);
 		onSelectCar(userCar);
 	};
 
@@ -53,7 +51,6 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 				<SwiperSlide key={userCar.car_id} style={{ width: "auto" }}>
 					<CarCardComponent
 						userCar={userCar}
-						isSelected={userCar === selectedCar}
 						onClick={() => handleSelectCar(userCar)}
 					/>
 				</SwiperSlide>
