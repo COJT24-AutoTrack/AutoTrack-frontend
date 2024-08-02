@@ -18,7 +18,7 @@ export interface Car {
 	car_mileage: number;
 	car_isflooding: boolean;
 	car_issmoked: boolean;
-	car_image_url?: string;
+	car_image_url: string;
 	created_at: string;
 	updated_at: string;
 }
