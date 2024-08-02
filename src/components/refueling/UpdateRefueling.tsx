@@ -22,49 +22,56 @@ const Anton400 = Anton({
 });
 
 interface UpdateFuelingProps {
-	fuelEfficiencies: FuelEfficiency[];
-	token: string;
+	feId: number;
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
 }
 
-const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
-	fuelEfficiencies,
-	token,
-}) => {
+const UpdateRefueling = ({ tokens, feId }: UpdateFuelingProps) => {
 	const [fuelEfficiency, setFuelEfficiency] = useState<FuelEfficiency | null>(
 		null,
 	);
 	const [date, setDate] = useState("");
-	const [amount, setAmount] = useState(0);
-	const [mileage, setMileage] = useState(0);
-	const [unitPrice, setUnitPrice] = useState(0);
+	const [amount, setAmount] = useState("");
+	const [mileage, setMileage] = useState("");
+	const [unitPrice, setUnitPrice] = useState("");
 
 	const router = useRouter();
-	const searchParams = useSearchParams();
-	const feId = searchParams.get("id");
 
 	useEffect(() => {
-		if (fuelEfficiencies) {
-			const fe = fuelEfficiencies.find((fe) => fe.fe_id === Number(feId));
-			if (fe) {
-				setFuelEfficiency(fe);
-				setDate(fe.fe_date);
-				setAmount(fe.fe_amount);
-				setMileage(fe.fe_mileage);
-				setUnitPrice(fe.fe_unitprice);
-			}
+		const clientAPI = ClientAPI(tokens.token);
+		const fetchFuelEfficiency = async () => {
+			const response = await clientAPI.fuelEfficiency.getFuelEfficiency({
+				fe_id: feId,
+			});
+			setFuelEfficiency(response);
+		};
+		fetchFuelEfficiency();
+	}, [feId, tokens]);
+
+	useEffect(() => {
+		if (fuelEfficiency) {
+			setDate(fuelEfficiency.fe_date);
+			setAmount(fuelEfficiency.fe_amount.toString());
+			setMileage(fuelEfficiency.fe_mileage.toString());
+			setUnitPrice(fuelEfficiency.fe_unitprice.toString());
 		}
-	}, [feId, fuelEfficiencies]);
+	}, [fuelEfficiency]);
 
 	const handleUpdate = async () => {
+		console.log("pushed update button");
 		if (fuelEfficiency) {
-			const clientAPI = ClientAPI(token);
+			console.log("update fuelEfficiency", fuelEfficiency);
+			const clientAPI = ClientAPI(tokens.token);
 			await clientAPI.fuelEfficiency.updateFuelEfficiency({
 				fe_id: fuelEfficiency.fe_id,
 				car_id: fuelEfficiency.car_id,
 				fe_date: date,
-				fe_amount: amount,
-				fe_unitprice: unitPrice,
-				fe_mileage: mileage,
+				fe_amount: parseFloat(amount),
+				fe_unitprice: parseFloat(unitPrice),
+				fe_mileage: parseFloat(mileage),
 			});
 			router.push("/refueling");
 		}
@@ -72,7 +79,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
 
 	const handleDelete = async () => {
 		if (fuelEfficiency) {
-			const clientAPI = ClientAPI(token);
+			const clientAPI = ClientAPI(tokens.token);
 			await clientAPI.fuelEfficiency.deleteFuelEfficiency({
 				fe_id: fuelEfficiency.fe_id,
 			});
@@ -99,7 +106,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
 						<input
 							type="number"
 							value={amount}
-							onChange={(e) => setAmount(Number(e.target.value))}
+							onChange={(e) => setAmount(e.target.value)}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
@@ -107,7 +114,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
 						<input
 							type="number"
 							value={unitPrice}
-							onChange={(e) => setUnitPrice(Number(e.target.value))}
+							onChange={(e) => setUnitPrice(e.target.value)}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
@@ -115,13 +122,19 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({
 						<input
 							type="number"
 							value={mileage}
-							onChange={(e) => setMileage(Number(e.target.value))}
+							onChange={(e) => setMileage(e.target.value)}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
 						<BigLabel style={{ color: "red" }}>燃費</BigLabel>
 						<BigLabel className={Anton400.className}>
-							{mileage && unitPrice ? (mileage / unitPrice).toFixed(2) : "0"}km
+							{mileage &&
+							unitPrice &&
+							!isNaN(parseFloat(mileage)) &&
+							!isNaN(parseFloat(unitPrice))
+								? (parseFloat(mileage) / parseFloat(unitPrice)).toFixed(2)
+								: "0"}
+							km
 						</BigLabel>
 					</FormElementContainer>
 					<ButtonsContainer>

@@ -6,8 +6,8 @@ export interface User {
 	user_name: string;
 	user_password: string;
 	firebase_user_id: string;
-	created_at: string;
-	updated_at: string;
+	created_at?: string;
+	updated_at?: string;
 }
 
 export interface Car {
@@ -18,9 +18,9 @@ export interface Car {
 	car_mileage: number;
 	car_isflooding: boolean;
 	car_issmoked: boolean;
-	car_image_url?: string;
-	created_at: string;
-	updated_at: string;
+	car_image_url: string;
+	created_at?: string;
+	updated_at?: string;
 }
 
 export interface Tuning {
@@ -29,8 +29,8 @@ export interface Tuning {
 	tuning_name: string;
 	tuning_date: string;
 	tuning_description: string;
-	created_at: string;
-	updated_at: string;
+	created_at?: string;
+	updated_at?: string;
 }
 
 export enum MaintType {
@@ -61,8 +61,8 @@ export interface Maintenance {
 	maint_title: string;
 	maint_date: string;
 	maint_description: string;
-	created_at: string;
-	updated_at: string;
+	created_at?: string;
+	updated_at?: string;
 }
 
 export interface FuelEfficiency {
@@ -72,8 +72,8 @@ export interface FuelEfficiency {
 	fe_amount: number;
 	fe_unitprice: number;
 	fe_mileage: number;
-	created_at: string;
-	updated_at: string;
+	created_at?: string;
+	updated_at?: string;
 }
 
 export interface Accident {
@@ -81,8 +81,8 @@ export interface Accident {
 	car_id: number;
 	accident_date: string;
 	accident_description: string;
-	created_at: string;
-	updated_at: string;
+	created_at?: string;
+	updated_at?: string;
 }
 
 export interface PeriodicInspection {
@@ -91,8 +91,8 @@ export interface PeriodicInspection {
 	pi_name: string;
 	pi_date: string;
 	pi_nextdate: string;
-	created_at: string;
-	updated_at: string;
+	created_at?: string;
+	updated_at?: string;
 }
 
 // 以下はクライアント側でよしなに定義しているもの

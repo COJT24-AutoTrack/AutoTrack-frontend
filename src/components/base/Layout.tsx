@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "./Header";
-import TabBar from "./TabBar";
+import Header from "@/components/base/Header";
+import TabBar from "@/components/base/TabBar";
 import styled from "styled-components";
 
 const PageContainer = styled.div`

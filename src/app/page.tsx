@@ -2,7 +2,7 @@ export const runtime = "edge";
 
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { clientConfig, serverConfig } from "@/../config";
 import HomeClient from "@/components/HomeClient";
 import { ClientAPI } from "@/api/clientImplement";
@@ -17,10 +17,7 @@ export default async function Home() {
 	});
 
 	if (!tokens) {
-		console.log(tokens);
-		return redirect("/login");
-	} else {
-		console.log("Hello");
+		return redirect("/signin");
 	}
 
 	const clientAPI = ClientAPI(tokens.token);
@@ -44,7 +41,6 @@ export default async function Home() {
 			});
 		allMaintenances.push(...carMaintenances);
 		allFuelEfficiencies.push(...carFuelEfficiencies);
-		console.log(userCars);
 	}
 
 	const parseDateToDays = (dateStr: string): number => {
@@ -115,9 +111,6 @@ export default async function Home() {
 			(m) => m.car_id === car.car_id,
 		);
 
-		console.log("carFuelEfficiencies: ", carFuelEfficiencies);
-		console.log("carMaintenances: ", carMaintenances);
-
 		const { averageFuelEfficiency, totalGasCost, totalMileage } =
 			calculateMonthlyValues(carFuelEfficiencies);
 
@@ -139,8 +132,6 @@ export default async function Home() {
 			total_mileage: totalMileage,
 		};
 	});
-
-	console.log("carInfos: ", carInfos);
 
 	return <HomeClient userCars={carInfos} />;
 }

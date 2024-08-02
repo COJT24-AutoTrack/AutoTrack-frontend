@@ -3,9 +3,9 @@
 import { Car, FuelEfficiency } from "@/api/models/models";
 import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
-import RefuelingCardGroup from "./RefuelingCardGroup";
+import RefuelingCardGroup from "@/components/refueling/RefuelingCardGroup";
 import styled from "styled-components";
-import AddIcon from "@/public/icons/AddIcon.svg";
+import AddIcon from "/public/icons/AddIcon.svg";
 import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 
@@ -41,7 +41,9 @@ interface RefuelingProps {
 
 const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
-	const [fuelEfficiencies, setFuelEfficiencies] = useState<FuelEfficiency[] | null>(null);
+	const [fuelEfficiencies, setFuelEfficiencies] = useState<
+		FuelEfficiency[] | null
+	>(null);
 	const router = useRouter();
 
 	const switchCar = () => {
@@ -65,7 +67,9 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 
 	const handleAddClick = () => {
 		if (userCars) {
-			router.push(`/addRefueling?car_id=${userCars[selectedCarIndex].car_id}`);
+			router.push(
+				`/refueling/addRefueling/${userCars[selectedCarIndex].car_id}`,
+			);
 		}
 	};
 

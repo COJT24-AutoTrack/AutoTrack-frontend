@@ -5,11 +5,11 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import { Maintenance } from "@/api/models/models";
-import { clientConfig, serverConfig } from "../../../../../config";
+import { clientConfig, serverConfig } from "@/../config";
 import MaintenanceItemPageContent from "@/components/maintenance/MaintenanceItemPageContent";
 
 interface Params {
-	carId: string;
+	carId: number;
 	maintType: string;
 }
 
@@ -27,7 +27,7 @@ const MaintenanceItemPage = async ({ params }: { params: Params }) => {
 
 	const clientAPI = ClientAPI(tokens.token);
 	const maintenances: Maintenance[] = await clientAPI.car.getCarMaintenance({
-		car_id: Number(params.carId),
+		car_id: params.carId,
 	});
 
 	const filteredMaintenances = maintenances.filter(

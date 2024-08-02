@@ -1,5 +1,5 @@
 import { useMediaQuery } from "react-responsive";
-import { breakpoints } from "../styles/breakpoints";
+import { breakpoints } from "@/styles/breakpoints";
 
 export const usePCQuery = (): boolean =>
 	useMediaQuery({ minWidth: parseInt(breakpoints.PC) });

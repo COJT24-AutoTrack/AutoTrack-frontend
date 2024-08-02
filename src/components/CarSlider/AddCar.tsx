@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Car } from "@/api/models/models";
 import { useRouter } from "next/navigation";
-import BackIcon from "../../public/icons/BackIcon.svg";
+import BackIcon from "/public/icons/BackIcon.svg";
 import { ContentText } from "@/components/text/TextComponents";
 import { ClientAPI } from "@/api/clientImplement";
 import { Form, Input, Label } from "@/components/form/FormElements";
@@ -81,7 +81,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		car_mileage: 0,
 		car_isflooding: false,
 		car_issmoked: false,
-		car_image_url: "",
+		car_image_url: "https://r2.autotrack.work/images/No_Image9e6034d5.png",
 	});
 	const [image, setImage] = useState<File | null>(null);
 	const [preview, setPreview] = useState<string | null>(null);
@@ -94,8 +94,10 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 				type === "checkbox"
 					? checked
 					: name === "car_mileage"
-					? value === "" ? 0 : Number(value)
-					: value,
+						? value === ""
+							? 0
+							: Number(value)
+						: value,
 		}));
 	};
 
@@ -123,7 +125,6 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 				await clientAPI.image.uploadImage({
 					formData: formData,
 				});
-				console.log(`image_url was set: ${JSON.stringify(carData)}`);
 			} catch (e) {
 				alert((e as Error).message);
 				return;

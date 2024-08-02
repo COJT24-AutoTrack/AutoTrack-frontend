@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import CarCardComponent from "./CarCardComponent";
-import AddCarCardComponent from "./AddCarCardComponent";
+import CarCardComponent from "@/components/CarSlider/CarCardComponent";
+import AddCarCardComponent from "@/components/CarSlider/AddCarCardComponent";
 import { Navigation, Pagination } from "swiper/modules";
 import { carInfo } from "@/api/models/models";
 import { useRouter } from "next/navigation";
@@ -19,27 +19,23 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 	userCars,
 	onSelectCar,
 }) => {
-	const [selectedCar, setSelectedCar] = useState<carInfo | null>(null);
 	const router = useRouter();
 
-	const handleSelectCar = (userCar: carInfo) => {
-		setSelectedCar(userCar);
+	const carCardOnClick = (userCar: carInfo) => {
 		onSelectCar(userCar);
+		router.push(`car/${userCar.car_id}`);
 	};
 
 	const handleSlideChange = (swiper: { realIndex: any }) => {
 		const activeIndex = swiper.realIndex;
 		const newSelectedCar = userCars[activeIndex];
-		handleSelectCar(newSelectedCar);
+		onSelectCar(newSelectedCar);
 	};
 
 	const isSP = useSPQuery();
 	const handleAddCarClick = () => {
 		router.push("/add-car");
 	};
-	console.log("--=---");
-	console.log(userCars);
-	console.log("------");
 
 	return (
 		<Swiper
@@ -56,8 +52,7 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 				<SwiperSlide key={userCar.car_id} style={{ width: "auto" }}>
 					<CarCardComponent
 						userCar={userCar}
-						isSelected={userCar === selectedCar}
-						onClick={() => handleSelectCar(userCar)}
+						onClick={() => carCardOnClick(userCar)}
 					/>
 				</SwiperSlide>
 			))}

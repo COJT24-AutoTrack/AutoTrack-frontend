@@ -2,14 +2,14 @@ export const runtime = "edge";
 
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
-import { clientConfig, serverConfig } from "../../../config";
 import { notFound } from "next/navigation";
-import AddRefueling from "@/components/refueling/AddRefueling";
+import { clientConfig, serverConfig } from "@/../config";
+import UpdateRefueling from "@/components/refueling/UpdateRefueling";
 
-export default async function AddRefuelingPage({
-	searchParams,
+export default async function UpdateFuelingPage({
+	params,
 }: {
-	searchParams: { car_id: string };
+	params: { feId: number };
 }) {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
@@ -22,7 +22,5 @@ export default async function AddRefuelingPage({
 		return notFound();
 	}
 
-	const { car_id } = searchParams;
-
-	return <AddRefueling tokens={tokens} carId={car_id} />;
+	return <UpdateRefueling feId={params.feId} tokens={tokens} />;
 }

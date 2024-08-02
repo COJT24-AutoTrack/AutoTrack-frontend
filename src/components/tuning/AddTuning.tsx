@@ -24,7 +24,7 @@ interface AddTuningProps {
 		token: string;
 		decodedToken: { uid: string };
 	};
-	carId: string;
+	carId: number;
 }
 
 const AddTuning: React.FC<AddTuningProps> = ({ tokens, carId }) => {
@@ -41,7 +41,7 @@ const AddTuning: React.FC<AddTuningProps> = ({ tokens, carId }) => {
 			const clientAPI = ClientAPI(tokens.token);
 
 			const response = await clientAPI.car.getCarTuning({
-				car_id: parseInt(carId, 10),
+				car_id: carId,
 			});
 			const tu = response.find((tu) => tu.tuning_id === Number(tuId));
 			if (tu) {
@@ -53,22 +53,14 @@ const AddTuning: React.FC<AddTuningProps> = ({ tokens, carId }) => {
 		fetchTunings();
 	}, [tokens.token, carId, tuId]);
 
-	const handleRegister = async (event: React.FormEvent) => {
+	const handleSignUp = async (event: React.FormEvent) => {
 		event.preventDefault();
 
 		const clientAPI = ClientAPI(tokens.token);
 		const offsetDateTime = new Date(date).toISOString();
 
-		console.log(tokens.token);
-		console.log({
-			car_id: carId,
-			tuning_date: offsetDateTime,
-			tuning_name: title,
-			tuning_description: description,
-		});
-
 		await clientAPI.tuning.createTuning({
-			car_id: parseInt(carId, 10),
+			car_id: carId,
 			tuning_date: offsetDateTime,
 			tuning_name: title,
 			tuning_description: description,
@@ -80,7 +72,7 @@ const AddTuning: React.FC<AddTuningProps> = ({ tokens, carId }) => {
 		<>
 			<BackHeader route="/tuning" />
 			<FormContainer>
-				<Form onSubmit={handleRegister}>
+				<Form onSubmit={handleSignUp}>
 					<BigLabel>チューニング記録追加</BigLabel>
 					<FormElementContainer>
 						<BigLabel>日付</BigLabel>

@@ -2,12 +2,12 @@
 
 import React from "react";
 import styled from "styled-components";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Maintenance } from "@/api/models/models";
 
 interface MaintenanceItemComponentProps {
 	maintenances: Maintenance[];
-	carId: string;
+	carId: number;
 	maintType: string;
 }
 
@@ -41,7 +41,9 @@ const MaintenanceItemComponent: React.FC<MaintenanceItemComponentProps> = ({
 					<h3>{maintenance.maint_title}</h3>
 					<p>日付: {new Date(maintenance.maint_date).toLocaleDateString()}</p>
 					<p>詳細: {maintenance.maint_description}</p>
-					<button onClick={() => handleDetailClick(maintenance.maint_id)}>詳細</button>
+					<button onClick={() => handleDetailClick(maintenance.maint_id)}>
+						詳細
+					</button>
 				</MaintenanceCard>
 			))}
 		</Container>

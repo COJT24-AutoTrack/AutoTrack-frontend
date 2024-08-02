@@ -1,7 +1,7 @@
 import React from "react";
-import Header from "./Header";
+import Header from "@/components/base/Header";
 import styled from "styled-components";
-import TabBar from "./TabBar";
+import TabBar from "@/components/base/TabBar";
 import { useSPQuery } from "@/hooks/useBreakpoints";
 import dynamic from "next/dynamic";
 
