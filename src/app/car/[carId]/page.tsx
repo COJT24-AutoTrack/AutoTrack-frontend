@@ -15,14 +15,19 @@ const CarPage = async ({ params }: { params: { carId: number } }) => {
 	});
 
 	if (!tokens) {
+		console.error("Not signed in");
 		return notFound();
 	}
 
-	if (params.carId) {
+	if (!params.carId) {
 		return notFound();
 	}
 
-	return <CarComponent carId={params.carId} tokens={tokens} />;
+	return (
+		<div>
+			<CarComponent carId={params.carId} tokens={tokens} />
+		</div>
+	);
 };
 
 export default CarPage;
