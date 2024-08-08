@@ -14,6 +14,7 @@ import { media } from "@/styles/breakpoints";
 import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";
+import AddIcon from "/public/icons/AddIcon.svg";
 
 const DetailContainer = styled.div`
 	display: flex;
@@ -27,11 +28,31 @@ const DetailContainer = styled.div`
 	}
 	margin: 0;
 `;
+const SVGButton = styled.button`
+	position: fixed;
+	right: 14px;
+	bottom: 100px;
+	width: 80px;
+	height: 80px;
+	background-color: transparent;
+	border: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+
+	svg {
+		width: 100px;
+		height: 100px;
+	}
+`;
 
 const Container = styled.div`
 	position: relative;
 	padding-bottom: 80px;
 `;
+
+const Fixed = styled.div``;
 
 interface MaintenancePageProps {
 	userCars: Car[] | null;
@@ -55,10 +76,15 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 		}
 	};
 
+	const handleAddClick = () => {
+		router.push(`/maintenance/add`);
+	};
+
 	useEffect(() => {
 		const fetchMaintenances = async () => {
 			if (userCars && userCars.length !== 0) {
 				const clientAPI = ClientAPI(tokens.token);
+				console.log("car_id", userCars[selectedCarIndex].car_id);
 				const response = await clientAPI.car.getCarMaintenance({
 					car_id: userCars[selectedCarIndex].car_id,
 				});
@@ -89,20 +115,22 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 			router.push("/");
 			return;
 		}
-		router.push(`/maintenance/${carId}/${maintType}`);
+		router.push(`/maintenance/${maintType}`);
 	};
 
 	if (!userCars) {
 		return <div>ユーザーの車が見つかりません</div>;
 	}
-
+	console.log("carid: ", userCars[selectedCarIndex].car_id);
 	return (
 		<Container>
-			<CarSelect
-				userCars={userCars}
-				selectedCarIndex={selectedCarIndex}
-				switchCar={switchCar}
-			/>
+			<Fixed>
+				<CarSelect
+					userCars={userCars}
+					selectedCarIndex={selectedCarIndex}
+					switchCar={switchCar}
+				/>
+			</Fixed>
 			<DetailContainer>
 				{Object.values(MaintType).map((maintType) => {
 					const { lastMaintenanceDate, detail } =
@@ -120,6 +148,9 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 					);
 				})}
 			</DetailContainer>
+			<SVGButton onClick={handleAddClick}>
+				<AddIcon style={{ fill: "red" }} />
+			</SVGButton>
 		</Container>
 	);
 };

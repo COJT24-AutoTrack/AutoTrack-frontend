@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import styled from "styled-components";
 import { MaintType } from "@/api/models/models";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";
 
@@ -59,6 +59,17 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 	const [maintDate, setMaintDate] = useState("");
 	const [maintDescription, setMaintDescription] = useState("");
 	const router = useRouter();
+	const searchParams = useSearchParams();
+
+	useEffect(() => {
+		const maintTypeParam = searchParams.get("maintType");
+		if (maintTypeParam) {
+			const decodedMaintType = decodeURIComponent(maintTypeParam);
+			if (maintTypes.includes(decodedMaintType as MaintType)) {
+				setMaintType(decodedMaintType as MaintType);
+			}
+		}
+	}, [searchParams, maintTypes]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
