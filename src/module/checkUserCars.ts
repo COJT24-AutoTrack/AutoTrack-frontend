@@ -1,4 +1,5 @@
 import { ClientAPI } from "@/api/clientImplement";
+import { Car } from "@/api/models/models";
 
 export const checkIsUserCars = async ({
 	carId,
@@ -15,10 +16,10 @@ export const checkIsUserCars = async ({
 	}
 
 	const clientAPI = ClientAPI(tokens.token);
-	const response = await clientAPI.user.getUserCars({
+	const userCars: Car[] = await clientAPI.user.getUserCars({
 		firebase_user_id: tokens.decodedToken.uid,
 	});
-	const userCarIds = response.map((car) => car.car_id);
+	const userCarIds = userCars.map((car) => car.car_id);
 
 	// 明示的に数値に変換して比較
 	const result = userCarIds.includes(Number(carId));

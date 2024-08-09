@@ -98,14 +98,16 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 		const maintenance = maintenances?.find(
 			(maintenance) => maintenance.maint_type === maintType,
 		);
+		console.log("maintenance: ", maintenance);
 		return maintenance
 			? {
+					title: maintenance.maint_title,
 					lastMaintenanceDate: new Date(
 						maintenance.maint_date,
 					).toLocaleDateString(),
 					detail: maintenance.maint_description,
 				}
-			: { lastMaintenanceDate: "", detail: "" };
+			: { title: "", lastMaintenanceDate: "", detail: "" };
 	};
 
 	const handleDetailClick = async (carId: number, maintType: MaintType) => {
@@ -133,12 +135,14 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 			</Fixed>
 			<DetailContainer>
 				{Object.values(MaintType).map((maintType) => {
-					const { lastMaintenanceDate, detail } =
+					const { title, lastMaintenanceDate, detail } =
 						getMaintTypeDetails(maintType);
+					console.log("maintTitle: ", title);
 					return (
 						<MaintenanceDetail
 							key={maintType}
-							title={maintenanceTypeMap[maintType] || maintType}
+							maintType={maintenanceTypeMap[maintType] || maintType}
+							title={title || ""}
 							lastMaintenanceDate={lastMaintenanceDate}
 							detail={detail}
 							onDetailClick={() =>

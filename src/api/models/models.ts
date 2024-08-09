@@ -52,6 +52,7 @@ export enum MaintType {
 	TimingBeltChange = "Timing Belt Change",
 	CoolantRefill = "Coolant Refill",
 	WasherFluidRefill = "Washer Fluid Refill",
+	Other = "Other",
 }
 
 export const maintenanceTypeMap: Record<string, string> = {
@@ -73,6 +74,7 @@ export const maintenanceTypeMap: Record<string, string> = {
 	"Timing Belt Change": "タイミングベルト交換",
 	"Coolant Refill": "クーラント補充",
 	"Washer Fluid Refill": "ウォッシャー液補充",
+	Other: "その他",
 };
 
 export interface Maintenance {

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import theme from "@/styles/theme";
 
 interface MaintenanceDetailProps {
+	maintType: string;
 	title: string;
 	lastMaintenanceDate: string;
 	detail: string;
@@ -53,6 +54,7 @@ const DetailButton = styled.button`
 `;
 
 const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({
+	maintType,
 	title,
 	lastMaintenanceDate,
 	detail,
@@ -61,10 +63,12 @@ const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({
 	return (
 		<Container>
 			<Title>
-				{title}
+				{maintType}
 				<DetailButton onClick={onDetailClick}>&gt;</DetailButton>
 			</Title>
+
 			<Explanation>
+				{maintType === "その他" && <DetailText>{title}</DetailText>}
 				<DateText>前回メンテナンス日: {lastMaintenanceDate}</DateText>
 				<DetailText>{detail}</DetailText>
 			</Explanation>

@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 interface StyledButtonProps {
 	label: string;
-	onClick?: () => void;
+	onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 	type?: "button" | "submit" | "reset";
 }
 
