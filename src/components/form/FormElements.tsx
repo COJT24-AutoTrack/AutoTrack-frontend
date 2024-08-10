@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Link from "next/link";
 
-const FormContainer = styled.div`
+export const FormContainer = styled.div`
 	display: flex;
 	padding: 20px;
 	flex-direction: column;
@@ -9,7 +9,7 @@ const FormContainer = styled.div`
 	align-self: stretch;
 `;
 
-const Form = styled.form`
+export const Form = styled.form`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -17,7 +17,7 @@ const Form = styled.form`
 	margin-top: 3dvh;
 `;
 
-const FormElementContainer = styled.div`
+export const FormElementContainer = styled.div`
 	display: flex;
 	padding: 10px 0px;
 	flex-direction: column;
@@ -27,14 +27,14 @@ const FormElementContainer = styled.div`
 	align-self: stretch;
 `;
 
-const BigLabel = styled.label`
+export const BigLabel = styled.label`
 	display: block;
 	font-size: 24px;
 	font-weight: 500;
 	color: ${(props) => props.theme.colors.textPrimary};
 `;
 
-const Label = styled.label`
+export const Label = styled.label`
 	display: block;
 	font-size: 14px;
 	font-weight: 500;
@@ -42,13 +42,37 @@ const Label = styled.label`
 	color: ${(props) => props.theme.colors.textSecondary};
 `;
 
-const ButtonsContainer = styled.div`
+export const ButtonsContainer = styled.div`
 	display: flex;
 	justify-content: space-between;
 	flex-direction: row;
 `;
 
-const Input = styled.input`
+export const Button = styled.button`
+	background-color: #f12424;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	padding: 10px 20px;
+	font-size: 18px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+
+	&:hover {
+		background-color: #d91e1e;
+	}
+
+	&:active {
+		background-color: #b91919;
+	}
+`;
+
+export const Select = styled.select`
+	padding: 8px;
+	font-size: 16px;
+`;
+
+export const Input = styled.input`
 	width: 100%;
 	padding: 12px;
 	background-color: ${(props) => props.theme.colors.baseBackground};
@@ -58,53 +82,22 @@ const Input = styled.input`
 	font-size: 14px;
 `;
 
-const ErrorMessage = styled.div`
+export const ErrorMessage = styled.div`
 	color: ${(props) => props.theme.colors.textSecondary};
 	padding: 12px;
 	border-radius: 4px;
 	margin-top: 8px;
 `;
 
-const Button = styled.button`
-	width: 100%;
-	padding: 12px;
-	border: none;
-	border-radius: 4px;
-	background-color: ${(props) => props.theme.colors.buttonBackground};
-	color: ${(props) => props.theme.colors.textPrimary};
-	font-size: 14px;
-	font-weight: 500;
-	cursor: pointer;
-	margin-top: 16px;
-
-	&:hover {
-		background-color: ${(props) => props.theme.colors.buttonHoverBackground};
-	}
-`;
-
-const Paragraph = styled.p`
+export const Paragraph = styled.p`
 	font-size: 14px;
 	text-align: center;
 	color: ${(props) => props.theme.colors.textPrimary};
 	margin-top: 16px;
 `;
 
-const StyledLink = styled(Link)`
+export const StyledLink = styled(Link)`
 	font-weight: 500;
 	color: ${(props) => props.theme.colors.link};
 	text-decoration: none;
 `;
-
-export {
-	FormContainer,
-	Form,
-	BigLabel,
-	FormElementContainer,
-	ButtonsContainer,
-	Label,
-	Input,
-	ErrorMessage,
-	Button,
-	Paragraph,
-	StyledLink,
-};

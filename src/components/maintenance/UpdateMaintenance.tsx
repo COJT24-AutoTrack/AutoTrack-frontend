@@ -60,8 +60,6 @@ const UpdateMaintenancePageContent: React.FC<
 	const handleUpdate = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		console.log("handleUpdate");
-
 		const formattedDate = new Date(maintDate).toISOString();
 
 		const clientAPI = ClientAPI(token);

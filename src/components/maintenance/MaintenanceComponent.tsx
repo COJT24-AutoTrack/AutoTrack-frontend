@@ -77,14 +77,13 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 	};
 
 	const handleAddClick = () => {
-		router.push(`/maintenance/add`);
+		router.push(`/maintenance/add?selectedCarIndex=${selectedCarIndex}`);
 	};
 
 	useEffect(() => {
 		const fetchMaintenances = async () => {
 			if (userCars && userCars.length !== 0) {
 				const clientAPI = ClientAPI(tokens.token);
-				console.log("car_id", userCars[selectedCarIndex].car_id);
 				const response = await clientAPI.car.getCarMaintenance({
 					car_id: userCars[selectedCarIndex].car_id,
 				});
@@ -98,7 +97,6 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 		const maintenance = maintenances?.find(
 			(maintenance) => maintenance.maint_type === maintType,
 		);
-		console.log("maintenance: ", maintenance);
 		return maintenance
 			? {
 					title: maintenance.maint_title,
@@ -117,13 +115,14 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 			router.push("/");
 			return;
 		}
-		router.push(`/maintenance/${maintType}`);
+		router.push(
+			`/maintenance/${maintType}?selectedCarIndex=${selectedCarIndex}`,
+		);
 	};
 
 	if (!userCars) {
 		return <div>ユーザーの車が見つかりません</div>;
 	}
-	console.log("carid: ", userCars[selectedCarIndex].car_id);
 	return (
 		<Container>
 			<Fixed>
@@ -137,7 +136,6 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 				{Object.values(MaintType).map((maintType) => {
 					const { title, lastMaintenanceDate, detail } =
 						getMaintTypeDetails(maintType);
-					console.log("maintTitle: ", title);
 					return (
 						<MaintenanceDetail
 							key={maintType}

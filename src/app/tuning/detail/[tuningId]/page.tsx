@@ -4,16 +4,15 @@ import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
-import { MaintType } from "@/api/models/models";
+import { Maintenance, MaintType } from "@/api/models/models";
+import UpdateMaintenancePageContent from "@/components/maintenance/UpdateMaintenance";
 import { clientConfig, serverConfig } from "@/../config";
-import MaintenanceItemPageContent from "@/components/maintenance/MaintenanceItemPageContent";
 
 interface Params {
-	carId: number;
-	maintType: MaintType;
+	maintId: string;
 }
 
-const MaintenanceItemPage = async ({ params }: { params: Params }) => {
+const UpdateMaintenancePage = async ({ params }: { params: Params }) => {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
@@ -26,17 +25,22 @@ const MaintenanceItemPage = async ({ params }: { params: Params }) => {
 	}
 
 	const clientAPI = ClientAPI(tokens.token);
-	const userCars = await clientAPI.user.getUserCars({
-		firebase_user_id: tokens.decodedToken.uid,
-	});
+	let maintenance: Maintenance | null = null;
+
+	if (params.maintId) {
+		maintenance = await clientAPI.maintenance.getMaintenance({
+			maint_id: Number(params.maintId),
+		});
+	}
+
+	const maintTypes: MaintType[] = Object.values(MaintType);
 
 	return (
-		<MaintenanceItemPageContent
-			maintType={decodeURIComponent(params.maintType) as MaintType}
-			tokens={tokens}
-			userCars={userCars}
+		<UpdateMaintenancePageContent
+			token={tokens.token}
+			maintenance={maintenance}
 		/>
 	);
 };
 
-export default MaintenanceItemPage;
+export default UpdateMaintenancePage;

@@ -9,7 +9,7 @@ import {
 	MaintType,
 } from "@/api/models/models";
 import BackIcon from "/public/icons/BackIcon.svg";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import AddIcon from "/public/icons/AddIcon.svg";
 import { ContentText } from "@/components/text/TextComponents";
 import CarSelect from "@/components/base/CarSelect";
@@ -103,7 +103,21 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 }) => {
 	const router = useRouter();
 	const maintTypeJP = maintenanceTypeMap[maintType] || "取得失敗";
-	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
+	const searchParams = useSearchParams();
+	const initialSelectedCarIndex = () => {
+		const param = searchParams.get("selectedCarIndex");
+		if (param) {
+			const index = parseInt(param, 10);
+			if (!isNaN(index) && index >= 0 && userCars && index < userCars.length) {
+				return index;
+			}
+		}
+		return 0; // デフォルト値
+	};
+
+	const [selectedCarIndex, setSelectedCarIndex] = useState(
+		initialSelectedCarIndex,
+	);
 	const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
 
 	const handleBackClick = () => {
@@ -111,7 +125,9 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 	};
 
 	const handleAddClick = () => {
-		router.push(`/maintenance/add?maintType=${maintType}`);
+		router.push(
+			`/maintenance/add?maintType=${maintType}&selectedCarIndex=${selectedCarIndex}`,
+		);
 	};
 
 	const switchCar = () => {
@@ -128,19 +144,24 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 			(maintenance) => maintenance.maint_type === targetType,
 		);
 	};
+
 	useEffect(() => {
 		const fetchMaintenance = async () => {
 			if (userCars && userCars.length !== 0) {
 				const clientAPI = ClientAPI(tokens.token);
-				const maintenances: Maintenance[] =
+				const fetchedMaintenances: Maintenance[] =
 					await clientAPI.car.getCarMaintenance({
 						car_id: userCars[selectedCarIndex].car_id,
 					});
-				setMaintenances(filterMaintenancesByType(maintenances, maintType));
+				const filteredMaintenances = filterMaintenancesByType(
+					fetchedMaintenances,
+					maintType,
+				);
+				setMaintenances(filteredMaintenances);
 			}
 		};
 		fetchMaintenance();
-	}, [selectedCarIndex, userCars, tokens.token]);
+	}, [selectedCarIndex, userCars, tokens.token, maintType]);
 
 	return (
 		<>

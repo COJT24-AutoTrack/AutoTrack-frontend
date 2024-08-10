@@ -21,8 +21,6 @@ const CarEditPage = async ({ params }: { params: { carId: number } }) => {
 
 	if (!params.carId) {
 		return notFound();
-	} else {
-		console.log(params.carId);
 	}
 
 	return (

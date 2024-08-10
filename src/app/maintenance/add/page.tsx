@@ -29,9 +29,6 @@ const AddMaintenancePage = async ({ params }: { params: Params }) => {
 	const userCars = await clientAPI.user.getUserCars({
 		firebase_user_id: tokens.decodedToken.uid,
 	});
-
-	console.log("userCars: ", userCars);
-
 	if (!userCars) {
 		return notFound();
 	}
