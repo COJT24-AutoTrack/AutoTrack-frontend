@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BackHeader from "@/components/base/BackHeader";
-import MainButton from "@/components/buttons/MainButton";
 import {
 	BigLabel,
+	Button,
 	ButtonsContainer,
 	Form,
 	FormContainer,
@@ -96,7 +96,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 						</BigLabel>
 					</FormElementContainer>
 					<ButtonsContainer>
-						<MainButton label="登録" type="submit" />
+						<Button type="submit">登録</Button>
 					</ButtonsContainer>
 				</Form>
 			</FormContainer>
