@@ -5,9 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Tuning } from "@/api/models/models";
 import BackHeader from "@/components/base/BackHeader";
 import BorderButton from "@/components/buttons/BorderButton";
-import MainButton from "@/components/buttons/MainButton";
 import {
 	BigLabel,
+	Button,
 	ButtonsContainer,
 	Form,
 	FormContainer,
@@ -101,7 +101,7 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings, token }) => {
 						/>
 					</FormElementContainer>
 					<ButtonsContainer>
-						<MainButton label="更新" onClick={handleUpdate} />
+						<Button onClick={handleUpdate}>更新</Button>
 						<BorderButton label="削除" onClick={handleDelete} />
 					</ButtonsContainer>
 				</Form>

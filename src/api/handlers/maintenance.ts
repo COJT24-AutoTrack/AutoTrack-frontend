@@ -61,10 +61,11 @@ export const MaintenanceAPI = (jwt: string) => ({
 	},
 
 	updateMaintenance: async (
+		maint_id: MaintenanceAPIInterface["updateMaintenance"]["maint_id"],
 		request: MaintenanceAPIInterface["updateMaintenance"]["request"],
 	): Promise<MaintenanceAPIInterface["updateMaintenance"]["response"]> => {
 		const response = await fetchWithToken(
-			`${AUTOTRACK_API_MAINTENANCES_URL}/${request.maint_id}`,
+			`${AUTOTRACK_API_MAINTENANCES_URL}/${maint_id}`,
 			{
 				method: "PUT",
 				body: JSON.stringify(request),
@@ -73,7 +74,7 @@ export const MaintenanceAPI = (jwt: string) => ({
 		);
 		if (!response.ok) {
 			throw new Error(
-				`Failed to update Maintenance record with ID ${request.maint_id}`,
+				`Failed to update Maintenance record with ID ${maint_id}`,
 			);
 		}
 		const result: Maintenance = await response.json();

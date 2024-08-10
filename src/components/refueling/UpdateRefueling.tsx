@@ -5,9 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FuelEfficiency } from "@/api/models/models";
 import BackHeader from "@/components/base/BackHeader";
 import BorderButton from "@/components/buttons/BorderButton";
-import MainButton from "@/components/buttons/MainButton";
 import {
 	BigLabel,
+	Button,
 	ButtonsContainer,
 	Form,
 	FormContainer,
@@ -61,9 +61,7 @@ const UpdateRefueling = ({ tokens, feId }: UpdateFuelingProps) => {
 	}, [fuelEfficiency]);
 
 	const handleUpdate = async () => {
-		console.log("pushed update button");
 		if (fuelEfficiency) {
-			console.log("update fuelEfficiency", fuelEfficiency);
 			const clientAPI = ClientAPI(tokens.token);
 			await clientAPI.fuelEfficiency.updateFuelEfficiency({
 				fe_id: fuelEfficiency.fe_id,
@@ -138,7 +136,9 @@ const UpdateRefueling = ({ tokens, feId }: UpdateFuelingProps) => {
 						</BigLabel>
 					</FormElementContainer>
 					<ButtonsContainer>
-						<MainButton label="更新" onClick={handleUpdate} type="button" />
+						<Button onClick={handleUpdate} type="button">
+							更新
+						</Button>
 						<BorderButton label="削除" onClick={handleDelete} type="button" />
 					</ButtonsContainer>
 				</Form>

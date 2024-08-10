@@ -33,13 +33,18 @@ const SVGButton = styled.button`
 	}
 `;
 
-interface TuningProps {
+interface TuningPageComponentProps {
 	userCars: Car[] | null;
-	token: string;
-	userId: string;
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
 }
 
-const Tuning: React.FC<TuningProps> = ({ userCars, token }) => {
+const TuningPageComponent: React.FC<TuningPageComponentProps> = ({
+	userCars,
+	tokens,
+}) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
 	const [tunings, setTunings] = useState<Tuning[] | null>(null);
 	const router = useRouter();
@@ -50,10 +55,16 @@ const Tuning: React.FC<TuningProps> = ({ userCars, token }) => {
 		}
 	};
 
+	const handleAddClick = () => {
+		if (userCars) {
+			router.push(`/tuning/add?selectedCarIndex=${selectedCarIndex}`);
+		}
+	};
+
 	useEffect(() => {
 		const fetchTunings = async () => {
 			if (userCars && userCars.length !== 0) {
-				const clientAPI = ClientAPI(token);
+				const clientAPI = ClientAPI(tokens.token);
 				const response = await clientAPI.car.getCarTuning({
 					car_id: userCars[selectedCarIndex].car_id,
 				});
@@ -61,13 +72,7 @@ const Tuning: React.FC<TuningProps> = ({ userCars, token }) => {
 			}
 		};
 		fetchTunings();
-	}, [selectedCarIndex, userCars, token]);
-
-	const handleAddClick = () => {
-		if (userCars) {
-			router.push(`/addTuning?car_id=${userCars[selectedCarIndex].car_id}`);
-		}
-	};
+	}, [selectedCarIndex, userCars, tokens.token]);
 
 	if (!userCars) {
 		return <div>ユーザーの車が見つかりません</div>;
@@ -96,4 +101,4 @@ const Tuning: React.FC<TuningProps> = ({ userCars, token }) => {
 	);
 };
 
-export default Tuning;
+export default TuningPageComponent;

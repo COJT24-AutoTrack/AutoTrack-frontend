@@ -10,6 +10,7 @@ import Image from "next/image";
 import { ContentText } from "../text/TextComponents";
 import theme from "@/styles/theme";
 import router from "next/router";
+import { checkIsUserCars } from "@/module/checkUserCars";
 
 const CarInfoContainer = styled.div`
 	max-width: 900px;
@@ -134,7 +135,13 @@ const CarComponent = ({ carId, tokens }: CarComponentProps) => {
 		fetchCar();
 	}, [carId, tokens]);
 
-	const handleEdit = () => {
+	const handleEdit = async () => {
+		const isUserCar = await checkIsUserCars({ carId, tokens });
+		if (!isUserCar) {
+			alert("この車両は登録されていません");
+			window.location.href = "/";
+			return;
+		}
 		window.location.href = "/car/edit/" + carId;
 	};
 

@@ -4,7 +4,7 @@ import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { clientConfig, serverConfig } from "@/../../config";
 import { notFound } from "next/navigation";
-import Tuning from "@/components/tuning/Tuning";
+import TuningPageComponent from "@/components/tuning/TuningPageComponent";
 import { ClientAPI } from "@/api/clientImplement";
 
 const TuningPage = async () => {
@@ -29,13 +29,7 @@ const TuningPage = async () => {
 		return notFound();
 	}
 
-	return (
-		<Tuning
-			userCars={response}
-			token={tokens.token}
-			userId={tokens.decodedToken.uid}
-		/>
-	);
+	return <TuningPageComponent userCars={response} tokens={tokens} />;
 };
 
 export default TuningPage;

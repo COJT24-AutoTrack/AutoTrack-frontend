@@ -1,19 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Maintenance } from "@/api/models/models";
+import {
+	Car,
+	Maintenance,
+	maintenanceTypeMap,
+	MaintType,
+} from "@/api/models/models";
 import BackIcon from "/public/icons/BackIcon.svg";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import AddIcon from "/public/icons/AddIcon.svg";
 import { ContentText } from "@/components/text/TextComponents";
-
-interface MaintenanceItemPageContentProps {
-	maintenances: Maintenance[];
-	maintType: string;
-	carId: number;
-	token: string;
-}
+import CarSelect from "@/components/base/CarSelect";
+import { ClientAPI } from "@/api/clientImplement";
 
 const Container = styled.div`
 	padding: 20px;
@@ -21,28 +21,10 @@ const Container = styled.div`
 
 const TopBar = styled.div`
 	width: 100vw;
-	height: 50px;
-	padding-left: 10px;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	background-color: #2b2b2b;
-`;
-
-const BackButton = styled.button`
-	display: flex;
-	align-items: center;
-	background: none;
-	border: none;
-	color: white;
-	cursor: pointer;
-
-	svg {
-		transform: rotate(180deg);
-		fill: white;
-		width: 24px;
-		height: 24px;
-		margin-right: 8px;
-	}
 `;
 
 const Title = styled.h2`
@@ -105,69 +87,108 @@ const SVGButton = styled.button`
 		height: 100px;
 	}
 `;
-
-const maintenanceTypeMap: Record<string, string> = {
-	"Oil Change": "オイル交換",
-	"Oil Filter Change": "オイルフィルター交換",
-	"Headlight Change": "ヘッドライト交換",
-	"Position Light Change": "ポジションライト交換",
-	"Fog Light Change": "フォグライト交換",
-	"Turn Signal Change": "ウインカー交換",
-	"Brake Light Change": "ブレーキライト交換",
-	"License Plate Light Change": "ナンバー灯交換",
-	"Backup Light Change": "バックライト交換",
-	"Car Wash": "洗車",
-	"Wiper Blade Change": "ワイパーブレード交換",
-	"Brake Pad Change": "ブレーキパッド交換",
-	"Brake Disc Change": "ブレーキディスク交換",
-	"Tire Change": "タイヤ交換",
-	"Battery Change": "バッテリー交換",
-	"Timing Belt Change": "タイミングベルト交換",
-	"Coolant Refill": "クーラント補充",
-	"Washer Fluid Refill": "ウォッシャー液補充",
-};
+interface MaintenanceItemPageContentProps {
+	maintType: MaintType;
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
+	userCars: Car[];
+}
 
 const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
-	maintenances,
 	maintType,
-	carId,
+	userCars,
+	tokens,
 }) => {
 	const router = useRouter();
-	const decodedMaintType = decodeURIComponent(maintType);
-	const maintTypeJP = maintenanceTypeMap[decodedMaintType] || "取得失敗";
+	const maintTypeJP = maintenanceTypeMap[maintType] || "取得失敗";
+	const searchParams = useSearchParams();
+	const initialSelectedCarIndex = () => {
+		const param = searchParams.get("selectedCarIndex");
+		if (param) {
+			const index = parseInt(param, 10);
+			if (!isNaN(index) && index >= 0 && userCars && index < userCars.length) {
+				return index;
+			}
+		}
+		return 0; // デフォルト値
+	};
+
+	const [selectedCarIndex, setSelectedCarIndex] = useState(
+		initialSelectedCarIndex,
+	);
+	const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
 
 	const handleBackClick = () => {
 		router.back();
 	};
 
 	const handleAddClick = () => {
-		router.push(`/maintenance/${carId}/${maintType}/add`);
+		router.push(
+			`/maintenance/add?maintType=${maintType}&selectedCarIndex=${selectedCarIndex}`,
+		);
 	};
 
-	const handleDetailClick = (maintId: number) => {
-		router.push(`/maintenance/${carId}/${maintType}/${maintId}/add`);
+	const switchCar = () => {
+		if (userCars) {
+			setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
+		}
 	};
+
+	const filterMaintenancesByType = (
+		maintenances: Maintenance[],
+		targetType: MaintType,
+	): Maintenance[] => {
+		return maintenances.filter(
+			(maintenance) => maintenance.maint_type === targetType,
+		);
+	};
+
+	useEffect(() => {
+		const fetchMaintenance = async () => {
+			if (userCars && userCars.length !== 0) {
+				const clientAPI = ClientAPI(tokens.token);
+				const fetchedMaintenances: Maintenance[] =
+					await clientAPI.car.getCarMaintenance({
+						car_id: userCars[selectedCarIndex].car_id,
+					});
+				const filteredMaintenances = filterMaintenancesByType(
+					fetchedMaintenances,
+					maintType,
+				);
+				setMaintenances(filteredMaintenances);
+			}
+		};
+		fetchMaintenance();
+	}, [selectedCarIndex, userCars, tokens.token, maintType]);
 
 	return (
 		<>
 			<TopBar>
-				<BackButton onClick={handleBackClick}>
-					<BackIcon style={{ fill: "white" }} />
-					<ContentText>戻る</ContentText>
-				</BackButton>
+				<CarSelect
+					userCars={userCars}
+					selectedCarIndex={selectedCarIndex}
+					switchCar={switchCar}
+				/>
 			</TopBar>
 			<Container>
 				<Title>{maintTypeJP}記録一覧</Title>
 				{maintenances.map((maintenance) => (
 					<MaintenanceCard key={maintenance.maint_id}>
 						<div>
+							{maintenance.maint_type == "Other" && (
+								<DetailText>タイトル: {maintenance.maint_title}</DetailText>
+							)}
 							<DateText>
 								日付: {new Date(maintenance.maint_date).toLocaleDateString()}
 							</DateText>
 							<DetailText>内容: {maintenance.maint_description}</DetailText>
 						</div>
 						<DetailButton
-							onClick={() => handleDetailClick(maintenance.maint_id)}
+							onClick={() => {
+								router.push(`/maintenance/detail/${maintenance.maint_id}`);
+							}}
 						>
 							詳細
 						</DetailButton>
