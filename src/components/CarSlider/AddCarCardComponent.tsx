@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Anton } from "@next/font/google";
+import { Anton } from "next/font/google";
 import AddCarIcon from "/public/icons/AddIcon.svg";
 
 const Anton400 = Anton({
