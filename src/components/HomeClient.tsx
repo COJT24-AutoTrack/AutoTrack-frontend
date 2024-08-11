@@ -8,6 +8,7 @@ import DetailCardComponent from "@/components/CarDetail/DetailCardComponent";
 import { carInfo } from "@/api/models/models";
 import { useSPQuery, usePCQuery } from "@/hooks/useBreakpoints";
 import { useRouter } from "next/navigation";
+import { media } from "@/styles/breakpoints";
 
 const Main = styled.div`
 	display: flex;
@@ -18,14 +19,15 @@ const Main = styled.div`
 
 const CarSliderComponentWrapper = styled.div`
 	height: fit-content;
+	${media.PC} {
+		padding-left: 20px;
+	}
 `;
 
 const MenuContainer = styled.div`
 	display: flex;
 	padding: 0px 20px;
 	flex-direction: column;
-	flex: 1;
-	height: 0; // flex1 のためのおまじない
 	gap: 10px;
 `;
 

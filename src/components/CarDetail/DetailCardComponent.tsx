@@ -17,9 +17,15 @@ const Card = styled.div`
 	display: flex;
 	width: 100%;
 	padding: 10px;
-	flex-direction: column;
+	@media screen and (max-height: 600px) {
+		flex-direction: row;
+		justify-content: space-between;
+	}
+	@media screen and (min-height: 601px) {
+		flex-direction: column;
+	}
+	justify-content: space-evenly;
 	align-items: center;
-	flex: 1 0 0;
 	border-radius: 8px;
 	border: 1px solid #fff;
 	background: #2b2b2b;
@@ -28,7 +34,6 @@ const Card = styled.div`
 const LabelContainer = styled.span`
 	display: flex;
 	align-items: center;
-	gap: 10px;
 	align-self: stretch;
 `;
 
@@ -39,11 +44,10 @@ const Label = styled.span`
 	line-height: normal;
 `;
 
-const Text = styled.div`
+const Text = styled.p`
 	display: flex;
-	justify-content: center;
 	align-items: flex-end;
-	gap: 9px;
+	gap: 5px;
 `;
 
 const Value = styled.span`
@@ -51,6 +55,8 @@ const Value = styled.span`
 	text-align: center;
 	font-size: min(36px, 4dvh);
 	line-height: normal;
+	vertical-align: baseline;
+	line-height: 1;
 `;
 
 const Unit = styled.span`
@@ -58,6 +64,7 @@ const Unit = styled.span`
 	text-align: center;
 	font-size: min(20px, 2dvh);
 	line-height: normal;
+	line-height: 1;
 `;
 
 const DetailCardComponent: React.FC<DetailCardComponentProps> = ({
