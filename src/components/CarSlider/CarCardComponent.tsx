@@ -51,7 +51,7 @@ const CarImage = styled(Image)`
 const CarName = styled.div`
 	color: #fff;
 	${media.SP} {
-		font-size: ${theme.fontSizes.subsubContent};
+		font-size: min(3dvh, 25px);
 		text-align: center;
 	}
 	${media.PC} {
@@ -75,9 +75,9 @@ const CarCardComponent: React.FC<CarCardComponentProps> = ({
 			width={1200}
 			height={720}
 		/>
-		<ContentText>
+		<CarName>
 			{userCar.car_name} - {userCar.carmodelnum}
-		</ContentText>
+		</CarName>
 	</Card>
 );
 

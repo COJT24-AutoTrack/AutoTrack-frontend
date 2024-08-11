@@ -21,13 +21,11 @@ const CardContainer = styled.div`
 `;
 
 const Card = styled.div`
-	padding: 20px;
 	display: flex;
-	height: 192px;
+	height: 20dvh;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: space-evenly;
 	align-items: center;
-	gap: 20px;
 	align-self: stretch;
 	border-radius: 8px;
 	border: 1px solid #fff;
@@ -37,10 +35,14 @@ const Card = styled.div`
 const AddTextSpan = styled.span`
 	color: #2b2b2b;
 	text-align: center;
-	font-size: 40px;
+	font-size: 6dvh;
 	font-style: normal;
 	font-weight: 400;
 	line-height: normal;
+`;
+
+const AddCarIconWrapper = styled.div`
+	width: 8dvh;
 `;
 
 interface AddCarCardComponentProps {
@@ -53,7 +55,9 @@ const AddCarCardComponent: React.FC<AddCarCardComponentProps> = ({
 	<CardContainer onClick={onClick}>
 		<Card>
 			<AddTextSpan className={Anton400.className}>Add Car</AddTextSpan>
-			<AddCarIcon />
+			<AddCarIconWrapper>
+				<AddCarIcon />
+			</AddCarIconWrapper>
 		</Card>
 	</CardContainer>
 );

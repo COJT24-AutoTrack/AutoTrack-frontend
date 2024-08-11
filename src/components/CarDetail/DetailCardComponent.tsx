@@ -15,7 +15,7 @@ interface DetailCardComponentProps {
 
 const Card = styled.div`
 	display: flex;
-	height: 12dvh;
+	width: 100%;
 	padding: 10px;
 	flex-direction: column;
 	align-items: center;
@@ -35,7 +35,7 @@ const LabelContainer = styled.span`
 const Label = styled.span`
 	color: #fff;
 	text-align: center;
-	font-size: 16px;
+	font-size: min(16px, 2dvh);
 	line-height: normal;
 `;
 
@@ -49,14 +49,14 @@ const Text = styled.div`
 const Value = styled.span`
 	color: #fff;
 	text-align: center;
-	font-size: 36px;
+	font-size: min(36px, 4dvh);
 	line-height: normal;
 `;
 
 const Unit = styled.span`
 	color: #fff;
 	text-align: center;
-	font-size: 20px;
+	font-size: min(20px, 2dvh);
 	line-height: normal;
 `;
 

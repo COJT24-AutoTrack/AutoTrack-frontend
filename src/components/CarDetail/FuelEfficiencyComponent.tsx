@@ -18,14 +18,18 @@ interface FuelEfficiencyComponentProps {
 const Card = styled.div<{ isSelected: boolean }>`
 	display: flex;
 	${media.SP} {
-		height: 18dvh;
 	}
 	${media.PC} {
 		height: 12dvh;
 		width: 32dvw;
 	}
 	padding: 0px 10px;
-	flex-direction: column;
+	@media screen and (min-height: 600px) {
+		flex-direction: column;
+	}
+	@media screen and (max-height: 599px) {
+		flex-direction: row;
+	}
 	justify-content: center;
 	align-items: center;
 	align-self: stretch;
@@ -40,14 +44,15 @@ const Text = styled.div`
 	display: flex;
 	flex-direction: row;
 	align-items: baseline;
+	gap: 5px;
 `;
 
 const Value = styled.span`
-	font-size: 96px;
+	font-size: min(10dvh, 77px);
 `;
 
 const Unit = styled.span`
-	font-size: 36px;
+	font-size: min(6dvh, 46px);
 `;
 
 const FuelEfficiencyComponent: React.FC<FuelEfficiencyComponentProps> = ({

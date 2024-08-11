@@ -9,6 +9,25 @@ import { Navigation, Pagination } from "swiper/modules";
 import { carInfo } from "@/api/models/models";
 import { useRouter } from "next/navigation";
 import { useSPQuery } from "@/hooks/useBreakpoints";
+import styled from "styled-components";
+
+const SliderWrapper = styled.div`
+	.swiper {
+		display: flex;
+		flex-direction: column;
+		height: fit-content;
+		gap: 10px;
+	}
+	.swiper-wrapper {
+		height: fit-content;
+	}
+	.swiper-slide {
+		height: fit-content;
+	}
+	.swiper-pagination {
+		position: relative !important;
+	}
+`;
 
 interface CarSliderComponentProps {
 	userCars: carInfo[];
@@ -38,37 +57,38 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 	};
 
 	return (
-		<Swiper
-			spaceBetween={30}
-			slidesPerView={"auto"}
-			centeredSlides={isSP ? true : false}
-			loop={false}
-			onSlideChange={handleSlideChange}
-			modules={[Navigation, Pagination]}
-			pagination={{ clickable: true }}
-			style={{ height: isSP ? "30dvh" : "72dvh" }}
-		>
-			{userCars.map((userCar) => (
-				<SwiperSlide key={userCar.car_id} style={{ width: "auto" }}>
-					<CarCardComponent
-						userCar={userCar}
-						onClick={() => carCardOnClick(userCar)}
-					/>
-				</SwiperSlide>
-			))}
-			<SwiperSlide
-				style={{
-					width: "280px",
-					display: "flex",
-					flexDirection: "column",
-					justifyContent: "center",
-					alignItems: "center",
-				}}
+		<SliderWrapper>
+			<Swiper
+				spaceBetween={30}
+				slidesPerView={"auto"}
+				centeredSlides={isSP ? true : false}
+				loop={false}
+				onSlideChange={handleSlideChange}
+				modules={[Navigation, Pagination]}
+				pagination={{ clickable: true }}
 			>
-				<AddCarCardComponent onClick={handleAddCarClick} />
-				<div style={{ height: "80px", width: "280px" }}></div>
-			</SwiperSlide>
-		</Swiper>
+				{userCars.map((userCar) => (
+					<SwiperSlide key={userCar.car_id} style={{ width: "auto" }}>
+						<CarCardComponent
+							userCar={userCar}
+							onClick={() => carCardOnClick(userCar)}
+						/>
+					</SwiperSlide>
+				))}
+				<SwiperSlide
+					style={{
+						width: "280px",
+						display: "flex",
+						flexDirection: "column",
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<AddCarCardComponent onClick={handleAddCarClick} />
+					{/* <div style={{ height: "80px", width: "280px" }}></div> */}
+				</SwiperSlide>
+			</Swiper>
+		</SliderWrapper>
 	);
 };
 
