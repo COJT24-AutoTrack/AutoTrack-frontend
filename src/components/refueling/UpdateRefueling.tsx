@@ -103,16 +103,16 @@ const UpdateRefueling = ({ tokens, feId }: UpdateFuelingProps) => {
 						<BigLabel>単価(円/L)</BigLabel>
 						<input
 							type="number"
-							value={amount}
-							onChange={(e) => setAmount(e.target.value)}
+							value={unitPrice}
+							onChange={(e) => setUnitPrice(e.target.value)}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
 						<BigLabel>給油量(L)</BigLabel>
 						<input
 							type="number"
-							value={unitPrice}
-							onChange={(e) => setUnitPrice(e.target.value)}
+							value={amount}
+							onChange={(e) => setAmount(e.target.value)}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
