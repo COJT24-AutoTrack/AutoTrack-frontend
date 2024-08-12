@@ -76,14 +76,12 @@ const FuelEfficiencyComponent: React.FC<FuelEfficiencyComponentProps> = ({
 }) => {
 	return (
 		<Card isSelected={isSelected} onClick={onClick}>
-			{userCar && (
-				<Text>
-					<Value className={Anton400.className}>
-						{userCar.monthly_fuel_efficiency}
-					</Value>
-					<Unit className={Anton400.className}>km/L</Unit>
-				</Text>
-			)}
+			<Text>
+				<Value className={Anton400.className}>
+					{userCar ? userCar.monthly_fuel_efficiency : "-"}
+				</Value>
+				<Unit className={Anton400.className}>km/L</Unit>
+			</Text>
 		</Card>
 	);
 };
