@@ -1,6 +1,6 @@
 export const breakpoints = {
-	SP: "799px",
-	PC: "800px",
+	SP: "1023px",
+	PC: "1024px",
 };
 
 export const media = {

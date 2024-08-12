@@ -45,14 +45,28 @@ const Text = styled.div`
 	flex-direction: row;
 	align-items: baseline;
 	gap: 5px;
+	padding: 0 2dvw;
 `;
 
 const Value = styled.span`
-	font-size: min(10dvh, 77px);
+	${media.SP} {
+		font-size: min(10dvh, 77px);
+	}
+	${media.PC} {
+		font-size: 5dvw;
+	}
+	@media screen and (max-height: 475px) {
+		font-size: 7dvh;
+	}
 `;
 
 const Unit = styled.span`
-	font-size: min(6dvh, 46px);
+	${media.SP} {
+		font-size: min(6dvh, 46px);
+	}
+	${media.PC} {
+		font-size: 3dvw;
+	}
 `;
 
 const FuelEfficiencyComponent: React.FC<FuelEfficiencyComponentProps> = ({

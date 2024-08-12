@@ -40,7 +40,12 @@ const CarImage = styled(Image)`
 		height: 20dvh;
 	}
 	${media.PC} {
-		height: 60dvh;
+		@media screen and (max-height: 600px) {
+			height: 50dvh;
+		}
+		@media screen and (min-height: 601px) {
+			height: 60dvh;
+		}
 	}
 	width: auto;
 	object-fit: cover;
