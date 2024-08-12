@@ -30,8 +30,9 @@ const TabBarItem = styled.a<{ isActive: boolean }>`
 	display: flex;
 	align-items: center;
 	transition: color 0.3s;
+	flex: 1;
 	${media.SP} {
-		font-size: ${(props) => props.theme.fontSizes.subsubContent};
+		font-size: min(16px, 3dvw);
 		flex-direction: column;
 	}
 	${media.PC} {
