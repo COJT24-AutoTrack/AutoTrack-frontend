@@ -46,11 +46,14 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		}
 
 		const clientAPI = ClientAPI(tokens.token);
-		const offsetDateTime = new Date(date).toISOString();
+
+		// // carIdの型を確認
+		// console.log("carId", typeof carId);
+		// // carId stringと表示される
 
 		await clientAPI.fuelEfficiency.createFuelEfficiency({
-			car_id: carId,
-			fe_date: offsetDateTime,
+			car_id: Number(carId), // なぜかcarIdがstringになってしまう問題があるので、Number()で型変換
+			fe_date: date,
 			fe_amount: amount,
 			fe_unitprice: unitPrice,
 			fe_mileage: mileage,
@@ -72,27 +75,29 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 						<BigLabel>単価(円/L)</BigLabel>
 						<input
 							type="number"
-							onChange={(e) => setAmount(Number(e.target.value))}
+							onChange={(e) => setUnitPrice(Number(e.target.value))}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
 						<BigLabel>給油量(L)</BigLabel>
 						<input
 							type="number"
-							onChange={(e) => setUnitPrice(Number(e.target.value))}
+							step="0.01"
+							onChange={(e) => setAmount(Number(e.target.value))}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
 						<BigLabel>走行距離(km)</BigLabel>
 						<input
 							type="number"
+							step="0.01"
 							onChange={(e) => setMileage(Number(e.target.value))}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
 						<BigLabel style={{ color: "red" }}>燃費</BigLabel>
 						<BigLabel className={Anton400.className}>
-							{mileage && unitPrice ? (mileage / unitPrice).toFixed(2) : "0"}km
+							{mileage && amount ? (mileage / amount).toFixed(2) : "0"}km
 						</BigLabel>
 					</FormElementContainer>
 					<ButtonsContainer>
