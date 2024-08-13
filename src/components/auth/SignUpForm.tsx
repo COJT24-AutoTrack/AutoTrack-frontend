@@ -67,7 +67,7 @@ export default function SignUpForm() {
 			const idToken = await credential.user.getIdToken();
 
 			// セッションの作成
-			await fetchWithToken(
+			const response = await fetchWithToken(
 				"api/signin",
 				{
 					method: "POST",
@@ -75,6 +75,10 @@ export default function SignUpForm() {
 				},
 				idToken,
 			);
+
+			if (!response.ok) {
+				throw new Error("セッションの作成に失敗しました");
+			}
 
 			// トップページへリダイレクト
 			router.push("/");
