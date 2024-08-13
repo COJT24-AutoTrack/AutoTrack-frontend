@@ -11,11 +11,11 @@ const Anton400 = Anton({
 
 interface FuelEfficiencyComponentProps {
 	userCar: carInfo | null;
-	isselected: boolean;
+	isSelected: boolean;
 	onClick: () => void;
 }
 
-const Card = styled.div<{ isselected: boolean }>`
+const Card = styled.div<{ isSelected: boolean }>`
 	display: flex;
 	${media.SP} {
 	}
@@ -71,11 +71,11 @@ const Unit = styled.span`
 
 const FuelEfficiencyComponent: React.FC<FuelEfficiencyComponentProps> = ({
 	userCar,
-	isselected,
+	isSelected,
 	onClick,
 }) => {
 	return (
-		<Card isselected={isselected} onClick={onClick}>
+		<Card isSelected={isSelected} onClick={onClick}>
 			<Text>
 				<Value className={Anton400.className}>
 					{userCar ? userCar.monthly_fuel_efficiency : "-"}
