@@ -80,7 +80,6 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 					<FuelEfficiencyComponentWrapper>
 						<FuelEfficiencyComponent
 							userCar={selectedCar}
-							isSelected={!!selectedCar}
 							onClick={() => {
 								router.push("/refueling");
 							}}
@@ -125,7 +124,6 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 							<HStack>
 								<FuelEfficiencyComponent
 									userCar={selectedCar}
-									isSelected={!!selectedCar}
 									onClick={() => {
 										// ここにクリック時の動作を実装
 									}}
