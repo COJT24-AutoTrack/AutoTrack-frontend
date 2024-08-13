@@ -33,7 +33,7 @@ export default function SignUpForm() {
 		event.preventDefault();
 		setError("");
 		if (password !== confirmation) {
-			setError("Passwords don't match");
+			setError("パスワードが一致しません");
 			return;
 		}
 		try {
@@ -51,35 +51,39 @@ export default function SignUpForm() {
 			const clientAPI = ClientAPI(jwt);
 
 			// バックエンドのユーザー作成apiを叩く
-			const response = await clientAPI.user.createUser({
+			await clientAPI.user.createUser({
 				user_email: email,
-				user_name: "John Doe", //ユーザー名って概念は存在しなかったことにさせてくれ(
+				user_name: "John Doe", // ユーザー名の代替処理
 				user_password: password,
 				firebase_user_id: userCredential.user.uid,
 			});
 
-			// ユーザー作成が成功したらログインページにリダイレクト
-			try {
-				const credential = await signInWithEmailAndPassword(
-					getAuth(app),
-					email,
-					password,
-				);
-				const idToken = await credential.user.getIdToken();
-				await fetchWithToken(
-					"api/signin",
-					{
-						method: "POST",
-						body: JSON.stringify({ idToken }),
-					},
-					idToken,
-				);
-				router.push("/");
-			} catch (e) {
-				setError((e as Error).message);
-			}
+			// サインイン処理
+			const credential = await signInWithEmailAndPassword(
+				auth,
+				email,
+				password,
+			);
+			const idToken = await credential.user.getIdToken();
+
+			// セッションの作成
+			await fetchWithToken(
+				"api/signin",
+				{
+					method: "POST",
+					body: JSON.stringify({ idToken }),
+				},
+				idToken,
+			);
+
+			// トップページへリダイレクト
+			router.push("/");
 		} catch (e) {
-			setError((e as Error).message);
+			console.error("Signup error:", e);
+			setError(
+				(e as Error).message ||
+					"サインアップ中にエラーが発生しました。もう一度お試しください。",
+			);
 		}
 	}
 
