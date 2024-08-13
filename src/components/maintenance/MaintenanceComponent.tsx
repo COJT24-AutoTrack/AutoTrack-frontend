@@ -52,8 +52,6 @@ const Container = styled.div`
 	padding-bottom: 80px;
 `;
 
-const Fixed = styled.div``;
-
 interface MaintenancePageProps {
 	userCars: Car[] | null;
 	tokens: {
@@ -125,13 +123,13 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 	}
 	return (
 		<Container>
-			<Fixed>
+			<div>
 				<CarSelect
 					userCars={userCars}
 					selectedCarIndex={selectedCarIndex}
 					switchCar={switchCar}
 				/>
-			</Fixed>
+			</div>
 			<DetailContainer>
 				{Object.values(MaintType).map((maintType) => {
 					const { title, lastMaintenanceDate, detail } =
@@ -143,9 +141,17 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 							title={title || ""}
 							lastMaintenanceDate={lastMaintenanceDate}
 							detail={detail}
-							onDetailClick={() =>
-								handleDetailClick(userCars[selectedCarIndex].car_id, maintType)
-							}
+							onDetailClick={() => {
+								if (userCars.length === 0) {
+									alert("ユーザーの車が見つかりません");
+									return;
+								} else {
+									handleDetailClick(
+										userCars[selectedCarIndex].car_id,
+										maintType,
+									);
+								}
+							}}
 						/>
 					);
 				})}
