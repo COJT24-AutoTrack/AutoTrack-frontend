@@ -150,9 +150,11 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 					);
 				})}
 			</DetailContainer>
-			<SVGButton onClick={handleAddClick}>
-				<AddIcon style={{ fill: "red" }} />
-			</SVGButton>
+			{userCars.length !== 0 && (
+				<SVGButton onClick={handleAddClick}>
+					<AddIcon style={{ fill: "red" }} />
+				</SVGButton>
+			)}
 		</Container>
 	);
 };

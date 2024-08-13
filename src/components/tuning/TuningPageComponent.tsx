@@ -94,9 +94,11 @@ const TuningPageComponent: React.FC<TuningPageComponentProps> = ({
 					/>
 				)}
 			</Container>
-			<SVGButton onClick={handleAddClick}>
-				<AddIcon style={{ fill: "red" }} />
-			</SVGButton>
+			{userCars.length !== 0 && (
+				<SVGButton onClick={handleAddClick}>
+					<AddIcon style={{ fill: "red" }} />
+				</SVGButton>
+			)}
 		</>
 	);
 };
