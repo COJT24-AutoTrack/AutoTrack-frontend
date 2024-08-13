@@ -1,6 +1,5 @@
 import {
 	Car,
-	carInfo,
 	FuelEfficiencyCalculationResult,
 	FuelEfficiency,
 	Tuning,
@@ -9,6 +8,9 @@ import {
 } from "@/api/models/models";
 
 export interface ClientAPIInterface {
+	test: {
+		getTest(): Promise<TestAPIInterface["getTest"]["response"]>;
+	};
 	user: {
 		createUser(
 			request: UserAPIInterface["createUser"]["request"],
@@ -153,6 +155,11 @@ export interface ClientAPIInterface {
 	};
 }
 
+export interface TestAPIInterface {
+	getTest: {
+		response: string;
+	};
+}
 export interface UserAPIInterface {
 	createUser: {
 		request: {

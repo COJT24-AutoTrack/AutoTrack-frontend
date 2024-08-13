@@ -8,27 +8,6 @@ import HomeClient from "@/components/HomeClient";
 import { ClientAPI } from "@/api/clientImplement";
 import { Car, FuelEfficiency, Maintenance, carInfo } from "@/api/models/models";
 
-async function validateToken(token: string) {
-	try {
-		const response = await fetch("api/validate-token", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-			body: JSON.stringify({ idToken: token }),
-		});
-
-		if (!response.ok) {
-			throw new Error("Token validation failed");
-		}
-	} catch (error) {
-		console.error("Error validating token:", error);
-		return false;
-	}
-	return true;
-}
-
 export default async function Home() {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
@@ -41,13 +20,17 @@ export default async function Home() {
 		return redirect("/signin");
 	}
 
-	const isTokenValid = await validateToken(tokens.token);
-	if (!isTokenValid) {
-		// トークンが無効な場合、サインインページにリダイレクト
+	const clientAPI = ClientAPI(tokens.token);
+
+	try {
+		const response = await clientAPI.test.getTest();
+		if (!!!response) {
+			throw new Error("Token validation failed");
+		}
+	} catch (error) {
+		console.error("Error validating token:", error);
 		return redirect("/signin");
 	}
-
-	const clientAPI = ClientAPI(tokens.token);
 
 	const userCars: Car[] = await clientAPI.user.getUserCars({
 		firebase_user_id: tokens.decodedToken.uid,

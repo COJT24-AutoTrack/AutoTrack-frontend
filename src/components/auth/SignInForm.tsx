@@ -27,12 +27,15 @@ export default function SignInForm() {
 		event.preventDefault();
 		setError("");
 		try {
+			const auth = getAuth(app);
 			const credential = await signInWithEmailAndPassword(
-				getAuth(app),
+				auth,
 				email,
 				password,
 			);
 			const idToken = await credential.user.getIdToken();
+
+			// セッションの作成
 			await fetchWithToken(
 				"api/signin",
 				{
@@ -41,9 +44,34 @@ export default function SignInForm() {
 				},
 				idToken,
 			);
+
+			// トップページへリダイレクト
 			router.push("/");
 		} catch (e) {
-			setError((e as Error).message);
+			console.error("Signin error:", e);
+
+			// エラーメッセージを日本語で表示
+			if (e instanceof Error) {
+				switch (e.message) {
+					case "Firebase: Error (auth/user-not-found).":
+						setError(
+							"ユーザーが見つかりません。メールアドレスを確認してください。",
+						);
+						break;
+					case "Firebase: Error (auth/wrong-password).":
+						setError("パスワードが間違っています。");
+						break;
+					case "Firebase: Error (auth/invalid-email).":
+						setError("無効なメールアドレスです。");
+						break;
+					default:
+						setError(
+							"ログイン中にエラーが発生しました。もう一度お試しください。",
+						);
+				}
+			} else {
+				setError("予期せぬエラーが発生しました。もう一度お試しください。");
+			}
 		}
 	}
 
