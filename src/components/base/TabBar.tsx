@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { useRouter } from "next/navigation";
-import HomeIcon from "/public/icons/HomeIcon.svg";
-import RefuelingIcon from "/public/icons/RefuelingIcon.svg";
-import MaintenaneIcon from "/public/icons/MaintenanceIcon.svg";
-import TuningIcon from "/public/icons/TuningIcon.svg";
 import { media } from "@/styles/breakpoints";
+import { Fuel, Gauge, House, Wrench } from "lucide-react";
 
 const TabBarContainer = styled.nav`
 	background-color: ${(props) => props.theme.colors.baseBackground};
@@ -19,9 +16,6 @@ const TabBarContainer = styled.nav`
 
 const activeStyle = css`
 	color: ${(props) => props.theme.colors.link};
-	svg {
-		fill: ${(props) => props.theme.colors.link};
-	}
 `;
 
 const TabBarItem = styled.a<{ isActive: boolean }>`
@@ -42,15 +36,6 @@ const TabBarItem = styled.a<{ isActive: boolean }>`
 	}
 
 	${(props) => props.isActive && activeStyle}
-
-	svg {
-		width: 24px;
-		height: 24px;
-		fill: ${(props) =>
-			props.isActive
-				? props.theme.colors.link
-				: props.theme.colors.textPrimary};
-	}
 `;
 
 const TabBar = () => {
@@ -64,19 +49,29 @@ const TabBar = () => {
 	return (
 		<TabBarContainer>
 			<TabBarItem href="/" isActive={currentPath === "/"}>
-				<HomeIcon />
+				{currentPath === "/" ? <House color="red" /> : <House />}
 				Home
 			</TabBarItem>
-			<TabBarItem href="/refueling" isActive={currentPath === "/refueling"}>
-				<RefuelingIcon />
+			<TabBarItem
+				href="/refueling"
+				isActive={currentPath.startsWith("/refueling")}
+			>
+				{currentPath.startsWith("/refueling") ? <Fuel color="red" /> : <Fuel />}
 				Refueling
 			</TabBarItem>
-			<TabBarItem href="/maintenance" isActive={currentPath === "/maintenance"}>
-				<MaintenaneIcon />
+			<TabBarItem
+				href="/maintenance"
+				isActive={currentPath.startsWith("/maintenance")}
+			>
+				{currentPath.startsWith("/maintenance") ? (
+					<Wrench color="red" />
+				) : (
+					<Wrench />
+				)}
 				Maintenance
 			</TabBarItem>
-			<TabBarItem href="/tuning" isActive={currentPath === "/tuning"}>
-				<TuningIcon />
+			<TabBarItem href="/tuning" isActive={currentPath.startsWith("/tuning")}>
+				{currentPath.startsWith("/tuning") ? <Gauge color="red" /> : <Gauge />}
 				Tuning
 			</TabBarItem>
 		</TabBarContainer>
