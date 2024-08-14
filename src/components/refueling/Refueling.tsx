@@ -5,9 +5,9 @@ import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
 import RefuelingCardGroup from "@/components/refueling/RefuelingCardGroup";
 import styled from "styled-components";
-import AddIcon from "/public/icons/AddIcon.svg";
 import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
+import { CirclePlus } from "lucide-react";
 
 const Container = styled.div`
 	position: relative;
@@ -91,7 +91,7 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 			</Container>
 			{userCars.length !== 0 && (
 				<SVGButton onClick={handleAddClick}>
-					<AddIcon style={{ fill: "red" }} />
+					<CirclePlus color="red" />
 				</SVGButton>
 			)}
 		</>

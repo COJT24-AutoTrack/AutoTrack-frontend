@@ -8,12 +8,10 @@ import {
 	maintenanceTypeMap,
 	MaintType,
 } from "@/api/models/models";
-import BackIcon from "/public/icons/BackIcon.svg";
 import { useRouter, useSearchParams } from "next/navigation";
-import AddIcon from "/public/icons/AddIcon.svg";
-import { ContentText } from "@/components/text/TextComponents";
 import CarSelect from "@/components/base/CarSelect";
 import { ClientAPI } from "@/api/clientImplement";
+import { CirclePlus } from "lucide-react";
 
 const Container = styled.div`
 	padding: 20px;
@@ -196,7 +194,7 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 				))}
 				{userCars.length !== 0 && (
 					<SVGButton onClick={handleAddClick}>
-						<AddIcon style={{ fill: "red" }} />
+						<CirclePlus color="red" />
 					</SVGButton>
 				)}
 			</Container>

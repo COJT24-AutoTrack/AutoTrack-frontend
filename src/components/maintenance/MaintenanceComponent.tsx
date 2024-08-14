@@ -14,7 +14,7 @@ import { media } from "@/styles/breakpoints";
 import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";
-import AddIcon from "/public/icons/AddIcon.svg";
+import { CirclePlus } from "lucide-react";
 
 const DetailContainer = styled.div`
 	display: flex;
@@ -158,7 +158,7 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 			</DetailContainer>
 			{userCars.length !== 0 && (
 				<SVGButton onClick={handleAddClick}>
-					<AddIcon style={{ fill: "red" }} />
+					<CirclePlus color="red" />
 				</SVGButton>
 			)}
 		</Container>
