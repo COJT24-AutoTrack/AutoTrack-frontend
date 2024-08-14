@@ -34,9 +34,9 @@ const UpdateRefueling = ({ tokens, feId }: UpdateFuelingProps) => {
 		null,
 	);
 	const [date, setDate] = useState("");
-	const [amount, setAmount] = useState("");
-	const [mileage, setMileage] = useState("");
-	const [unitPrice, setUnitPrice] = useState("");
+	const [amount, setAmount] = useState<number>(0);
+	const [mileage, setMileage] = useState<number>(0);
+	const [unitPrice, setUnitPrice] = useState<number>(0);
 
 	const router = useRouter();
 
@@ -54,9 +54,9 @@ const UpdateRefueling = ({ tokens, feId }: UpdateFuelingProps) => {
 	useEffect(() => {
 		if (fuelEfficiency) {
 			setDate(fuelEfficiency.fe_date);
-			setAmount(fuelEfficiency.fe_amount.toString());
-			setMileage(fuelEfficiency.fe_mileage.toString());
-			setUnitPrice(fuelEfficiency.fe_unitprice.toString());
+			setAmount(fuelEfficiency.fe_amount);
+			setMileage(fuelEfficiency.fe_mileage);
+			setUnitPrice(fuelEfficiency.fe_unitprice);
 		}
 	}, [fuelEfficiency]);
 
@@ -67,9 +67,9 @@ const UpdateRefueling = ({ tokens, feId }: UpdateFuelingProps) => {
 				fe_id: fuelEfficiency.fe_id,
 				car_id: fuelEfficiency.car_id,
 				fe_date: date,
-				fe_amount: parseFloat(amount),
-				fe_unitprice: parseFloat(unitPrice),
-				fe_mileage: parseFloat(mileage),
+				fe_amount: amount,
+				fe_unitprice: unitPrice,
+				fe_mileage: mileage,
 			});
 			router.push("/refueling");
 		}
@@ -104,7 +104,7 @@ const UpdateRefueling = ({ tokens, feId }: UpdateFuelingProps) => {
 						<input
 							type="number"
 							value={unitPrice}
-							onChange={(e) => setUnitPrice(e.target.value)}
+							onChange={(e) => setUnitPrice(Number(e.target.value))}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
@@ -112,7 +112,7 @@ const UpdateRefueling = ({ tokens, feId }: UpdateFuelingProps) => {
 						<input
 							type="number"
 							value={amount}
-							onChange={(e) => setAmount(e.target.value)}
+							onChange={(e) => setAmount(Number(e.target.value))}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
@@ -120,19 +120,13 @@ const UpdateRefueling = ({ tokens, feId }: UpdateFuelingProps) => {
 						<input
 							type="number"
 							value={mileage}
-							onChange={(e) => setMileage(e.target.value)}
+							onChange={(e) => setMileage(Number(e.target.value))}
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
 						<BigLabel style={{ color: "red" }}>燃費</BigLabel>
 						<BigLabel className={Anton400.className}>
-							{mileage &&
-							unitPrice &&
-							!isNaN(parseFloat(mileage)) &&
-							!isNaN(parseFloat(unitPrice))
-								? (parseFloat(mileage) / parseFloat(unitPrice)).toFixed(2)
-								: "0"}
-							km
+							{mileage && amount ? (mileage / amount).toFixed(2) : "0"}km/L
 						</BigLabel>
 					</FormElementContainer>
 					<ButtonsContainer>

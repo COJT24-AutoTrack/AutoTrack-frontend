@@ -97,7 +97,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 					<FormElementContainer>
 						<BigLabel style={{ color: "red" }}>燃費</BigLabel>
 						<BigLabel className={Anton400.className}>
-							{mileage && amount ? (mileage / amount).toFixed(2) : "0"}km
+							{mileage && amount ? (mileage / amount).toFixed(2) : "0"}km/L
 						</BigLabel>
 					</FormElementContainer>
 					<ButtonsContainer>
