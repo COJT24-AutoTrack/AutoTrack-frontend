@@ -16,13 +16,14 @@ interface DetailCardComponentProps {
 const Card = styled.div`
 	display: flex;
 	width: 100%;
-	padding: 5px 2dvw 10px 2dvw;
 	@media screen and (max-height: 600px) {
 		flex-direction: row;
 		justify-content: space-between;
+		padding: 10px 2dvw 10px 2dvw;
 	}
 	@media screen and (min-height: 601px) {
 		flex-direction: column;
+		padding: 5px 2dvw 10px 2dvw;
 	}
 	justify-content: space-evenly;
 	align-items: center;

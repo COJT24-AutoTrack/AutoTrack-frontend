@@ -137,7 +137,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 			});
 
 			if (newCar) {
-				router.push("/");
+				window.location.href = "/";
 			}
 		} catch (e) {
 			alert((e as Error).message);

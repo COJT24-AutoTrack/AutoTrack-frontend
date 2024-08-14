@@ -85,7 +85,9 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 					}}
 				>
 					<AddCarCardComponent onClick={handleAddCarClick} />
-					{/* <div style={{ height: "80px", width: "280px" }}></div> */}
+					{userCars.length === 0 && (
+						<div style={{ height: "5dvh", width: "100dvw" }}></div>
+					)}
 				</SwiperSlide>
 			</Swiper>
 		</SliderWrapper>
