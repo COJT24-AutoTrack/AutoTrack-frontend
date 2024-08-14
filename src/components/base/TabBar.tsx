@@ -25,7 +25,7 @@ const TabBarItem = styled.a<{ isActive: boolean }>`
 	align-items: center;
 	transition: color 0.3s;
 	flex: 1;
-	${media.SP} {
+	${media.SPandTB} {
 		font-size: min(16px, 3dvw);
 		flex-direction: column;
 	}

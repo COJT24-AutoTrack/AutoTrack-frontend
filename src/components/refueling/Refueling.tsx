@@ -85,9 +85,11 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 					selectedCarIndex={selectedCarIndex}
 					switchCar={switchCar}
 				/>
-				{fuelEfficiencies && (
-					<RefuelingCardGroup fuelEfficiencies={fuelEfficiencies} />
-				)}
+				<div style={{ padding: "10px" }}>
+					{fuelEfficiencies && (
+						<RefuelingCardGroup fuelEfficiencies={fuelEfficiencies} />
+					)}
+				</div>
 			</Container>
 			{userCars.length !== 0 && (
 				<SVGButton onClick={handleAddClick}>

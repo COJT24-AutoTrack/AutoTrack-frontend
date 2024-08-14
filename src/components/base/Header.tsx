@@ -10,7 +10,7 @@ const HeaderContainer = styled.div`
 	width: 100vw;
 	align-items: center;
 	background-color: ${(props) => props.theme.colors.baseBackground};
-	${media.SP} {
+	${media.SPandTB} {
 		height: 60px;
 		justify-content: center;
 	}

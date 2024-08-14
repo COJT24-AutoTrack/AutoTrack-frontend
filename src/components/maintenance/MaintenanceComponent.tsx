@@ -19,7 +19,7 @@ import { CirclePlus } from "lucide-react";
 const DetailContainer = styled.div`
 	display: flex;
 	flex-direction: column;
-	${media.SP} {
+	${media.SPandTB} {
 		padding: 0px;
 		width: 100dvw;
 	}
