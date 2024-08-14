@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Link from "next/link";
-import { LogoText } from "@/components/text/LogoTextComponen";
+import { LogoText } from "@/components/text/LogoTextComponent";
 import { media } from "@/styles/breakpoints";
 import { usePCQuery } from "@/hooks/useBreakpoints";
 import TabBar from "@/components/base/TabBar";

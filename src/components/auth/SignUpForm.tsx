@@ -18,7 +18,7 @@ import {
 	Paragraph,
 	StyledLink,
 } from "@/components/form/FormElements";
-import { LogoText } from "@/components/text/LogoTextComponen";
+import { LogoText } from "@/components/text/LogoTextComponent";
 import { ClientAPI } from "@/api/clientImplement";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
@@ -27,9 +27,10 @@ export default function SignUpForm() {
 	const [password, setPassword] = useState("");
 	const [confirmation, setConfirmation] = useState("");
 	const [error, setError] = useState("");
-	const router = useRouter();
+	const [isLoading, setIsLoading] = useState(false);
 
 	async function handleSubmit(event: FormEvent) {
+		setIsLoading(true);
 		event.preventDefault();
 		setError("");
 		if (password !== confirmation) {
@@ -76,12 +77,11 @@ export default function SignUpForm() {
 				idToken,
 			);
 
-			if (!response.ok) {
+			if (response.ok) {
+				window.location.href = "/"; // route.pushだとcookieがセットされない
+			} else {
 				throw new Error("セッションの作成に失敗しました");
 			}
-
-			// トップページへリダイレクト
-			router.push("/");
 		} catch (e) {
 			console.error("Signup error:", e);
 			setError(
@@ -132,7 +132,9 @@ export default function SignUpForm() {
 							required
 						/>
 					</div>
-					<Button type="submit">アカウント作成</Button>
+					<Button type="submit">
+						{isLoading ? "作成中..." : "アカウント作成"}
+					</Button>
 					{error && <ErrorMessage>{error}</ErrorMessage>}
 					<Paragraph>
 						すでにアカウントをお持ちですか?{" "}

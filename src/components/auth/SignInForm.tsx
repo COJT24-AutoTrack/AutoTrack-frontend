@@ -14,18 +14,19 @@ import {
 	Paragraph,
 	StyledLink,
 } from "@/components/form/FormElements";
-import { LogoText } from "@/components/text/LogoTextComponen";
+import { LogoText } from "@/components/text/LogoTextComponent";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
 export default function SignInForm() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
-	const router = useRouter();
+	const [isLoading, setIsLoading] = useState(false);
 
 	async function handleSubmit(event: FormEvent) {
 		event.preventDefault();
 		setError("");
+		setIsLoading(true);
 		try {
 			const auth = getAuth(app);
 			const credential = await signInWithEmailAndPassword(
@@ -36,7 +37,7 @@ export default function SignInForm() {
 			const idToken = await credential.user.getIdToken();
 
 			// セッションの作成
-			await fetchWithToken(
+			const response = await fetchWithToken(
 				"api/signin",
 				{
 					method: "POST",
@@ -45,8 +46,12 @@ export default function SignInForm() {
 				idToken,
 			);
 
-			// トップページへリダイレクト
-			router.push("/");
+			if (response.ok) {
+				// セッションが正常に作成されたことを確認
+				window.location.href = "/"; // route.pushだとcookieがセットされない
+			} else {
+				throw new Error("Failed to create session");
+			}
 		} catch (e) {
 			console.error("Signin error:", e);
 
@@ -72,6 +77,8 @@ export default function SignInForm() {
 			} else {
 				setError("予期せぬエラーが発生しました。もう一度お試しください。");
 			}
+		} finally {
+			setIsLoading(false);
 		}
 	}
 
@@ -104,7 +111,9 @@ export default function SignInForm() {
 							required
 						/>
 					</div>
-					<Button type="submit">ログイン</Button>
+					<Button type="submit" disabled={isLoading}>
+						{isLoading ? "ログイン中..." : "ログイン"}
+					</Button>
 					{error && <ErrorMessage>{error}</ErrorMessage>}
 					<Paragraph>
 						アカウントをお持ちでない場合は

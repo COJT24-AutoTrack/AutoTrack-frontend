@@ -17,19 +17,19 @@ export default async function Home() {
 	});
 
 	if (!tokens) {
-		return redirect("/signin");
+		redirect("/signin");
 	}
 
 	const clientAPI = ClientAPI(tokens.token);
 
 	try {
 		const response = await clientAPI.test.getTest();
-		if (!!!response) {
+		if (!response) {
 			throw new Error("Token validation failed");
 		}
 	} catch (error) {
 		console.error("Error validating token:", error);
-		return redirect("/signin");
+		redirect("/signin");
 	}
 
 	const userCars: Car[] = await clientAPI.user.getUserCars({
