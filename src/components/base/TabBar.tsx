@@ -12,6 +12,9 @@ const TabBarContainer = styled.nav`
 	padding-top: 20px;
 	padding-bottom: 14px;
 	width: 100vw;
+	${media.PC} {
+		justify-content: space-evenly;
+	}
 `;
 
 const activeStyle = css`
@@ -33,6 +36,7 @@ const TabBarItem = styled.a<{ isActive: boolean }>`
 		font-size: ${(props) => props.theme.fontSizes.subContent};
 		flex-direction: row;
 		gap: 8px;
+		justify-content: center;
 	}
 
 	${(props) => props.isActive && activeStyle}

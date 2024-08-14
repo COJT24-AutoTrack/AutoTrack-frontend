@@ -17,7 +17,12 @@ const HeaderContainer = styled.div`
 	${media.PC} {
 		height: 80px;
 		justify-content: left;
-		padding-left: 5dvw;
+	}
+`;
+
+const LogoTextWrapper = styled.div`
+	${media.PC} {
+		padding: 0 5dvw;
 	}
 `;
 
@@ -25,7 +30,9 @@ const Header = () => {
 	return (
 		<HeaderContainer>
 			<Link href="/" passHref>
-				<LogoText />
+				<LogoTextWrapper>
+					<LogoText />
+				</LogoTextWrapper>
 			</Link>
 			{usePCQuery() && <TabBar />}
 		</HeaderContainer>

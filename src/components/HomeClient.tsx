@@ -6,7 +6,7 @@ import styled from "styled-components";
 import FuelEfficiencyComponent from "@/components/CarDetail/FuelEfficiencyComponent";
 import DetailCardComponent from "@/components/CarDetail/DetailCardComponent";
 import { carInfo } from "@/api/models/models";
-import { useSPQuery, usePCQuery } from "@/hooks/useBreakpoints";
+import { usePCQuery, useSPandTBQuery } from "@/hooks/useBreakpoints";
 import { useRouter } from "next/navigation";
 import { media } from "@/styles/breakpoints";
 
@@ -63,7 +63,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 		}
 	}, [userCars]);
 
-	const isSP = useSPQuery();
+	const isSPandTB = useSPandTBQuery();
 	const isPC = usePCQuery();
 
 	const handleSelectCar = (car: carInfo) => {
@@ -76,7 +76,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 				<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
 			</CarSliderComponentWrapper>
 			<MenuContainer>
-				{isSP && (
+				{isSPandTB && (
 					<FuelEfficiencyComponentWrapper>
 						<FuelEfficiencyComponent
 							userCar={selectedCar}
@@ -88,7 +88,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 				)}
 				<DetailCardComponentsWrapper>
 					<VStack>
-						{isSP && (
+						{isSPandTB && (
 							<HStack>
 								<div style={{ flex: 1 }}>
 									<DetailCardComponent
@@ -110,7 +110,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 								</div>
 							</HStack>
 						)}
-						{isSP && (
+						{isSPandTB && (
 							<HStack>
 								<DetailCardComponent
 									label={"Car Wash"}
