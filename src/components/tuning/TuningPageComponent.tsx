@@ -67,7 +67,7 @@ const TuningPageComponent: React.FC<TuningPageComponentProps> = ({
 
 	const handleAddClick = () => {
 		if (userCars) {
-			router.push(`/tuning/add?selectedCarIndex=${selectedCarIndex}`);
+			window.location.href = `/tuning/add?selectedCarIndex=${selectedCarIndex}`;
 		}
 	};
 

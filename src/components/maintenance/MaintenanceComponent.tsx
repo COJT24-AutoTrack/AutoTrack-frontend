@@ -75,7 +75,7 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 	};
 
 	const handleAddClick = () => {
-		router.push(`/maintenance/add?selectedCarIndex=${selectedCarIndex}`);
+		window.location.href = `/maintenance/add?selectedCarIndex=${selectedCarIndex}`;
 	};
 
 	useEffect(() => {

@@ -95,6 +95,7 @@ const FuelEfficiencyValue = styled.span`
 `;
 
 const Button = styled.button`
+	width: 101px;
 	background-color: #f12424;
 	color: #ffffff;
 	border: none;
@@ -117,6 +118,12 @@ const DeleteButton = styled(Button)`
 	&:hover {
 		background-color: rgba(241, 36, 36, 0.1);
 	}
+`;
+
+const DeleteButtonInner = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 5px;
 `;
 
 const ButtonsContainer = styled.div`
@@ -303,11 +310,13 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 						</FuelEfficiencyValue>
 					</FuelEfficiencyDisplay>
 					<ButtonsContainer>
-						<Button type="submit">更新</Button>
 						<DeleteButton type="button" onClick={handleDelete}>
-							<Trash2 size={18} />
-							削除
+							<DeleteButtonInner>
+								<Trash2 size={18} />
+								<p>削除</p>
+							</DeleteButtonInner>
 						</DeleteButton>
+						<Button type="submit">更新</Button>
 					</ButtonsContainer>
 				</Form>
 			</FormContainer>

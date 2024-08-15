@@ -123,9 +123,7 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 	};
 
 	const handleAddClick = () => {
-		router.push(
-			`/maintenance/add?maintType=${maintType}&selectedCarIndex=${selectedCarIndex}`,
-		);
+		window.location.href = `/maintenance/add?maintType=${maintType}&selectedCarIndex=${selectedCarIndex}`;
 	};
 
 	const switchCar = () => {
