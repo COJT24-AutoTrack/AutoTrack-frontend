@@ -3,11 +3,10 @@ import styled from "styled-components";
 import { Anton } from "next/font/google";
 import { FuelEfficiency } from "@/api/models/models";
 import { useRouter } from "next/navigation";
-import { media } from "@/styles/breakpoints";
 import {
 	Calendar,
 	ChevronRight,
-	DollarSign,
+	JapaneseYen,
 	Droplets,
 	Fuel,
 	Navigation,
@@ -209,7 +208,7 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 					</MetricItem>
 					<MetricItem>
 						<MetricIcon>
-							<DollarSign color="#999" />
+							<JapaneseYen color="#999" />
 						</MetricIcon>
 						<MetricContent>
 							<MetricLabel>給油金額</MetricLabel>
