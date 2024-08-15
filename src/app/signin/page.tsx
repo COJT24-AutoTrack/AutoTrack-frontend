@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import SignInForm from "@/components/auth/SignInForm";
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
