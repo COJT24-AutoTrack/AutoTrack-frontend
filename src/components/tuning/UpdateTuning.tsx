@@ -97,6 +97,12 @@ const ButtonsContainer = styled.div`
 	gap: 10px;
 `;
 
+const DeleteButtonInner = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 5px;
+`;
+
 interface UpdateTuningProps {
 	tunings: Tuning[];
 	token: string;
@@ -203,8 +209,10 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings, token }) => {
 					</FormElementContainer>
 					<ButtonsContainer>
 						<DeleteButton type="button" onClick={handleDelete}>
-							<Trash2 size={18} />
-							削除
+							<DeleteButtonInner>
+								<Trash2 size={18} />
+								<p>削除</p>
+							</DeleteButtonInner>
 						</DeleteButton>
 						<Button type="submit">更新</Button>
 					</ButtonsContainer>

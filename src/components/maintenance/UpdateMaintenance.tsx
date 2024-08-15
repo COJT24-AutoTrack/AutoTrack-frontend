@@ -102,7 +102,6 @@ const ButtonsContainer = styled.div`
 	justify-content: space-between;
 	gap: 10px;
 `;
-
 interface UpdateMaintenancePageContentProps {
 	token: string;
 	maintenance: Maintenance | null;

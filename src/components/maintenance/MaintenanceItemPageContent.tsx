@@ -222,7 +222,7 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 						</CardContent>
 						<DetailButton
 							onClick={() => {
-								window.location.href = `/maintenance/detail/${maintenance.maint_id}`;
+								window.location.href = `/maintenance/updateMaintenance/${maintenance.maint_id}`;
 							}}
 						>
 							<ChevronRight />

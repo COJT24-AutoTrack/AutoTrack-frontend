@@ -1,13 +1,12 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import {
 	getAuth,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
 } from "firebase/auth";
 import { app } from "@/../firebase";
-import { useRouter } from "next/navigation";
 import { Main, Container } from "@/components/form/FormContainer";
 import {
 	Form,
@@ -92,56 +91,58 @@ export default function SignUpForm() {
 	}
 
 	return (
-		<Main>
-			<Container>
-				<LogoText />
-				<Form onSubmit={handleSubmit}>
-					<div>
-						<Label htmlFor="email">メールアドレス</Label>
-						<Input
-							type="email"
-							name="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							id="email"
-							placeholder="name@company.com"
-							required
-						/>
-					</div>
-					<div>
-						<Label htmlFor="password">パスワード</Label>
-						<Input
-							type="password"
-							name="password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							id="password"
-							placeholder="••••••••"
-							required
-						/>
-					</div>
-					<div>
-						<Label htmlFor="confirm-password">パスワードを確認する</Label>
-						<Input
-							type="password"
-							name="confirm-password"
-							value={confirmation}
-							onChange={(e) => setConfirmation(e.target.value)}
-							id="confirm-password"
-							placeholder="••••••••"
-							required
-						/>
-					</div>
-					<Button type="submit">
-						{isLoading ? "作成中..." : "アカウント作成"}
-					</Button>
-					{error && <ErrorMessage>{error}</ErrorMessage>}
-					<Paragraph>
-						すでにアカウントをお持ちですか?{" "}
-						<StyledLink href="/signin">ログインはこちら</StyledLink>
-					</Paragraph>
-				</Form>
-			</Container>
-		</Main>
+		<Suspense fallback={<div>Loading...</div>}>
+			<Main>
+				<Container>
+					<LogoText />
+					<Form onSubmit={handleSubmit}>
+						<div>
+							<Label htmlFor="email">メールアドレス</Label>
+							<Input
+								type="email"
+								name="email"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+								id="email"
+								placeholder="name@company.com"
+								required
+							/>
+						</div>
+						<div>
+							<Label htmlFor="password">パスワード</Label>
+							<Input
+								type="password"
+								name="password"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								id="password"
+								placeholder="••••••••"
+								required
+							/>
+						</div>
+						<div>
+							<Label htmlFor="confirm-password">パスワードを確認する</Label>
+							<Input
+								type="password"
+								name="confirm-password"
+								value={confirmation}
+								onChange={(e) => setConfirmation(e.target.value)}
+								id="confirm-password"
+								placeholder="••••••••"
+								required
+							/>
+						</div>
+						<Button type="submit">
+							{isLoading ? "作成中..." : "アカウント作成"}
+						</Button>
+						{error && <ErrorMessage>{error}</ErrorMessage>}
+						<Paragraph>
+							すでにアカウントをお持ちですか?{" "}
+							<StyledLink href="/signin">ログインはこちら</StyledLink>
+						</Paragraph>
+					</Form>
+				</Container>
+			</Main>
+		</Suspense>
 	);
 }
