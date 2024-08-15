@@ -157,7 +157,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		const isUserCar = await checkIsUserCars({ carId, tokens });
 		if (!isUserCar) {
 			alert("この車両は登録されていません");
-			router.push("/");
+			window.location.href = "/";
 			return;
 		}
 
@@ -170,7 +170,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 			fe_unitprice: unitPrice!,
 			fe_mileage: mileage!,
 		});
-		router.push("/refueling");
+		window.location.href = "/refueling";
 	};
 
 	return (

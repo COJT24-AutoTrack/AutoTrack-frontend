@@ -139,13 +139,13 @@ const AddTuningPageContent: React.FC<AddTuningProps> = ({
 
 		if (!userCars || userCars.length === 0) {
 			alert("車両が登録されていません");
-			router.push("/");
+			window.location.href = "/";
 			return;
 		}
 
 		if (!isUserCar) {
 			alert("この車両は登録されていません");
-			router.push("/");
+			window.location.href = "/";
 			return;
 		}
 
@@ -160,7 +160,7 @@ const AddTuningPageContent: React.FC<AddTuningProps> = ({
 				tuning_description: tuningDescription,
 			});
 			if (response) {
-				router.push("/tuning");
+				window.location.href = "/tuning";
 			} else {
 				alert("チューニング記録の追加に失敗しました");
 			}

@@ -214,7 +214,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 			});
 
 			if (newCar) {
-				router.push("/");
+				window.location.href = "/";
 			}
 		} catch (e) {
 			alert((e as Error).message);
@@ -224,7 +224,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 	return (
 		<PageContainer>
 			<BackHeader>
-				<BackButton onClick={() => router.push("/")}>
+				<BackButton onClick={() => (window.location.href = "/")}>
 					<ChevronLeft /> 戻る
 				</BackButton>
 			</BackHeader>

@@ -80,7 +80,7 @@ const TuningInfoCard: React.FC<TuningInfoCardProps> = ({ tuning }) => {
 
 	const handleDetailClick = () => {
 		if (tuning) {
-			router.push(`/updateTuning?id=${tuning.tuning_id}`);
+			window.location.href = `/updateTuning?id=${tuning.tuning_id}`;
 		}
 	};
 

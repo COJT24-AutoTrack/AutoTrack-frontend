@@ -43,7 +43,7 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 
 	const carCardOnClick = (userCar: carInfo) => {
 		onSelectCar(userCar);
-		router.push(`car/${userCar.car_id}`);
+		window.location.href = `car/${userCar.car_id}`;
 	};
 
 	const handleSlideChange = (swiper: { realIndex: any }) => {
@@ -54,7 +54,7 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 
 	const isSPandTB = useSPandTBQuery();
 	const handleAddCarClick = () => {
-		router.push("/add-car");
+		window.location.href = "/add-car";
 	};
 
 	return (

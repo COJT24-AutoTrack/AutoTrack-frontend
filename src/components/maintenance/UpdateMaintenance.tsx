@@ -73,7 +73,7 @@ const UpdateMaintenancePageContent: React.FC<
 					maint_title: maintTitle,
 				});
 
-				router.push(`/maintenance/${maintType}`);
+				window.location.href = `/maintenance/${maintType}`;
 			} catch (error) {
 				console.error("Error updating maintenance record:", error);
 			}
@@ -87,7 +87,7 @@ const UpdateMaintenancePageContent: React.FC<
 				await clientAPI.maintenance.deleteMaintenance({
 					maint_id: maintenance.maint_id,
 				});
-				router.push(`/maintenance/${maintType}`);
+				window.location.href = `/maintenance/${maintType}`;
 			} catch (error) {
 				console.error("Error deleting maintenance record:", error);
 			}

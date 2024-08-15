@@ -37,7 +37,7 @@ const BackHeader: React.FC<BackHeaderProps> = ({ route }) => {
 	const router = useRouter();
 	return (
 		<TopBar>
-			<BackButton onClick={() => router.push(route)}>
+			<BackButton onClick={() => (window.location.href = route)}>
 				<BackIcon style={{ fill: "white" }} />
 				<ContentText>戻る</ContentText>
 			</BackButton>

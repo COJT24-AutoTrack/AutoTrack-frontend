@@ -87,13 +87,13 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 
 		if (!userCars || userCars.length === 0) {
 			alert("車両が登録されていません");
-			router.push("/");
+			window.location.href = "/";
 			return;
 		}
 
 		if (!isUserCar) {
 			alert("この車両は登録されていません");
-			router.push("/");
+			window.location.href = "/";
 			return;
 		}
 
@@ -111,7 +111,7 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 			});
 
 			if (response) {
-				router.push(`/maintenance`);
+				window.location.href = `/maintenance`;
 			} else {
 				alert("メンテナンス記録の追加に失敗しました");
 			}

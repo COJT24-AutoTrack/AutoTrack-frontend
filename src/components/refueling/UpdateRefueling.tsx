@@ -211,7 +211,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 				fe_unitprice: unitPrice!,
 				fe_mileage: mileage!,
 			});
-			router.push("/refueling");
+			window.location.href = "/refueling";
 		}
 	};
 
@@ -221,7 +221,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 			await clientAPI.fuelEfficiency.deleteFuelEfficiency({
 				fe_id: fuelEfficiency.fe_id,
 			});
-			router.push("/refueling");
+			window.location.href = "/refueling";
 		}
 	};
 

@@ -81,7 +81,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 						<FuelEfficiencyComponent
 							userCar={selectedCar}
 							onClick={() => {
-								router.push("/refueling");
+								window.location.href = "/refueling";
 							}}
 						/>
 					</FuelEfficiencyComponentWrapper>

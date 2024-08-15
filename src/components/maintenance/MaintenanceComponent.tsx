@@ -16,40 +16,56 @@ import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";
 import { CirclePlus } from "lucide-react";
 
+const PageContainer = styled.div`
+	background-color: #1a1a1a;
+	min-height: 100vh;
+	color: #ffffff;
+`;
+
+const ContentContainer = styled.div`
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+	position: relative;
+	padding-bottom: 100px;
+`;
+
 const DetailContainer = styled.div`
 	display: flex;
 	flex-direction: column;
+	gap: 20px;
 	${media.SPandTB} {
-		padding: 0px;
-		width: 100dvw;
+		padding: 0;
+		width: 100%;
 	}
 	${media.PC} {
-		padding: 20px;
+		padding: 20px 0;
 	}
-	margin: 0;
 `;
-const SVGButton = styled.button`
+
+const AddButton = styled.button`
 	position: fixed;
-	right: 14px;
+	right: 20px;
 	bottom: 100px;
-	width: 80px;
-	height: 80px;
-	background-color: transparent;
+	width: 60px;
+	height: 60px;
+	background-color: #f12424;
 	border: none;
+	border-radius: 50%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
+	transition: background-color 0.3s;
+
+	&:hover {
+		background-color: #d61f1f;
+	}
 
 	svg {
-		width: 100px;
-		height: 100px;
+		width: 30px;
+		height: 30px;
 	}
-`;
-
-const Container = styled.div`
-	position: relative;
-	padding-bottom: 80px;
 `;
 
 interface MaintenancePageProps {
@@ -110,58 +126,56 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 		const isUserCar = await checkIsUserCars({ carId, tokens });
 		if (!isUserCar) {
 			alert("この車両は登録されていません");
-			router.push("/");
+			window.location.href = "/";
 			return;
 		}
-		router.push(
-			`/maintenance/${maintType}?selectedCarIndex=${selectedCarIndex}`,
-		);
+		window.location.href = `/maintenance/${maintType}?selectedCarIndex=${selectedCarIndex}`;
 	};
 
 	if (!userCars) {
-		return <div>ユーザーの車が見つかりません</div>;
+		return <PageContainer>ユーザーの車が見つかりません</PageContainer>;
 	}
+
 	return (
-		<Container>
-			<div>
-				<CarSelect
-					userCars={userCars}
-					selectedCarIndex={selectedCarIndex}
-					switchCar={switchCar}
-				/>
-			</div>
-			<DetailContainer>
-				{Object.values(MaintType).map((maintType) => {
-					const { title, lastMaintenanceDate, detail } =
-						getMaintTypeDetails(maintType);
-					return (
-						<MaintenanceDetail
-							key={maintType}
-							maintType={maintenanceTypeMap[maintType] || maintType}
-							title={title || ""}
-							lastMaintenanceDate={lastMaintenanceDate}
-							detail={detail}
-							onDetailClick={() => {
-								if (userCars.length === 0) {
-									alert("ユーザーの車が見つかりません");
-									return;
-								} else {
-									handleDetailClick(
-										userCars[selectedCarIndex].car_id,
-										maintType,
-									);
-								}
-							}}
-						/>
-					);
-				})}
-			</DetailContainer>
-			{userCars.length !== 0 && (
-				<SVGButton onClick={handleAddClick}>
-					<CirclePlus color="red" />
-				</SVGButton>
-			)}
-		</Container>
+		<PageContainer>
+			<CarSelect
+				userCars={userCars}
+				selectedCarIndex={selectedCarIndex}
+				switchCar={switchCar}
+			/>
+			<ContentContainer>
+				<DetailContainer>
+					{Object.values(MaintType).map((maintType) => {
+						const { title, lastMaintenanceDate, detail } =
+							getMaintTypeDetails(maintType);
+						return (
+							<MaintenanceDetail
+								key={maintType}
+								maintType={maintenanceTypeMap[maintType] || maintType}
+								title={title || ""}
+								lastMaintenanceDate={lastMaintenanceDate}
+								detail={detail}
+								onDetailClick={() => {
+									if (userCars.length === 0) {
+										alert("ユーザーの車が見つかりません");
+									} else {
+										handleDetailClick(
+											userCars[selectedCarIndex].car_id,
+											maintType,
+										);
+									}
+								}}
+							/>
+						);
+					})}
+				</DetailContainer>
+				{userCars.length !== 0 && (
+					<AddButton onClick={handleAddClick}>
+						<CirclePlus color="white" />
+					</AddButton>
+				)}
+			</ContentContainer>
+		</PageContainer>
 	);
 };
 

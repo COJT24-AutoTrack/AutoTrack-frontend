@@ -58,7 +58,7 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings, token }) => {
 				tuning_name: title,
 				tuning_description: description,
 			});
-			router.push("/tuning");
+			window.location.href = "/tuning";
 		}
 	};
 
@@ -68,7 +68,7 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings, token }) => {
 			await clientAPI.tuning.deleteTuning({
 				tuning_id: tuning.tuning_id,
 			});
-			router.push("/tuning");
+			window.location.href = "/tuning";
 		}
 	};
 
