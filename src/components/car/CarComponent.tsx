@@ -4,12 +4,10 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Car } from "@/api/models/models";
 import { media } from "@/styles/breakpoints";
-import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import Image from "next/image";
 import { ContentText } from "../text/TextComponents";
 import theme from "@/styles/theme";
-import router from "next/router";
 import { checkIsUserCars } from "@/module/checkUserCars";
 
 const CarInfoContainer = styled.div`
@@ -22,7 +20,7 @@ const CarInfoContainer = styled.div`
 	font-family: ${theme.fontFamily.primary};
 	padding: 20px;
 
-	${media.SP} {
+	${media.SPandTB} {
 		width: 100dvw;
 		border-radius: 0;
 		box-shadow: none;
@@ -38,7 +36,7 @@ const CarImage = styled(Image)`
 	border-radius: 8px;
 	margin-bottom: 1.5rem;
 
-	${media.SP} {
+	${media.SPandTB} {
 		border-radius: 0;
 		margin-bottom: 1rem;
 	}
@@ -48,7 +46,7 @@ const CarInfoGrid = styled.div`
 	display: grid;
 	gap: 1rem;
 
-	${media.SP} {
+	${media.SPandTB} {
 		grid-template-columns: 1fr;
 	}
 	${media.PC} {
@@ -62,7 +60,7 @@ const CarInfoItem = styled.div`
 	border-radius: 8px;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
-	${media.SP} {
+	${media.SPandTB} {
 		padding: 0.75rem;
 	}
 `;

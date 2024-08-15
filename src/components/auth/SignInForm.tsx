@@ -1,7 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { FormEvent, Suspense, useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app } from "@/../firebase";
 import { Main, Container } from "@/components/form/FormContainer";
@@ -83,45 +82,47 @@ export default function SignInForm() {
 	}
 
 	return (
-		<Main>
-			<Container>
-				<LogoText />
-				<Form onSubmit={handleSubmit}>
-					<div>
-						<Label htmlFor="email">メールアドレス</Label>
-						<Input
-							type="email"
-							name="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							id="email"
-							placeholder="name@company.com"
-							required
-						/>
-					</div>
-					<div>
-						<Label htmlFor="password">パスワード</Label>
-						<Input
-							type="password"
-							name="password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							id="password"
-							placeholder="••••••••"
-							required
-						/>
-					</div>
-					<Button type="submit" disabled={isLoading}>
-						{isLoading ? "ログイン中..." : "ログイン"}
-					</Button>
-					{error && <ErrorMessage>{error}</ErrorMessage>}
-					<Paragraph>
-						アカウントをお持ちでない場合は
-						<StyledLink href="/signup">こちら</StyledLink>
-						から登録してください。
-					</Paragraph>
-				</Form>
-			</Container>
-		</Main>
+		<Suspense fallback={<div>Loading...</div>}>
+			<Main>
+				<Container>
+					<LogoText />
+					<Form onSubmit={handleSubmit}>
+						<div>
+							<Label htmlFor="email">メールアドレス</Label>
+							<Input
+								type="email"
+								name="email"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+								id="email"
+								placeholder="name@company.com"
+								required
+							/>
+						</div>
+						<div>
+							<Label htmlFor="password">パスワード</Label>
+							<Input
+								type="password"
+								name="password"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								id="password"
+								placeholder="••••••••"
+								required
+							/>
+						</div>
+						<Button type="submit" disabled={isLoading}>
+							{isLoading ? "ログイン中..." : "ログイン"}
+						</Button>
+						{error && <ErrorMessage>{error}</ErrorMessage>}
+						<Paragraph>
+							アカウントをお持ちでない場合は
+							<StyledLink href="/signup">こちら</StyledLink>
+							から登録してください。
+						</Paragraph>
+					</Form>
+				</Container>
+			</Main>
+		</Suspense>
 	);
 }

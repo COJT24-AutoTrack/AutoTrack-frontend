@@ -4,65 +4,117 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Car } from "@/api/models/models";
 import { useRouter } from "next/navigation";
-import BackIcon from "/public/icons/BackIcon.svg";
-import { ContentText } from "@/components/text/TextComponents";
 import { ClientAPI } from "@/api/clientImplement";
-import { Form, Input, Label } from "@/components/form/FormElements";
+import { ErrorMessage } from "@/components/form/FormElements";
 import { Anton } from "next/font/google";
+import {
+	Car as CarIcon,
+	Hash,
+	Palette,
+	Navigation,
+	Droplet,
+	Cigarette,
+	Image,
+	ChevronLeft,
+} from "lucide-react";
 
 const Anton400 = Anton({
 	weight: "400",
 	subsets: ["latin"],
 });
 
-const Container = styled.div`
+const PageContainer = styled.div`
+	background-color: #1a1a1a;
+	min-height: 100vh;
+	color: #ffffff;
+`;
+
+const FormContainer = styled.div`
+	max-width: 500px;
+	margin: 0 auto;
 	padding: 20px;
 `;
 
-const TopBar = styled.div`
-	width: 100vw;
-	height: 50px;
-	padding-left: 10px;
+const Form = styled.form`
 	display: flex;
-	align-items: center;
-	background-color: #2b2b2b;
+	flex-direction: column;
+	gap: 20px;
 `;
 
-const BackButton = styled.button`
-	display: flex;
-	align-items: center;
-	background: none;
-	border: none;
-	color: white;
-	cursor: pointer;
+const FormTitle = styled.h1`
+	font-size: 24px;
+	text-align: center;
+`;
 
-	svg {
-		transform: rotate(180deg);
-		fill: white;
-		width: 24px;
-		height: 24px;
-		margin-right: 8px;
+const FormElementContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+`;
+
+const Label = styled.label`
+	font-size: 16px;
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+`;
+
+const Input = styled.input`
+	background-color: #2b2b2b;
+	border: 1px solid #ffffff;
+	border-radius: 4px;
+	color: #ffffff;
+	padding: 10px;
+	font-size: 16px;
+
+	&:focus {
+		outline: none;
+		border-color: #4a90e2;
 	}
 `;
 
+const CheckboxContainer = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 10px;
+`;
+
+const CheckboxInput = styled.input`
+	width: 20px;
+	height: 20px;
+`;
+
 const Button = styled.button`
-	padding: 10px;
-	font-size: 16px;
-	background-color: #007bff;
-	color: white;
+	background-color: #f12424;
+	color: #ffffff;
 	border: none;
 	border-radius: 4px;
+	padding: 12px 20px;
+	font-size: 18px;
 	cursor: pointer;
-	width: 80%;
-	margin-top: 10px;
+	transition: background-color 0.3s;
+
+	&:hover {
+		background-color: #d61f1f;
+	}
 `;
 
-const CheckBoxInput = styled.input`
-	margin-right: 10px;
-`;
-
-const CheckboxLabel = styled.label`
+const BackHeader = styled.div`
+	background-color: #2b2b2b;
+	padding: 10px 20px;
 	display: flex;
+	align-items: center;
+`;
+
+const BackButton = styled.button`
+	background: none;
+	border: none;
+	color: white;
+	font-size: 16px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 5px;
 `;
 
 interface AddCarPageComponentProps {
@@ -85,6 +137,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 	});
 	const [image, setImage] = useState<File | null>(null);
 	const [preview, setPreview] = useState<string | null>(null);
+	const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value, type, checked } = e.target;
@@ -113,8 +166,32 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		}
 	};
 
+	const validateForm = () => {
+		const newErrors: { [key: string]: string } = {};
+
+		if (!carData.car_name) {
+			newErrors.car_name = "車名を入力してください";
+		}
+		if (!carData.carmodelnum) {
+			newErrors.carmodelnum = "車種番号を入力してください";
+		}
+		if (!carData.car_color) {
+			newErrors.car_color = "車の色を入力してください";
+		}
+		if (carData.car_mileage === undefined || carData.car_mileage < 0) {
+			newErrors.car_mileage = "有効な走行距離を入力してください";
+		}
+
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
+	};
+
 	const handleSaveCar = async (event: React.FormEvent) => {
-		event.preventDefault(); // ページリロードを防ぐ
+		event.preventDefault();
+
+		if (!validateForm()) {
+			return;
+		}
 
 		const clientAPI = ClientAPI(tokens.token);
 		if (image) {
@@ -137,7 +214,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 			});
 
 			if (newCar) {
-				router.push("/");
+				window.location.href = "/";
 			}
 		} catch (e) {
 			alert((e as Error).message);
@@ -145,74 +222,123 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 	};
 
 	return (
-		<>
-			<TopBar>
-				<BackButton onClick={() => router.push("/")}>
-					<BackIcon style={{ fill: "white" }} />
-					<ContentText>戻る</ContentText>
+		<PageContainer>
+			<BackHeader>
+				<BackButton onClick={() => (window.location.href = "/")}>
+					<ChevronLeft /> 戻る
 				</BackButton>
-			</TopBar>
-			<Container>
+			</BackHeader>
+			<FormContainer>
 				<Form onSubmit={handleSaveCar}>
-					<ContentText className={Anton400.className}>Add New Car</ContentText>
-					<Input
-						type="text"
-						name="car_name"
-						placeholder="Car Name"
-						value={carData.car_name}
-						onChange={handleChange}
-					/>
-					<Input
-						type="text"
-						name="carmodelnum"
-						placeholder="Car Model Number"
-						value={carData.carmodelnum}
-						onChange={handleChange}
-					/>
-					<Input
-						type="text"
-						name="car_color"
-						placeholder="Car Color"
-						value={carData.car_color}
-						onChange={handleChange}
-					/>
-					<Input
-						type="number"
-						name="car_mileage"
-						placeholder="Car Mileage"
-						value={carData.car_mileage === 0 ? "" : carData.car_mileage}
-						onChange={handleChange}
-					/>
-					<CheckboxLabel>
-						<CheckBoxInput
+					<FormTitle className={Anton400.className}>新しい車を追加</FormTitle>
+					<FormElementContainer>
+						<Label>
+							<CarIcon color="white" />
+							<p>車名</p>
+						</Label>
+						<Input
+							type="text"
+							name="car_name"
+							value={carData.car_name}
+							onChange={handleChange}
+							placeholder="例: トヨタ カローラ"
+						/>
+						{errors.car_name && <ErrorMessage>{errors.car_name}</ErrorMessage>}
+					</FormElementContainer>
+					<FormElementContainer>
+						<Label>
+							<Hash color="white" />
+							<p>車種番号</p>
+						</Label>
+						<Input
+							type="text"
+							name="carmodelnum"
+							value={carData.carmodelnum}
+							onChange={handleChange}
+							placeholder="例: ZRE212"
+						/>
+						{errors.carmodelnum && (
+							<ErrorMessage>{errors.carmodelnum}</ErrorMessage>
+						)}
+					</FormElementContainer>
+					<FormElementContainer>
+						<Label>
+							<Palette color="white" />
+							<p>車の色</p>
+						</Label>
+						<Input
+							type="text"
+							name="car_color"
+							value={carData.car_color}
+							onChange={handleChange}
+							placeholder="例: ホワイトパールクリスタルシャイン"
+						/>
+						{errors.car_color && (
+							<ErrorMessage>{errors.car_color}</ErrorMessage>
+						)}
+					</FormElementContainer>
+					<FormElementContainer>
+						<Label>
+							<Navigation color="white" />
+							<p>総走行距離 (km)</p>
+						</Label>
+						<Input
+							type="number"
+							name="car_mileage"
+							value={carData.car_mileage === 0 ? "" : carData.car_mileage}
+							onChange={handleChange}
+							placeholder="例: 50000"
+						/>
+						{errors.car_mileage && (
+							<ErrorMessage>{errors.car_mileage}</ErrorMessage>
+						)}
+					</FormElementContainer>
+					<CheckboxContainer>
+						<CheckboxInput
 							type="checkbox"
 							name="car_isflooding"
 							checked={carData.car_isflooding}
 							onChange={handleChange}
 						/>
-						<Label>浸水車</Label>
-					</CheckboxLabel>
-					<CheckboxLabel>
-						<CheckBoxInput
+						<Label>
+							<Droplet color="white" />
+							<p>浸水車</p>
+						</Label>
+					</CheckboxContainer>
+					<CheckboxContainer>
+						<CheckboxInput
 							type="checkbox"
 							name="car_issmoked"
 							checked={carData.car_issmoked}
 							onChange={handleChange}
 						/>
-						<Label>喫煙車</Label>
-					</CheckboxLabel>
-					<Input type="file" accept="image/*" onChange={handleImageChange} />
-					{preview && (
-						<img
-							src={preview}
-							alt="Car Preview"
-							style={{ width: "80%", marginBottom: "10px" }}
-						/>
-					)}
-					<Button type="submit">Save Car</Button>
+						<Label>
+							<Cigarette color="white" />
+							<p>喫煙車</p>
+						</Label>
+					</CheckboxContainer>
+					<FormElementContainer>
+						<Label>
+							<Image color="white" />
+							<p>車の画像</p>
+						</Label>
+						<Input type="file" accept="image/*" onChange={handleImageChange} />
+						{preview && (
+							<img
+								src={preview}
+								alt="Car Preview"
+								style={{
+									width: "100%",
+									marginTop: "10px",
+									borderRadius: "4px",
+								}}
+							/>
+						)}
+					</FormElementContainer>
+					<Button type="submit">登録</Button>
 				</Form>
-			</Container>
-		</>
+			</FormContainer>
+		</PageContainer>
 	);
 };
 

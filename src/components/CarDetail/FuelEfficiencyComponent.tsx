@@ -16,7 +16,7 @@ interface FuelEfficiencyComponentProps {
 
 const Card = styled.div`
 	display: flex;
-	${media.SP} {
+	${media.SPandTB} {
 	}
 	${media.PC} {
 		height: 12dvh;
@@ -48,7 +48,7 @@ const Text = styled.div`
 `;
 
 const Value = styled.span`
-	${media.SP} {
+	${media.SPandTB} {
 		font-size: min(10dvh, 77px);
 	}
 	${media.PC} {
@@ -60,7 +60,7 @@ const Value = styled.span`
 `;
 
 const Unit = styled.span`
-	${media.SP} {
+	${media.SPandTB} {
 		font-size: min(6dvh, 46px);
 	}
 	${media.PC} {
