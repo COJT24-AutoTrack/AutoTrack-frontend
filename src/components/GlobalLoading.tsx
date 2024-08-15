@@ -39,6 +39,14 @@ const LoadingText = styled.p`
 	font-size: 18px;
 `;
 
+const Loading = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+`;
+
 const GlobalLoading = () => {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -63,10 +71,10 @@ const GlobalLoading = () => {
 
 	return loading ? (
 		<LoadingOverlay>
-			<div>
+			<Loading>
 				<Spinner />
 				<LoadingText>Loading...</LoadingText>
-			</div>
+			</Loading>
 		</LoadingOverlay>
 	) : null;
 };
