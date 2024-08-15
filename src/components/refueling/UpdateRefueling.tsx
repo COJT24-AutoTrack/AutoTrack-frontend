@@ -43,7 +43,6 @@ const Form = styled.form`
 const FormTitle = styled.h1`
 	font-size: 24px;
 	text-align: center;
-	margin-bottom: 20px;
 `;
 
 const FormElementContainer = styled.div`
