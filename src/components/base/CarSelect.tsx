@@ -1,7 +1,7 @@
 import { Car } from "@/api/models/models";
 import styled from "styled-components";
-import BackIcon from "@/../public/icons/BackIcon.svg";
 import { ContentText } from "../text/TextComponents";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 const Container = styled.div`
 	display: flex;
@@ -27,16 +27,9 @@ const ChangeCarButton = styled.button`
 	cursor: pointer;
 
 	svg {
-		fill: white;
 		width: 24px;
 		height: 24px;
 		margin-right: 8px;
-	}
-`;
-
-const ChangeCarLeftButton = styled(ChangeCarButton)`
-	svg {
-		transform: rotate(180deg);
 	}
 `;
 
@@ -58,14 +51,14 @@ const CarSelect: React.FC<CarSelectProps> = ({
 	return (
 		<Container>
 			<ChangeIconContainer>
-				<ChangeCarLeftButton onClick={switchCar}>
-					<BackIcon style={{ fill: "white" }} />
-				</ChangeCarLeftButton>
+				<ChangeCarButton onClick={switchCar}>
+					<ChevronLeftIcon />
+				</ChangeCarButton>
 			</ChangeIconContainer>
 			<ContentText>{userCars[selectedCarIndex]?.car_name}</ContentText>
 			<ChangeIconContainer>
 				<ChangeCarButton onClick={switchCar}>
-					<BackIcon style={{ fill: "white" }} />
+					<ChevronRightIcon />
 				</ChangeCarButton>
 			</ChangeIconContainer>
 		</Container>

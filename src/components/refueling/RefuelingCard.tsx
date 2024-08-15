@@ -27,18 +27,18 @@ const Container = styled.div`
 	position: relative;
 	padding: 10px 0 10px 10px;
 	gap: 2dvw;
-	width: 93dvw;
+	width: min(93dvw, 860px);
 `;
 
 const FuelEfficiencySection = styled.div`
-	padding: 10px 10px 10px 5px;
+	padding: 10px 10px 10px 0px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	background: rgba(255, 255, 255, 0.1);
 	border-radius: 8px;
 	flex: 4;
-	gap: 5px;
+	gap: 10px;
 	svg {
 		width: min(6dvw, 30px);
 		height: min(6dvw, 30px);
@@ -95,8 +95,8 @@ const MetricItem = styled.div`
 
 const MetricIcon = styled.div`
 	svg {
-		width: min(4dvw, 20px);
-		height: min(4dvw, 20px);
+		width: min(3dvw, 20px);
+		height: min(3dvw, 20px);
 	}
 `;
 
@@ -107,12 +107,12 @@ const MetricContent = styled.div`
 
 const MetricLabel = styled.p`
 	color: #999;
-	font-size: min(3dvw, 14px);
+	font-size: min(3dvw, 13px);
 `;
 
 const MetricValue = styled.p`
 	color: #fff;
-	font-size: min(3dvw, 15px);
+	font-size: min(3dvw, 14px);
 	white-space: nowrap;
 `;
 

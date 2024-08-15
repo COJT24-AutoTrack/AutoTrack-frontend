@@ -14,22 +14,28 @@ const Container = styled.div`
 	position: relative;
 `;
 
-const SVGButton = styled.button`
-	position: absolute;
-	right: 14px;
+const AddButton = styled.button`
+	position: fixed;
+	right: 20px;
 	bottom: 100px;
-	width: 80px;
-	height: 80px;
-	background-color: transparent;
+	width: 60px;
+	height: 60px;
+	background-color: #f12424;
 	border: none;
+	border-radius: 50%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
+	transition: background-color 0.3s;
+
+	&:hover {
+		background-color: #d61f1f;
+	}
 
 	svg {
-		width: 100px;
-		height: 100px;
+		width: 30px;
+		height: 30px;
 	}
 `;
 
@@ -117,9 +123,9 @@ const TuningPageComponent: React.FC<TuningPageComponentProps> = ({
 				)}
 			</Container>
 			{userCars.length !== 0 && (
-				<SVGButton onClick={handleAddClick}>
-					<CirclePlus color="red" />
-				</SVGButton>
+				<AddButton onClick={handleAddClick}>
+					<CirclePlus color="white" />
+				</AddButton>
 			)}
 		</>
 	);

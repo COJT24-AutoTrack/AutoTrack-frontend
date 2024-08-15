@@ -1,3 +1,4 @@
+import { ChevronRightIcon } from "lucide-react";
 import React from "react";
 import styled from "styled-components";
 
@@ -67,7 +68,9 @@ const MaintenanceDetail: React.FC<MaintenanceDetailProps> = ({
 		<Container>
 			<Title>
 				{maintType}
-				<DetailButton onClick={onDetailClick}>&gt;</DetailButton>
+				<DetailButton onClick={onDetailClick}>
+					<ChevronRightIcon />
+				</DetailButton>
 			</Title>
 			<Content>
 				{maintType === "その他" && <DetailText>{title}</DetailText>}
