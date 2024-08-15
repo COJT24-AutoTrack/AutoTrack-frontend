@@ -8,7 +8,7 @@ import AddCarCardComponent from "@/components/CarSlider/AddCarCardComponent";
 import { Navigation, Pagination } from "swiper/modules";
 import { carInfo } from "@/api/models/models";
 import { useRouter } from "next/navigation";
-import { useSPandTBQuery, useSPQuery } from "@/hooks/useBreakpoints";
+import { useSPQuery } from "@/hooks/useBreakpoints";
 import styled from "styled-components";
 
 const SliderWrapper = styled.div`
@@ -20,7 +20,6 @@ const SliderWrapper = styled.div`
 	}
 	.swiper-wrapper {
 		height: fit-content;
-		align-items: center;
 	}
 	.swiper-slide {
 		height: fit-content;
@@ -43,7 +42,7 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 
 	const carCardOnClick = (userCar: carInfo) => {
 		onSelectCar(userCar);
-		window.location.href = `car/${userCar.car_id}`;
+		router.push(`car/${userCar.car_id}`);
 	};
 
 	const handleSlideChange = (swiper: { realIndex: any }) => {
@@ -52,9 +51,9 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 		onSelectCar(newSelectedCar);
 	};
 
-	const isSPandTB = useSPandTBQuery();
+	const isSP = useSPQuery();
 	const handleAddCarClick = () => {
-		window.location.href = "/add-car";
+		router.push("/add-car");
 	};
 
 	return (
@@ -62,7 +61,7 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 			<Swiper
 				spaceBetween={30}
 				slidesPerView={"auto"}
-				centeredSlides={isSPandTB ? true : false}
+				centeredSlides={isSP ? true : false}
 				loop={false}
 				onSlideChange={handleSlideChange}
 				modules={[Navigation, Pagination]}
@@ -86,9 +85,7 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 					}}
 				>
 					<AddCarCardComponent onClick={handleAddCarClick} />
-					{userCars.length === 0 && (
-						<div style={{ height: "5dvh", width: "100dvw" }}></div>
-					)}
+					{/* <div style={{ height: "80px", width: "280px" }}></div> */}
 				</SwiperSlide>
 			</Swiper>
 		</SliderWrapper>

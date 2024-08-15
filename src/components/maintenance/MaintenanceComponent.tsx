@@ -14,58 +14,42 @@ import { media } from "@/styles/breakpoints";
 import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";
-import { CirclePlus } from "lucide-react";
-
-const PageContainer = styled.div`
-	background-color: #1a1a1a;
-	min-height: 100vh;
-	color: #ffffff;
-`;
-
-const ContentContainer = styled.div`
-	max-width: 800px;
-	margin: 0 auto;
-	padding: 20px;
-	position: relative;
-	padding-bottom: 100px;
-`;
+import AddIcon from "/public/icons/AddIcon.svg";
 
 const DetailContainer = styled.div`
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
-	${media.SPandTB} {
-		padding: 0;
-		width: 100%;
+	${media.SP} {
+		padding: 0px;
+		width: 100dvw;
 	}
 	${media.PC} {
-		padding: 20px 0;
+		padding: 20px;
 	}
+	margin: 0;
 `;
-
-const AddButton = styled.button`
+const SVGButton = styled.button`
 	position: fixed;
-	right: 20px;
+	right: 14px;
 	bottom: 100px;
-	width: 60px;
-	height: 60px;
-	background-color: #f12424;
+	width: 80px;
+	height: 80px;
+	background-color: transparent;
 	border: none;
-	border-radius: 50%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
-	transition: background-color 0.3s;
-
-	&:hover {
-		background-color: #d61f1f;
-	}
 
 	svg {
-		width: 30px;
-		height: 30px;
+		width: 100px;
+		height: 100px;
 	}
+`;
+
+const Container = styled.div`
+	position: relative;
+	padding-bottom: 80px;
 `;
 
 interface MaintenancePageProps {
@@ -91,7 +75,7 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 	};
 
 	const handleAddClick = () => {
-		window.location.href = `/maintenance/add?selectedCarIndex=${selectedCarIndex}`;
+		router.push(`/maintenance/add?selectedCarIndex=${selectedCarIndex}`);
 	};
 
 	useEffect(() => {
@@ -126,56 +110,58 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 		const isUserCar = await checkIsUserCars({ carId, tokens });
 		if (!isUserCar) {
 			alert("この車両は登録されていません");
-			window.location.href = "/";
+			router.push("/");
 			return;
 		}
-		window.location.href = `/maintenance/${maintType}?selectedCarIndex=${selectedCarIndex}`;
+		router.push(
+			`/maintenance/${maintType}?selectedCarIndex=${selectedCarIndex}`,
+		);
 	};
 
 	if (!userCars) {
-		return <PageContainer>ユーザーの車が見つかりません</PageContainer>;
+		return <div>ユーザーの車が見つかりません</div>;
 	}
-
 	return (
-		<PageContainer>
-			<CarSelect
-				userCars={userCars}
-				selectedCarIndex={selectedCarIndex}
-				switchCar={switchCar}
-			/>
-			<ContentContainer>
-				<DetailContainer>
-					{Object.values(MaintType).map((maintType) => {
-						const { title, lastMaintenanceDate, detail } =
-							getMaintTypeDetails(maintType);
-						return (
-							<MaintenanceDetail
-								key={maintType}
-								maintType={maintenanceTypeMap[maintType] || maintType}
-								title={title || ""}
-								lastMaintenanceDate={lastMaintenanceDate}
-								detail={detail}
-								onDetailClick={() => {
-									if (userCars.length === 0) {
-										alert("ユーザーの車が見つかりません");
-									} else {
-										handleDetailClick(
-											userCars[selectedCarIndex].car_id,
-											maintType,
-										);
-									}
-								}}
-							/>
-						);
-					})}
-				</DetailContainer>
-				{userCars.length !== 0 && (
-					<AddButton onClick={handleAddClick}>
-						<CirclePlus color="white" />
-					</AddButton>
-				)}
-			</ContentContainer>
-		</PageContainer>
+		<Container>
+			<div>
+				<CarSelect
+					userCars={userCars}
+					selectedCarIndex={selectedCarIndex}
+					switchCar={switchCar}
+				/>
+			</div>
+			<DetailContainer>
+				{Object.values(MaintType).map((maintType) => {
+					const { title, lastMaintenanceDate, detail } =
+						getMaintTypeDetails(maintType);
+					return (
+						<MaintenanceDetail
+							key={maintType}
+							maintType={maintenanceTypeMap[maintType] || maintType}
+							title={title || ""}
+							lastMaintenanceDate={lastMaintenanceDate}
+							detail={detail}
+							onDetailClick={() => {
+								if (userCars.length === 0) {
+									alert("ユーザーの車が見つかりません");
+									return;
+								} else {
+									handleDetailClick(
+										userCars[selectedCarIndex].car_id,
+										maintType,
+									);
+								}
+							}}
+						/>
+					);
+				})}
+			</DetailContainer>
+			{userCars.length !== 0 && (
+				<SVGButton onClick={handleAddClick}>
+					<AddIcon style={{ fill: "red" }} />
+				</SVGButton>
+			)}
+		</Container>
 	);
 };
 

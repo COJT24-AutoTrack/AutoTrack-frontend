@@ -2,7 +2,7 @@ import React from "react";
 import Header from "@/components/base/Header";
 import styled from "styled-components";
 import TabBar from "@/components/base/TabBar";
-import { useSPandTBQuery } from "@/hooks/useBreakpoints";
+import { useSPQuery } from "@/hooks/useBreakpoints";
 import dynamic from "next/dynamic";
 
 const PageContainer = styled.div`
@@ -27,7 +27,7 @@ const TabBarWrapper = styled.div`
 `;
 
 const Home = ({ children }: { children: React.ReactNode }) => {
-	const isSPandTB = useSPandTBQuery();
+	const isSP = useSPQuery();
 
 	return (
 		<PageContainer>
@@ -35,7 +35,7 @@ const Home = ({ children }: { children: React.ReactNode }) => {
 				<Header />
 			</HeaderWrapper>
 			<MainContent>{children}</MainContent>
-			{isSPandTB && (
+			{isSP && (
 				<TabBarWrapper>
 					<TabBar />
 				</TabBarWrapper>

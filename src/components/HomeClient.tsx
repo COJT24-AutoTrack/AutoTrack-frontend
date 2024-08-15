@@ -6,7 +6,7 @@ import styled from "styled-components";
 import FuelEfficiencyComponent from "@/components/CarDetail/FuelEfficiencyComponent";
 import DetailCardComponent from "@/components/CarDetail/DetailCardComponent";
 import { carInfo } from "@/api/models/models";
-import { usePCQuery, useSPandTBQuery } from "@/hooks/useBreakpoints";
+import { useSPQuery, usePCQuery } from "@/hooks/useBreakpoints";
 import { useRouter } from "next/navigation";
 import { media } from "@/styles/breakpoints";
 
@@ -63,7 +63,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 		}
 	}, [userCars]);
 
-	const isSPandTB = useSPandTBQuery();
+	const isSP = useSPQuery();
 	const isPC = usePCQuery();
 
 	const handleSelectCar = (car: carInfo) => {
@@ -76,19 +76,19 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 				<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
 			</CarSliderComponentWrapper>
 			<MenuContainer>
-				{isSPandTB && (
+				{isSP && (
 					<FuelEfficiencyComponentWrapper>
 						<FuelEfficiencyComponent
 							userCar={selectedCar}
 							onClick={() => {
-								window.location.href = "/refueling";
+								router.push("/refueling");
 							}}
 						/>
 					</FuelEfficiencyComponentWrapper>
 				)}
 				<DetailCardComponentsWrapper>
 					<VStack>
-						{isSPandTB && (
+						{isSP && (
 							<HStack>
 								<div style={{ flex: 1 }}>
 									<DetailCardComponent
@@ -100,17 +100,13 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 								<div style={{ flex: 1 }}>
 									<DetailCardComponent
 										label={"Fuel Cost"}
-										value={
-											selectedCar
-												? Number(selectedCar.total_gas_cost.toFixed())
-												: 0
-										}
+										value={selectedCar ? selectedCar.total_gas_cost : 0}
 										unit={"Yen"}
 									/>
 								</div>
 							</HStack>
 						)}
-						{isSPandTB && (
+						{isSP && (
 							<HStack>
 								<DetailCardComponent
 									label={"Car Wash"}

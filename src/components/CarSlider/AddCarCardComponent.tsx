@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Anton } from "next/font/google";
-import { CirclePlus } from "lucide-react";
+import AddCarIcon from "/public/icons/AddIcon.svg";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -42,10 +42,7 @@ const AddTextSpan = styled.span`
 `;
 
 const AddCarIconWrapper = styled.div`
-	svg {
-		width: 8dvh;
-		height: 8dvh;
-	}
+	width: 8dvh;
 `;
 
 interface AddCarCardComponentProps {
@@ -59,7 +56,7 @@ const AddCarCardComponent: React.FC<AddCarCardComponentProps> = ({
 		<Card>
 			<AddTextSpan className={Anton400.className}>Add Car</AddTextSpan>
 			<AddCarIconWrapper>
-				<CirclePlus color="#2b2b2b" />
+				<AddCarIcon />
 			</AddCarIconWrapper>
 		</Card>
 	</CardContainer>

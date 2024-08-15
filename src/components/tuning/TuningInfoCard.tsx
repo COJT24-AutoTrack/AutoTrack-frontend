@@ -2,9 +2,9 @@
 
 import styled from "styled-components";
 import { SubSubContentText } from "../text/TextComponents";
+import BackIcon from "/public/icons/BackIcon.svg";
 import { Tuning } from "@/api/models/models";
 import { useRouter } from "next/navigation";
-import { ChevronLeftIcon } from "lucide-react";
 
 const Container = styled.div`
 	display: flex;
@@ -45,6 +45,7 @@ const NextPageSVG = styled.button`
 	cursor: pointer;
 
 	svg {
+		fill: white;
 		width: 12px;
 		height: 12px;
 		margin-right: 8px;
@@ -79,7 +80,7 @@ const TuningInfoCard: React.FC<TuningInfoCardProps> = ({ tuning }) => {
 
 	const handleDetailClick = () => {
 		if (tuning) {
-			window.location.href = `/updateTuning?id=${tuning.tuning_id}`;
+			router.push(`/updateTuning?id=${tuning.tuning_id}`);
 		}
 	};
 
@@ -92,7 +93,7 @@ const TuningInfoCard: React.FC<TuningInfoCardProps> = ({ tuning }) => {
 			</ContentContainer>
 			<ButtonContainer onClick={handleDetailClick}>
 				<NextPageSVG>
-					<ChevronLeftIcon color="white" />
+					<BackIcon style={{ fill: "white" }} />
 				</NextPageSVG>
 			</ButtonContainer>
 		</Container>

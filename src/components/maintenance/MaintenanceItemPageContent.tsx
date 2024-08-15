@@ -2,125 +2,91 @@
 
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Anton } from "next/font/google";
 import {
 	Car,
 	Maintenance,
 	maintenanceTypeMap,
 	MaintType,
 } from "@/api/models/models";
+import BackIcon from "/public/icons/BackIcon.svg";
 import { useRouter, useSearchParams } from "next/navigation";
+import AddIcon from "/public/icons/AddIcon.svg";
+import { ContentText } from "@/components/text/TextComponents";
 import CarSelect from "@/components/base/CarSelect";
 import { ClientAPI } from "@/api/clientImplement";
-import { ChevronRight, CirclePlus, Calendar, FileText } from "lucide-react";
 
-const Anton400 = Anton({
-	weight: "400",
-	subsets: ["latin"],
-});
-
-const PageContainer = styled.div`
-	background-color: #1a1a1a;
-	min-height: 100vh;
-	color: #ffffff;
+const Container = styled.div`
+	padding: 20px;
 `;
 
 const TopBar = styled.div`
-	width: 100%;
+	width: 100vw;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	background-color: #2b2b2b;
 `;
 
-const ContentContainer = styled.div`
-	max-width: 800px;
-	margin: 0 auto;
-	padding: 20px;
-	position: relative;
-`;
-
 const Title = styled.h2`
-	font-size: 24px;
+	flex-grow: 1;
 	text-align: center;
-	margin: 0 0 20px 0;
-	color: #ffffff;
+	margin: 0;
+	color: white;
 `;
 
 const MaintenanceCard = styled.div`
-	background-color: #2b2b2b;
+	border: 1px solid #ccc;
 	border-radius: 8px;
 	padding: 16px;
-	margin-bottom: 16px;
+	margin-bottom: 12px;
+	background-color: #1c1c1c;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 `;
 
-const CardContent = styled.div`
-	flex: 1;
-`;
-
 const DateText = styled.p`
 	font-size: 14px;
-	color: #999;
-	margin: 0 0 8px 0;
-	display: flex;
-	align-items: center;
-	gap: 5px;
+	margin: 0;
 `;
 
 const DetailText = styled.p`
 	font-size: 16px;
 	margin: 0;
+	flex: 1;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	display: flex;
-	align-items: center;
-	gap: 5px;
 `;
 
 const DetailButton = styled.button`
-	background: none;
-	color: #ffffff;
+	background-color: #444;
+	color: #fff;
 	border: none;
-	padding: 8px 16px;
+	padding: 8px;
 	cursor: pointer;
 	border-radius: 4px;
-	font-size: 14px;
-	transition: background-color 0.3s;
-
-	&:hover {
-		background-color: rgba(255, 255, 255, 0.1);
-	}
+	margin-left: 16px;
 `;
 
-const AddButton = styled.button`
-	position: fixed;
-	right: 20px;
+const SVGButton = styled.button`
+	position: absolute;
+	right: 14px;
 	bottom: 100px;
-	width: 60px;
-	height: 60px;
-	background-color: #f12424;
+	width: 80px;
+	height: 80px;
+	background-color: transparent;
 	border: none;
-	border-radius: 50%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
-	transition: background-color 0.3s;
-
-	&:hover {
-		background-color: #d61f1f;
-	}
 
 	svg {
-		width: 30px;
-		height: 30px;
+		width: 100px;
+		height: 100px;
 	}
 `;
-
 interface MaintenanceItemPageContentProps {
 	maintType: MaintType;
 	tokens: {
@@ -154,8 +120,14 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 	);
 	const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
 
+	const handleBackClick = () => {
+		router.back();
+	};
+
 	const handleAddClick = () => {
-		window.location.href = `/maintenance/add?maintType=${maintType}&selectedCarIndex=${selectedCarIndex}`;
+		router.push(
+			`/maintenance/add?maintType=${maintType}&selectedCarIndex=${selectedCarIndex}`,
+		);
 	};
 
 	const switchCar = () => {
@@ -192,7 +164,7 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 	}, [selectedCarIndex, userCars, tokens.token, maintType]);
 
 	return (
-		<PageContainer>
+		<>
 			<TopBar>
 				<CarSelect
 					userCars={userCars}
@@ -200,42 +172,35 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 					switchCar={switchCar}
 				/>
 			</TopBar>
-			<ContentContainer>
-				<Title className={Anton400.className}>{maintTypeJP}記録一覧</Title>
+			<Container>
+				<Title>{maintTypeJP}記録一覧</Title>
 				{maintenances.map((maintenance) => (
 					<MaintenanceCard key={maintenance.maint_id}>
-						<CardContent>
-							{maintenance.maint_type === "Other" && (
-								<DetailText>
-									<FileText size={16} />
-									タイトル: {maintenance.maint_title}
-								</DetailText>
+						<div>
+							{maintenance.maint_type == "Other" && (
+								<DetailText>タイトル: {maintenance.maint_title}</DetailText>
 							)}
 							<DateText>
-								<Calendar size={16} />
 								日付: {new Date(maintenance.maint_date).toLocaleDateString()}
 							</DateText>
-							<DetailText>
-								<FileText size={16} />
-								内容: {maintenance.maint_description}
-							</DetailText>
-						</CardContent>
+							<DetailText>内容: {maintenance.maint_description}</DetailText>
+						</div>
 						<DetailButton
 							onClick={() => {
-								window.location.href = `/maintenance/updateMaintenance/${maintenance.maint_id}`;
+								router.push(`/maintenance/detail/${maintenance.maint_id}`);
 							}}
 						>
-							<ChevronRight />
+							詳細
 						</DetailButton>
 					</MaintenanceCard>
 				))}
 				{userCars.length !== 0 && (
-					<AddButton onClick={handleAddClick}>
-						<CirclePlus color="white" />
-					</AddButton>
+					<SVGButton onClick={handleAddClick}>
+						<AddIcon style={{ fill: "red" }} />
+					</SVGButton>
 				)}
-			</ContentContainer>
-		</PageContainer>
+			</Container>
+		</>
 	);
 };
 

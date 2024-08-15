@@ -10,19 +10,14 @@ const HeaderContainer = styled.div`
 	width: 100vw;
 	align-items: center;
 	background-color: ${(props) => props.theme.colors.baseBackground};
-	${media.SPandTB} {
+	${media.SP} {
 		height: 60px;
 		justify-content: center;
 	}
 	${media.PC} {
 		height: 80px;
 		justify-content: left;
-	}
-`;
-
-const LogoTextWrapper = styled.div`
-	${media.PC} {
-		padding: 0 5dvw;
+		padding-left: 5dvw;
 	}
 `;
 
@@ -30,9 +25,7 @@ const Header = () => {
 	return (
 		<HeaderContainer>
 			<Link href="/" passHref>
-				<LogoTextWrapper>
-					<LogoText />
-				</LogoTextWrapper>
+				<LogoText />
 			</Link>
 			{usePCQuery() && <TabBar />}
 		</HeaderContainer>

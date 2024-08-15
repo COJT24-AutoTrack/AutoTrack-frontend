@@ -31,7 +31,7 @@ const MaintenanceItemComponent: React.FC<MaintenanceItemComponentProps> = ({
 	const router = useRouter();
 
 	const handleDetailClick = (maintId: number) => {
-		window.location.href = `/maintenance/${carId}/${maintType}/update?maintId=${maintId}`;
+		router.push(`/maintenance/${carId}/${maintType}/update?maintId=${maintId}`);
 	};
 
 	return (

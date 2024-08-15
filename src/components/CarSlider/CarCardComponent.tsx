@@ -25,7 +25,7 @@ const Card = styled.div`
 	flex-shrink: 0;
 	border-radius: 8px;
 	background: #1a1a1a;
-	${media.SPandTB} {
+	${media.SP} {
 		width: 280px;
 	}
 	${media.PC} {
@@ -36,7 +36,7 @@ const Card = styled.div`
 `;
 
 const CarImage = styled(Image)`
-	${media.SPandTB} {
+	${media.SP} {
 		height: 20dvh;
 	}
 	${media.PC} {
@@ -55,7 +55,7 @@ const CarImage = styled(Image)`
 
 const CarName = styled.div`
 	color: #fff;
-	${media.SPandTB} {
+	${media.SP} {
 		font-size: min(3dvh, 25px);
 		text-align: center;
 	}

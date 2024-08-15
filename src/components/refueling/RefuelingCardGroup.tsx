@@ -6,9 +6,11 @@ import { FuelEfficiency } from "@/api/models/models";
 
 const Container = styled.div`
 	display: flex;
+	padding: 15px 25px;
 	flex-direction: column;
 	align-items: center;
 	gap: 10px;
+	flex: 1 0 0;
 	align-self: stretch;
 `;
 
