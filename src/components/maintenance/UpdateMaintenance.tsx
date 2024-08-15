@@ -123,7 +123,6 @@ const UpdateMaintenancePageContent: React.FC<
 						type="text"
 						value={maintDescription}
 						onChange={(e) => setMaintDescription(e.target.value)}
-						required
 					/>
 				</Label>
 				<ButtonsContainer>

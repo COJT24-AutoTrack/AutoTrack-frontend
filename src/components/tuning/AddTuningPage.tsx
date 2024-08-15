@@ -229,7 +229,6 @@ const AddTuningPageContent: React.FC<AddTuningProps> = ({
 							type="text"
 							value={tuningDescription}
 							onChange={(e) => setTuningDescription(e.target.value)}
-							required
 						/>
 					</FormElementContainer>
 					<Button type="submit">追加</Button>

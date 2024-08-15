@@ -185,7 +185,6 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 							type="text"
 							value={maintDescription}
 							onChange={(e) => setMaintDescription(e.target.value)}
-							required
 						/>
 					</FormElementContainer>
 					<ButtonsContainer>
