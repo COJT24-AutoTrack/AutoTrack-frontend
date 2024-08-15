@@ -206,10 +206,7 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings, token }) => {
 							<Trash2 size={18} />
 							削除
 						</DeleteButton>
-						<Button type="submit">
-							<Save size={18} />
-							更新
-						</Button>
+						<Button type="submit">更新</Button>
 					</ButtonsContainer>
 				</Form>
 			</FormContainer>
