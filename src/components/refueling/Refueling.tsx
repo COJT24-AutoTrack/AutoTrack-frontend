@@ -33,6 +33,15 @@ const SVGButton = styled.button`
 	}
 `;
 
+const LoadingContainer = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 200px;
+	font-size: 1.2em;
+	color: #666;
+`;
+
 interface RefuelingProps {
 	userCars: Car[] | null;
 	token: string;
@@ -44,6 +53,7 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 	const [fuelEfficiencies, setFuelEfficiencies] = useState<
 		FuelEfficiency[] | null
 	>(null);
+	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 
 	const switchCar = () => {
@@ -55,11 +65,19 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 	useEffect(() => {
 		const fetchFuelEfficiencies = async () => {
 			if (userCars && userCars.length !== 0) {
-				const clientAPI = ClientAPI(token);
-				const response = await clientAPI.car.getCarFuelEfficiency({
-					car_id: userCars[selectedCarIndex].car_id,
-				});
-				setFuelEfficiencies(response);
+				setIsLoading(true);
+				try {
+					const clientAPI = ClientAPI(token);
+					const response = await clientAPI.car.getCarFuelEfficiency({
+						car_id: userCars[selectedCarIndex].car_id,
+					});
+					setFuelEfficiencies(response);
+				} catch (error) {
+					console.error("Failed to fetch fuel efficiencies:", error);
+					// エラー処理をここに追加することもできます
+				} finally {
+					setIsLoading(false);
+				}
 			}
 		};
 		fetchFuelEfficiencies();
@@ -86,8 +104,12 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 					switchCar={switchCar}
 				/>
 				<div style={{ padding: "10px" }}>
-					{fuelEfficiencies && (
-						<RefuelingCardGroup fuelEfficiencies={fuelEfficiencies} />
+					{isLoading ? (
+						<LoadingContainer>データを読み込み中...</LoadingContainer>
+					) : (
+						fuelEfficiencies && (
+							<RefuelingCardGroup fuelEfficiencies={fuelEfficiencies} />
+						)
 					)}
 				</div>
 			</Container>
