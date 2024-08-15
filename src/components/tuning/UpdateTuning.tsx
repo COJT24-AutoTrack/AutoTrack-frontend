@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Anton } from "next/font/google";
 import { Tuning } from "@/api/models/models";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import BackHeader from "@/components/base/BackHeader";
-import { Calendar, FileText, Wrench, Save, Trash2 } from "lucide-react";
+import { Calendar, FileText, Wrench, Trash2 } from "lucide-react";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -114,7 +114,6 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings, token }) => {
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 
-	const router = useRouter();
 	const searchParams = useSearchParams();
 	const tuId = searchParams.get("id");
 
