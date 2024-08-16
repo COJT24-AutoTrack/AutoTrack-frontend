@@ -1,13 +1,12 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import {
 	getAuth,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
 } from "firebase/auth";
 import { app } from "@/../firebase";
-import { useRouter } from "next/navigation";
 import { Main, Container } from "@/components/form/FormContainer";
 import {
 	Form,
@@ -18,7 +17,7 @@ import {
 	Paragraph,
 	StyledLink,
 } from "@/components/form/FormElements";
-import { LogoText } from "@/components/text/LogoTextComponen";
+import { LogoText } from "@/components/text/LogoTextComponent";
 import { ClientAPI } from "@/api/clientImplement";
 import { fetchWithToken } from "@/api/module/fetchWithToken";
 
@@ -27,13 +26,14 @@ export default function SignUpForm() {
 	const [password, setPassword] = useState("");
 	const [confirmation, setConfirmation] = useState("");
 	const [error, setError] = useState("");
-	const router = useRouter();
+	const [isLoading, setIsLoading] = useState(false);
 
 	async function handleSubmit(event: FormEvent) {
+		setIsLoading(true);
 		event.preventDefault();
 		setError("");
 		if (password !== confirmation) {
-			setError("Passwords don't match");
+			setError("パスワードが一致しません");
 			return;
 		}
 		try {
@@ -51,87 +51,98 @@ export default function SignUpForm() {
 			const clientAPI = ClientAPI(jwt);
 
 			// バックエンドのユーザー作成apiを叩く
-			const response = await clientAPI.user.createUser({
+			await clientAPI.user.createUser({
 				user_email: email,
-				user_name: "John Doe", //ユーザー名って概念は存在しなかったことにさせてくれ(
+				user_name: "John Doe", // ユーザー名の代替処理
 				user_password: password,
 				firebase_user_id: userCredential.user.uid,
 			});
 
-			// ユーザー作成が成功したらログインページにリダイレクト
-			try {
-				const credential = await signInWithEmailAndPassword(
-					getAuth(app),
-					email,
-					password,
-				);
-				const idToken = await credential.user.getIdToken();
-				await fetchWithToken(
-					"api/signin",
-					{
-						method: "POST",
-						body: JSON.stringify({ idToken }),
-					},
-					idToken,
-				);
-				router.push("/");
-			} catch (e) {
-				setError((e as Error).message);
+			// サインイン処理
+			const credential = await signInWithEmailAndPassword(
+				auth,
+				email,
+				password,
+			);
+			const idToken = await credential.user.getIdToken();
+
+			// セッションの作成
+			const response = await fetchWithToken(
+				"api/signin",
+				{
+					method: "POST",
+					body: JSON.stringify({ idToken }),
+				},
+				idToken,
+			);
+
+			if (response.ok) {
+				window.location.href = "/"; // route.pushだとcookieがセットされない
+			} else {
+				throw new Error("セッションの作成に失敗しました");
 			}
 		} catch (e) {
-			setError((e as Error).message);
+			console.error("Signup error:", e);
+			setError(
+				(e as Error).message ||
+					"サインアップ中にエラーが発生しました。もう一度お試しください。",
+			);
 		}
 	}
 
 	return (
-		<Main>
-			<Container>
-				<LogoText />
-				<Form onSubmit={handleSubmit}>
-					<div>
-						<Label htmlFor="email">メールアドレス</Label>
-						<Input
-							type="email"
-							name="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							id="email"
-							placeholder="name@company.com"
-							required
-						/>
-					</div>
-					<div>
-						<Label htmlFor="password">パスワード</Label>
-						<Input
-							type="password"
-							name="password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							id="password"
-							placeholder="••••••••"
-							required
-						/>
-					</div>
-					<div>
-						<Label htmlFor="confirm-password">パスワードを確認する</Label>
-						<Input
-							type="password"
-							name="confirm-password"
-							value={confirmation}
-							onChange={(e) => setConfirmation(e.target.value)}
-							id="confirm-password"
-							placeholder="••••••••"
-							required
-						/>
-					</div>
-					<Button type="submit">アカウント作成</Button>
-					{error && <ErrorMessage>{error}</ErrorMessage>}
-					<Paragraph>
-						すでにアカウントをお持ちですか?{" "}
-						<StyledLink href="/signin">ログインはこちら</StyledLink>
-					</Paragraph>
-				</Form>
-			</Container>
-		</Main>
+		<Suspense fallback={<div>Loading...</div>}>
+			<Main>
+				<Container>
+					<LogoText />
+					<Form onSubmit={handleSubmit}>
+						<div>
+							<Label htmlFor="email">メールアドレス</Label>
+							<Input
+								type="email"
+								name="email"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+								id="email"
+								placeholder="name@company.com"
+								required
+							/>
+						</div>
+						<div>
+							<Label htmlFor="password">パスワード</Label>
+							<Input
+								type="password"
+								name="password"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								id="password"
+								placeholder="••••••••"
+								required
+							/>
+						</div>
+						<div>
+							<Label htmlFor="confirm-password">パスワードを確認する</Label>
+							<Input
+								type="password"
+								name="confirm-password"
+								value={confirmation}
+								onChange={(e) => setConfirmation(e.target.value)}
+								id="confirm-password"
+								placeholder="••••••••"
+								required
+							/>
+						</div>
+						<Button type="submit">
+							{isLoading ? "作成中..." : "アカウント作成"}
+						</Button>
+						{error && <ErrorMessage>{error}</ErrorMessage>}
+						<Paragraph>
+							すでにアカウントをお持ちですか?{" "}
+							<StyledLink href="/signin">ログインはこちら</StyledLink>
+						</Paragraph>
+					</Form>
+				</Container>
+			</Main>
+		</Suspense>
 	);
 }

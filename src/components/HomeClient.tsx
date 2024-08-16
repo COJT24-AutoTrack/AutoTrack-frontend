@@ -6,45 +6,54 @@ import styled from "styled-components";
 import FuelEfficiencyComponent from "@/components/CarDetail/FuelEfficiencyComponent";
 import DetailCardComponent from "@/components/CarDetail/DetailCardComponent";
 import { carInfo } from "@/api/models/models";
-import { useSPQuery, usePCQuery } from "@/hooks/useBreakpoints";
+import { usePCQuery, useSPandTBQuery } from "@/hooks/useBreakpoints";
+import { useRouter } from "next/navigation";
+import { media } from "@/styles/breakpoints";
+
+const Main = styled.div`
+	display: flex;
+	flex-direction: column;
+	padding-top: 10px;
+	height: calc(100dvh - 137.5px);
+`;
+
+const CarSliderComponentWrapper = styled.div`
+	height: fit-content;
+	${media.PC} {
+		padding-left: 20px;
+	}
+`;
 
 const MenuContainer = styled.div`
 	display: flex;
-	height: 414px;
 	padding: 0px 20px;
 	flex-direction: column;
-	align-items: center;
 	gap: 10px;
-	align-self: stretch;
 `;
 
-const BottonMenues = styled.div`
-	display: flex;
-	padding: 0px 1px;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	gap: 10px;
-	align-self: stretch;
-`;
-
-const BlockMenus = styled.div`
+const VStack = styled.div`
+	height: 100%;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
 	gap: 10px;
-	align-self: stretch;
 `;
 
 const HStack = styled.div`
 	display: flex;
-	align-items: center;
+	flex-direction: row;
 	gap: 10px;
-	align-self: stretch;
+`;
+const FuelEfficiencyComponentWrapper = styled.div`
+	flex: 1;
+`;
+
+const DetailCardComponentsWrapper = styled.div`
+	flex: 2;
 `;
 
 const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 	const [selectedCar, setSelectedCar] = useState<carInfo | null>(null);
+	const router = useRouter();
 
 	useEffect(() => {
 		if (userCars.length > 0) {
@@ -54,7 +63,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 		}
 	}, [userCars]);
 
-	const isSP = useSPQuery();
+	const isSPandTB = useSPandTBQuery();
 	const isPC = usePCQuery();
 
 	const handleSelectCar = (car: carInfo) => {
@@ -62,35 +71,46 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 	};
 
 	return (
-		<main style={{ paddingTop: "10px" }}>
-			<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
+		<Main>
+			<CarSliderComponentWrapper>
+				<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
+			</CarSliderComponentWrapper>
 			<MenuContainer>
-				<BottonMenues>
-					{isSP && (
+				{isSPandTB && (
+					<FuelEfficiencyComponentWrapper>
 						<FuelEfficiencyComponent
 							userCar={selectedCar}
-							isSelected={!!selectedCar}
 							onClick={() => {
-								// ここにクリック時の動作を実装
+								window.location.href = "/refueling";
 							}}
 						/>
-					)}
-					<BlockMenus>
-						{isSP && (
+					</FuelEfficiencyComponentWrapper>
+				)}
+				<DetailCardComponentsWrapper>
+					<VStack>
+						{isSPandTB && (
 							<HStack>
-								<DetailCardComponent
-									label={"Mileage"}
-									value={selectedCar ? selectedCar.car_mileage : 0}
-									unit={"Km"}
-								/>
-								<DetailCardComponent
-									label={"Fuel Cost"}
-									value={selectedCar ? selectedCar.total_gas_cost : 0}
-									unit={"Yen"}
-								/>
+								<div style={{ flex: 1 }}>
+									<DetailCardComponent
+										label={"Mileage"}
+										value={selectedCar ? selectedCar.car_mileage : 0}
+										unit={"Km"}
+									/>
+								</div>
+								<div style={{ flex: 1 }}>
+									<DetailCardComponent
+										label={"Fuel Cost"}
+										value={
+											selectedCar
+												? Number(selectedCar.total_gas_cost.toFixed())
+												: 0
+										}
+										unit={"Yen"}
+									/>
+								</div>
 							</HStack>
 						)}
-						{isSP && (
+						{isSPandTB && (
 							<HStack>
 								<DetailCardComponent
 									label={"Car Wash"}
@@ -108,7 +128,6 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 							<HStack>
 								<FuelEfficiencyComponent
 									userCar={selectedCar}
-									isSelected={!!selectedCar}
 									onClick={() => {
 										// ここにクリック時の動作を実装
 									}}
@@ -135,10 +154,10 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 								/>
 							</HStack>
 						)}
-					</BlockMenus>
-				</BottonMenues>
+					</VStack>
+				</DetailCardComponentsWrapper>
 			</MenuContainer>
-		</main>
+		</Main>
 	);
 };
 

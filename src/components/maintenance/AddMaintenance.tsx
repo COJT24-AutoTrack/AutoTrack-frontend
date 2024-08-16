@@ -1,22 +1,100 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { Anton } from "next/font/google";
 import { Car, maintenanceTypeMap, MaintType } from "@/api/models/models";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";
 import CarSelect from "@/components/base/CarSelect";
-import {
-	BigLabel,
-	FormContainer,
-	FormElementContainer,
-	Select,
-	Input,
-	ButtonsContainer,
-	Button,
-	Form,
-} from "@/components/form/FormElements";
+import { Settings, Calendar, FileText, Wrench } from "lucide-react";
+
+const Anton400 = Anton({
+	weight: "400",
+	subsets: ["latin"],
+});
+
+const PageContainer = styled.div`
+	background-color: #1a1a1a;
+	min-height: 100vh;
+	color: #ffffff;
+`;
+
+const FormContainer = styled.div`
+	max-width: 500px;
+	margin: 0 auto;
+	padding: 20px;
+`;
+
+const Form = styled.form`
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+`;
+
+const FormTitle = styled.h1`
+	font-size: 24px;
+	text-align: center;
+	margin-bottom: 20px;
+`;
+
+const FormElementContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+`;
+
+const Label = styled.label`
+	font-size: 16px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 5px;
+`;
+
+const Input = styled.input`
+	background-color: #2b2b2b;
+	border: 1px solid #ffffff;
+	border-radius: 4px;
+	color: #ffffff;
+	padding: 10px;
+	font-size: 16px;
+
+	&:focus {
+		outline: none;
+		border-color: #4a90e2;
+	}
+`;
+
+const Select = styled.select`
+	background-color: #2b2b2b;
+	border: 1px solid #ffffff;
+	border-radius: 4px;
+	color: #ffffff;
+	padding: 10px;
+	font-size: 16px;
+
+	&:focus {
+		outline: none;
+		border-color: #4a90e2;
+	}
+`;
+
+const Button = styled.button`
+	background-color: #f12424;
+	color: #ffffff;
+	border: none;
+	border-radius: 4px;
+	padding: 12px 20px;
+	font-size: 18px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+
+	&:hover {
+		background-color: #d61f1f;
+	}
+`;
 
 interface AddMaintenancePageContentProps {
 	userCars: Car[] | null;
@@ -87,17 +165,15 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 
 		if (!userCars || userCars.length === 0) {
 			alert("車両が登録されていません");
-			router.push("/");
+			window.location.href = "/";
 			return;
 		}
 
 		if (!isUserCar) {
 			alert("この車両は登録されていません");
-			router.push("/");
+			window.location.href = "/";
 			return;
 		}
-
-		const formattedDate = new Date(maintDate).toISOString();
 
 		const clientAPI = ClientAPI(tokens.token);
 
@@ -105,13 +181,13 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 			const response = await clientAPI.maintenance.createMaintenance({
 				car_id: userCars[selectedCarIndex].car_id,
 				maint_type: maintType,
-				maint_date: formattedDate,
+				maint_date: maintDate,
 				maint_description: maintDescription,
 				maint_title: maintTitle,
 			});
 
 			if (response) {
-				router.push(`/maintenance`);
+				window.location.href = `/maintenance`;
 			} else {
 				alert("メンテナンス記録の追加に失敗しました");
 			}
@@ -136,19 +212,22 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 	};
 
 	return (
-		<div>
-			<div>
-				<CarSelect
-					userCars={userCars}
-					selectedCarIndex={selectedCarIndex}
-					switchCar={switchCar}
-				/>
-			</div>
+		<PageContainer>
+			<CarSelect
+				userCars={userCars}
+				selectedCarIndex={selectedCarIndex}
+				switchCar={switchCar}
+			/>
 			<FormContainer>
 				<Form onSubmit={handleSubmit}>
-					<BigLabel>メンテナンス記録を追加</BigLabel>
+					<FormTitle className={Anton400.className}>
+						メンテナンス記録を追加
+					</FormTitle>
 					<FormElementContainer>
-						<BigLabel>メンテナンスタイプ</BigLabel>
+						<Label>
+							<Settings color="white" size={16} />
+							メンテナンスタイプ
+						</Label>
 						<Select
 							value={maintType}
 							onChange={(e) => setMaintType(e.target.value as MaintType)}
@@ -160,9 +239,12 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 							))}
 						</Select>
 					</FormElementContainer>
-					{maintType == "Other" && (
+					{maintType === "Other" && (
 						<FormElementContainer>
-							<BigLabel>タイトル:</BigLabel>
+							<Label>
+								<Wrench color="white" size={16} />
+								タイトル:
+							</Label>
 							<Input
 								type="text"
 								value={maintTitle}
@@ -171,7 +253,10 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 						</FormElementContainer>
 					)}
 					<FormElementContainer>
-						<BigLabel>メンテナンス日:</BigLabel>
+						<Label>
+							<Calendar color="white" size={16} />
+							メンテナンス日:
+						</Label>
 						<Input
 							type="date"
 							value={maintDate}
@@ -180,20 +265,20 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
-						<BigLabel>メンテナンス詳細:</BigLabel>
+						<Label>
+							<FileText color="white" size={16} />
+							メンテナンス詳細:
+						</Label>
 						<Input
 							type="text"
 							value={maintDescription}
 							onChange={(e) => setMaintDescription(e.target.value)}
-							required
 						/>
 					</FormElementContainer>
-					<ButtonsContainer>
-						<Button type="submit">追加</Button>
-					</ButtonsContainer>
+					<Button type="submit">追加</Button>
 				</Form>
 			</FormContainer>
-		</div>
+		</PageContainer>
 	);
 };
 

@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import BackIcon from "/public/icons/BackIcon.svg";
 import { ContentText } from "@/components/text/TextComponents";
 import { useRouter } from "next/navigation";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 const TopBar = styled.div`
 	width: 100vw;
@@ -22,7 +22,6 @@ const BackButton = styled.button`
 
 	svg {
 		transform: rotate(180deg);
-		fill: white;
 		width: 24px;
 		height: 24px;
 		margin-right: 8px;
@@ -37,8 +36,8 @@ const BackHeader: React.FC<BackHeaderProps> = ({ route }) => {
 	const router = useRouter();
 	return (
 		<TopBar>
-			<BackButton onClick={() => router.push(route)}>
-				<BackIcon style={{ fill: "white" }} />
+			<BackButton onClick={() => (window.location.href = route)}>
+				<ChevronRightIcon />
 				<ContentText>戻る</ContentText>
 			</BackButton>
 		</TopBar>

@@ -2,53 +2,102 @@
 
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Anton } from "next/font/google";
 import { Car } from "@/api/models/models";
-import { media } from "@/styles/breakpoints";
 import { ClientAPI } from "@/api/clientImplement";
-import { Form, Input, Label } from "@/components/form/FormElements";
 import Image from "next/image";
-import theme from "@/styles/theme";
-import router from "next/router";
 import { checkIsUserCars } from "@/module/checkUserCars";
+import {
+	Car as CarIcon,
+	Hash,
+	Palette,
+	Navigation,
+	Droplet,
+	Cigarette,
+	Image as ImageIcon,
+	Save,
+} from "lucide-react";
 
-const EditContainer = styled.div`
-	display: flex;
-	justify-content: center;
-	padding: 5vh 0;
+const Anton400 = Anton({
+	weight: "400",
+	subsets: ["latin"],
+});
+
+const PageContainer = styled.div`
+	background-color: #1a1a1a;
+	min-height: 100vh;
+	color: #ffffff;
+	padding: 20px;
 `;
 
 const EditPanel = styled.div`
-	width: 80dvw;
-	max-width: 800px;
+	max-width: 500px;
+	margin: 0 auto;
+	background-color: #2b2b2b;
+	border-radius: 8px;
 	padding: 20px;
-	background-color: ${theme.colors.cardBackground};
-	border-radius: 10px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-	color: ${theme.colors.textPrimary};
-	font-family: ${theme.fontFamily.primary};
+`;
+
+const Form = styled.form`
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+`;
+
+const FormTitle = styled.h1`
+	font-size: 24px;
+	text-align: center;
+	margin-bottom: 20px;
 `;
 
 const FormGroup = styled.div`
 	display: flex;
 	flex-direction: column;
+	gap: 5px;
+`;
+
+const Label = styled.label`
+	font-size: 16px;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+`;
+
+const Input = styled.input`
+	background-color: #333333;
+	border: 1px solid #ffffff;
+	border-radius: 4px;
+	color: #ffffff;
+	padding: 10px;
+	font-size: 16px;
+
+	&:focus {
+		outline: none;
+		border-color: #4a90e2;
+	}
 `;
 
 const Checkbox = styled.input.attrs({ type: "checkbox" })`
-	margin-right: 0.5rem;
+	width: 20px;
+	height: 20px;
 `;
 
 const Button = styled.button`
-	padding: 0.5rem 1rem;
-	font-size: ${theme.fontSizes.subContent};
-	background-color: ${theme.colors.buttonBackground};
-	color: ${theme.colors.textPrimary};
+	background-color: #f12424;
+	color: #ffffff;
 	border: none;
 	border-radius: 4px;
+	padding: 12px 20px;
+	font-size: 18px;
 	cursor: pointer;
-	transition: background-color 0.3s ease;
+	transition: background-color 0.3s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
 
 	&:hover {
-		background-color: ${theme.colors.buttonHoverBackground};
+		background-color: #d61f1f;
 	}
 `;
 
@@ -77,8 +126,8 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 				});
 				setCar(response);
 			} catch (error) {
-				console.error("Failed to update car:", error);
-				alert("Failed to update car. Please try again.");
+				console.error("Failed to fetch car:", error);
+				alert("Failed to fetch car data. Please try again.");
 			}
 		};
 		fetchCar();
@@ -108,21 +157,27 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 				return;
 			}
 		}
-		const response = await clientAPI.car.updateCar({
-			car_id: car.car_id,
-			car_name: car.car_name,
-			carmodelnum: car.carmodelnum,
-			car_color: car.car_color,
-			car_mileage: car.car_mileage,
-			car_isflooding: car.car_isflooding,
-			car_issmoked: car.car_issmoked,
-			car_image_url: car.car_image_url,
-		});
-		if (response) {
-			alert("Car updated successfully!");
-			window.location.href = "/";
+		try {
+			const response = await clientAPI.car.updateCar({
+				car_id: car.car_id,
+				car_name: car.car_name,
+				carmodelnum: car.carmodelnum,
+				car_color: car.car_color,
+				car_mileage: car.car_mileage,
+				car_isflooding: car.car_isflooding,
+				car_issmoked: car.car_issmoked,
+				car_image_url: car.car_image_url,
+			});
+			if (response) {
+				alert("車両情報が更新されました！");
+				window.location.href = "/";
+			}
+		} catch (error) {
+			console.error("Failed to update car:", error);
+			alert("車両情報の更新に失敗しました。もう一度お試しください。");
 		}
 	};
+
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (file) {
@@ -140,38 +195,42 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 	if (!car) return <div>Loading...</div>;
 
 	return (
-		<EditContainer>
+		<PageContainer>
 			<EditPanel>
-				<h1>Edit Car</h1>
+				<FormTitle className={Anton400.className}>車両情報を編集</FormTitle>
 				<Form onSubmit={handleSubmit}>
 					<FormGroup>
-						<Label htmlFor="car_name">Car Name</Label>
+						<Label>
+							<CarIcon size={16} /> 車名
+						</Label>
 						<Input
-							id="car_name"
 							value={car.car_name}
 							onChange={(e) => setCar({ ...car, car_name: e.target.value })}
 						/>
 					</FormGroup>
 					<FormGroup>
-						<Label htmlFor="carmodelnum">Model Number</Label>
+						<Label>
+							<Hash size={16} /> 車種番号
+						</Label>
 						<Input
-							id="carmodelnum"
 							value={car.carmodelnum}
 							onChange={(e) => setCar({ ...car, carmodelnum: e.target.value })}
 						/>
 					</FormGroup>
 					<FormGroup>
-						<Label htmlFor="car_color">Color</Label>
+						<Label>
+							<Palette size={16} /> 色
+						</Label>
 						<Input
-							id="car_color"
 							value={car.car_color}
 							onChange={(e) => setCar({ ...car, car_color: e.target.value })}
 						/>
 					</FormGroup>
 					<FormGroup>
-						<Label htmlFor="car_mileage">Mileage (km)</Label>
+						<Label>
+							<Navigation size={16} /> 走行距離 (km)
+						</Label>
 						<Input
-							id="car_mileage"
 							type="number"
 							value={car.car_mileage}
 							onChange={(e) =>
@@ -187,7 +246,7 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 									setCar({ ...car, car_isflooding: e.target.checked })
 								}
 							/>
-							Flooded
+							<Droplet size={16} /> 浸水車
 						</Label>
 					</FormGroup>
 					<FormGroup>
@@ -198,14 +257,35 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 									setCar({ ...car, car_issmoked: e.target.checked })
 								}
 							/>
-							Smoked in
+							<Cigarette size={16} /> 喫煙車
 						</Label>
 					</FormGroup>
-					<Input type="file" accept="image/*" onChange={handleImageChange} />
-					<Button type="submit">Update Car</Button>
+					<FormGroup>
+						<Label>
+							<ImageIcon size={16} /> 車両画像
+						</Label>
+						<Input type="file" accept="image/*" onChange={handleImageChange} />
+						{preview && (
+							<Image
+								src={preview}
+								alt="Car Preview"
+								width={300}
+								height={200}
+								style={{
+									objectFit: "cover",
+									borderRadius: "4px",
+									marginTop: "10px",
+								}}
+							/>
+						)}
+					</FormGroup>
+					<Button type="submit">
+						<Save size={18} />
+						更新
+					</Button>
 				</Form>
 			</EditPanel>
-		</EditContainer>
+		</PageContainer>
 	);
 };
 

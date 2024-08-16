@@ -17,10 +17,20 @@ export default async function Home() {
 	});
 
 	if (!tokens) {
-		return redirect("/signin");
+		redirect("/signin");
 	}
 
 	const clientAPI = ClientAPI(tokens.token);
+
+	try {
+		const response = await clientAPI.test.getTest();
+		if (!response) {
+			throw new Error("Token validation failed");
+		}
+	} catch (error) {
+		console.error("Error validating token:", error);
+		redirect("/signin");
+	}
 
 	const userCars: Car[] = await clientAPI.user.getUserCars({
 		firebase_user_id: tokens.decodedToken.uid,

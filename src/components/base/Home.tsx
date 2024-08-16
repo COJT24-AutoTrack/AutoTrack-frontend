@@ -2,42 +2,32 @@ import React from "react";
 import Header from "@/components/base/Header";
 import styled from "styled-components";
 import TabBar from "@/components/base/TabBar";
-import { useSPQuery } from "@/hooks/useBreakpoints";
+import { useSPandTBQuery } from "@/hooks/useBreakpoints";
 import dynamic from "next/dynamic";
-import { media } from "@/styles/breakpoints";
 
 const PageContainer = styled.div`
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
+	height: 100dvh;
+	justify-content: space-between;
 `;
 
 const MainContent = styled.main`
 	flex: 1;
 	overflow-y: auto;
-	${media.SP} {
-		padding-top: 60px;
-	}
-	${media.PC} {
-		padding-top: 80px;
-	}
 `;
 
 const HeaderWrapper = styled.div`
-	position: fixed;
-	top: 0;
-	width: 100vw;
+	width: 100dvw;
 	z-index: 100;
 `;
 
 const TabBarWrapper = styled.div`
-	bottom: 0;
-	position: fixed;
-	width: 100vw;
+	width: 100dvw;
 `;
 
 const Home = ({ children }: { children: React.ReactNode }) => {
-	const isSP = useSPQuery();
+	const isSPandTB = useSPandTBQuery();
 
 	return (
 		<PageContainer>
@@ -45,7 +35,7 @@ const Home = ({ children }: { children: React.ReactNode }) => {
 				<Header />
 			</HeaderWrapper>
 			<MainContent>{children}</MainContent>
-			{isSP && (
+			{isSPandTB && (
 				<TabBarWrapper>
 					<TabBar />
 				</TabBarWrapper>

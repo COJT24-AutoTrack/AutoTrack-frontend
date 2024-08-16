@@ -25,7 +25,7 @@ const Card = styled.div`
 	flex-shrink: 0;
 	border-radius: 8px;
 	background: #1a1a1a;
-	${media.SP} {
+	${media.SPandTB} {
 		width: 280px;
 	}
 	${media.PC} {
@@ -36,11 +36,16 @@ const Card = styled.div`
 `;
 
 const CarImage = styled(Image)`
-	${media.SP} {
+	${media.SPandTB} {
 		height: 20dvh;
 	}
 	${media.PC} {
-		height: 60dvh;
+		@media screen and (max-height: 600px) {
+			height: 50dvh;
+		}
+		@media screen and (min-height: 601px) {
+			height: 60dvh;
+		}
 	}
 	width: auto;
 	object-fit: cover;
@@ -50,8 +55,8 @@ const CarImage = styled(Image)`
 
 const CarName = styled.div`
 	color: #fff;
-	${media.SP} {
-		font-size: ${theme.fontSizes.subsubContent};
+	${media.SPandTB} {
+		font-size: min(3dvh, 25px);
 		text-align: center;
 	}
 	${media.PC} {
@@ -75,9 +80,9 @@ const CarCardComponent: React.FC<CarCardComponentProps> = ({
 			width={1200}
 			height={720}
 		/>
-		<ContentText>
+		<CarName>
 			{userCar.car_name} - {userCar.carmodelnum}
-		</ContentText>
+		</CarName>
 	</Card>
 );
 

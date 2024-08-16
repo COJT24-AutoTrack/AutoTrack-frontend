@@ -4,12 +4,14 @@ import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { clientConfig, serverConfig } from "@/../config";
-import UpdateRefueling from "@/components/refueling/UpdateRefueling";
+import { ClientAPI } from "@/api/clientImplement";
+import { Tuning } from "@/api/models/models";
+import UpdateTuning from "@/components/tuning/UpdateTuning";
 
-export default async function UpdateFuelingPage({
+export default async function UpdateTuningPage({
 	params,
 }: {
-	params: { feId: number };
+	params: { tuningId: number };
 }) {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
@@ -22,5 +24,8 @@ export default async function UpdateFuelingPage({
 		return notFound();
 	}
 
-	return <UpdateRefueling feId={params.feId} tokens={tokens} />;
+	const clientAPI = ClientAPI(tokens.token);
+	const tunings: Tuning[] = await clientAPI.tuning.getTunings();
+
+	return <UpdateTuning tuningId={params.tuningId} tokens={tokens} />;
 }
