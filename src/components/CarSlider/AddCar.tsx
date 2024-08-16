@@ -125,7 +125,6 @@ interface AddCarPageComponentProps {
 }
 
 const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
-	const router = useRouter();
 	const [carData, setCarData] = useState<Partial<Car>>({
 		car_name: "",
 		carmodelnum: "",

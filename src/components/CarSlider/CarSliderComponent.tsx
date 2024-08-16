@@ -54,7 +54,7 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 
 	const isSPandTB = useSPandTBQuery();
 	const handleAddCarClick = () => {
-		window.location.href = "/add-car";
+		window.location.href = "/car/add";
 	};
 
 	return (
