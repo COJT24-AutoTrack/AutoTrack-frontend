@@ -151,8 +151,6 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
 	const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-	const router = useRouter();
-
 	useEffect(() => {
 		const clientAPI = ClientAPI(tokens.token);
 		const fetchFuelEfficiency = async () => {

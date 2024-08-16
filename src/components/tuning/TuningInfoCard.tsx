@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { SubSubContentText } from "../text/TextComponents";
 import { Tuning } from "@/api/models/models";
 import { useRouter } from "next/navigation";
-import { ChevronLeftIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 const Container = styled.div`
 	display: flex;
@@ -79,7 +79,7 @@ const TuningInfoCard: React.FC<TuningInfoCardProps> = ({ tuning }) => {
 
 	const handleDetailClick = () => {
 		if (tuning) {
-			window.location.href = `/updateTuning?id=${tuning.tuning_id}`;
+			window.location.href = `/tuning/update/${tuning.tuning_id}`;
 		}
 	};
 
@@ -92,7 +92,7 @@ const TuningInfoCard: React.FC<TuningInfoCardProps> = ({ tuning }) => {
 			</ContentContainer>
 			<ButtonContainer onClick={handleDetailClick}>
 				<NextPageSVG>
-					<ChevronLeftIcon color="white" />
+					<ChevronRightIcon color="white" />
 				</NextPageSVG>
 			</ButtonContainer>
 		</Container>

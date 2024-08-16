@@ -104,35 +104,42 @@ const DeleteButtonInner = styled.div`
 `;
 
 interface UpdateTuningProps {
-	tunings: Tuning[];
-	token: string;
+	tuningId: number;
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
 }
 
-const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings, token }) => {
+const UpdateTuning: React.FC<UpdateTuningProps> = ({ tuningId, tokens }) => {
 	const [tuning, setTuning] = useState<Tuning | null>(null);
 	const [date, setDate] = useState("");
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 
-	const searchParams = useSearchParams();
-	const tuId = searchParams.get("id");
+	useEffect(() => {
+		const clientAPI = ClientAPI(tokens.token);
+		const fetchTuning = async () => {
+			const response = await clientAPI.tuning.getTuning({
+				tuning_id: tuningId,
+			});
+			setTuning(response);
+		};
+		fetchTuning();
+	}, [tuningId, tokens]);
 
 	useEffect(() => {
-		if (tunings) {
-			const tu = tunings.find((tu) => tu.tuning_id === Number(tuId));
-			if (tu) {
-				setTuning(tu);
-				setDate(tu.tuning_date);
-				setTitle(tu.tuning_name);
-				setDescription(tu.tuning_description);
-			}
+		if (tuning) {
+			setDate(tuning.tuning_date);
+			setTitle(tuning.tuning_name);
+			setDescription(tuning.tuning_description);
 		}
-	}, [tuId, tunings]);
+	}, [tuning]);
 
 	const handleUpdate = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (tuning) {
-			const clientAPI = ClientAPI(token);
+			const clientAPI = ClientAPI(tokens.token);
 			try {
 				await clientAPI.tuning.updateTuning({
 					tuning_id: tuning.tuning_id,
@@ -150,7 +157,7 @@ const UpdateTuning: React.FC<UpdateTuningProps> = ({ tunings, token }) => {
 
 	const handleDelete = async () => {
 		if (tuning) {
-			const clientAPI = ClientAPI(token);
+			const clientAPI = ClientAPI(tokens.token);
 			try {
 				await clientAPI.tuning.deleteTuning({
 					tuning_id: tuning.tuning_id,

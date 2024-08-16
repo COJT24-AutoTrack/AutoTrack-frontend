@@ -91,7 +91,7 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 
 	const handleAddClick = () => {
 		if (userCars) {
-			window.location.href = `/refueling/addRefueling/${userCars[selectedCarIndex].car_id}`;
+			window.location.href = `/refueling/add/${userCars[selectedCarIndex].car_id}`;
 		}
 	};
 
