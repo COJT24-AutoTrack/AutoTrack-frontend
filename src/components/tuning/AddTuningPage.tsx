@@ -149,13 +149,12 @@ const AddTuningPageContent: React.FC<AddTuningProps> = ({
 			return;
 		}
 
-		const formattedDate = new Date(tuningDate).toISOString();
 		const clientAPI = ClientAPI(tokens.token);
 
 		try {
 			const response = await clientAPI.tuning.createTuning({
 				car_id: userCars[selectedCarIndex].car_id,
-				tuning_date: formattedDate,
+				tuning_date: tuningDate,
 				tuning_name: tuningName,
 				tuning_description: tuningDescription,
 			});

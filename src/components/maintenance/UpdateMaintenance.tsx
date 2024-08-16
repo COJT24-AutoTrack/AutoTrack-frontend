@@ -119,12 +119,8 @@ const UpdateMaintenancePageContent: React.FC<
 		maintenance?.maint_description || "",
 	);
 
-	const router = useRouter();
-
 	const handleUpdate = async (e: React.FormEvent) => {
 		e.preventDefault();
-
-		const formattedDate = new Date(maintDate).toISOString();
 
 		const clientAPI = ClientAPI(token);
 		if (maintenance) {
@@ -132,7 +128,7 @@ const UpdateMaintenancePageContent: React.FC<
 				await clientAPI.maintenance.updateMaintenance(maintenance.maint_id, {
 					car_id: maintenance.car_id,
 					maint_type: maintType,
-					maint_date: formattedDate,
+					maint_date: maintDate,
 					maint_description: maintDescription,
 					maint_title: maintTitle,
 				});

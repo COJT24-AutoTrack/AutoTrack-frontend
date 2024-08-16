@@ -175,15 +175,13 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 			return;
 		}
 
-		const formattedDate = new Date(maintDate).toISOString();
-
 		const clientAPI = ClientAPI(tokens.token);
 
 		try {
 			const response = await clientAPI.maintenance.createMaintenance({
 				car_id: userCars[selectedCarIndex].car_id,
 				maint_type: maintType,
-				maint_date: formattedDate,
+				maint_date: maintDate,
 				maint_description: maintDescription,
 				maint_title: maintTitle,
 			});

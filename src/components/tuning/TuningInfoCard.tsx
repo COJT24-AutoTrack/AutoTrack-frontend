@@ -1,72 +1,51 @@
 "use client";
 
+import React from "react";
 import styled from "styled-components";
-import { SubSubContentText } from "../text/TextComponents";
 import { Tuning } from "@/api/models/models";
 import { useRouter } from "next/navigation";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronRight, Calendar, Wrench, FileText } from "lucide-react";
 
-const Container = styled.div`
-	display: flex;
-	padding: 0px 30px;
-	align-items: center;
-	gap: 10px;
-	align-self: stretch;
+const CardContainer = styled.div`
+	width: min(93dvw, 860px);
+	background-color: #2b2b2b;
 	border-radius: 8px;
-	border: 1px solid #fff;
-	background: #2b2b2b;
-	position: relative;
+	padding: 16px;
+	margin-bottom: 16px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border: 1px solid #3a3a3a;
 `;
 
-const ContentContainer = styled.div`
-	display: flex;
-	padding: 10px 5px;
-	gap: 5px;
+const CardContent = styled.div`
 	flex: 1;
-	flex-direction: column;
-	align-items: flex-start;
 `;
 
-const ButtonContainer = styled.div`
-	position: absolute;
-	right: 10px;
-	top: 50%;
-	transform: translateY(-50%);
+const InfoText = styled.p`
+	font-size: 14px;
+	color: #ffffff;
+	margin: 0 0 8px 0;
 	display: flex;
 	align-items: center;
-	width: 30px;
+	gap: 5px;
 `;
-const NextPageSVG = styled.button`
-	display: flex;
-	align-items: center;
+
+const DateText = styled(InfoText)`
+	color: #999;
+`;
+
+const DetailButton = styled.button`
 	background: none;
+	color: #ffffff;
 	border: none;
-	color: white;
+	padding: 8px;
 	cursor: pointer;
-
-	svg {
-		width: 12px;
-		height: 12px;
-		margin-right: 8px;
-	}
-`;
-
-const CsvButton = styled.button`
-	display: flex;
-	align-items: center;
-	background: none;
-	border: 2px solid #f12424;
-	border-radius: 10px;
-	color: #f12424;
-	cursor: pointer;
-	padding: 5px 10px;
-	transition:
-		background-color 0.3s,
-		color 0.3s;
+	border-radius: 4px;
+	transition: background-color 0.3s;
 
 	&:hover {
-		background-color: #f12424;
-		color: white;
+		background-color: rgba(255, 255, 255, 0.1);
 	}
 `;
 
@@ -84,18 +63,25 @@ const TuningInfoCard: React.FC<TuningInfoCardProps> = ({ tuning }) => {
 	};
 
 	return (
-		<Container>
-			<ContentContainer>
-				<SubSubContentText>{tuning.tuning_date}</SubSubContentText>
-				<SubSubContentText>{tuning.tuning_name}</SubSubContentText>
-				<SubSubContentText>{tuning.tuning_description}</SubSubContentText>
-			</ContentContainer>
-			<ButtonContainer onClick={handleDetailClick}>
-				<NextPageSVG>
-					<ChevronRightIcon color="white" />
-				</NextPageSVG>
-			</ButtonContainer>
-		</Container>
+		<CardContainer>
+			<CardContent>
+				<DateText>
+					<Calendar size={16} />
+					{new Date(tuning.tuning_date).toLocaleDateString()}
+				</DateText>
+				<InfoText>
+					<Wrench size={16} />
+					{tuning.tuning_name}
+				</InfoText>
+				<InfoText>
+					<FileText size={16} />
+					{tuning.tuning_description}
+				</InfoText>
+			</CardContent>
+			<DetailButton onClick={handleDetailClick}>
+				<ChevronRight size={24} />
+			</DetailButton>
+		</CardContainer>
 	);
 };
 

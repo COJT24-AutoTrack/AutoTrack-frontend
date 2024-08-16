@@ -176,7 +176,9 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 						<MetricContent>
 							<MetricLabel>日付</MetricLabel>
 							<MetricValue>
-								{fuelEfficiency ? formatDate(fuelEfficiency.fe_date) : ""}
+								{fuelEfficiency
+									? new Date(fuelEfficiency.fe_date).toLocaleDateString()
+									: ""}
 							</MetricValue>
 						</MetricContent>
 					</MetricItem>
