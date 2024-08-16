@@ -134,7 +134,7 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 
 	const handleDetailClick = () => {
 		if (fuelEfficiency) {
-			window.location.href = `refueling/updateRefueling/${fuelEfficiency.fe_id}`;
+			window.location.href = `refueling/update/${fuelEfficiency.fe_id}`;
 		}
 	};
 
