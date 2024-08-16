@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Anton } from "@next/font/google";
+import { Anton } from "next/font/google";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -15,11 +15,18 @@ interface DetailCardComponentProps {
 
 const Card = styled.div`
 	display: flex;
-	height: 12dvh;
-	padding: 10px;
-	flex-direction: column;
+	width: 100%;
+	@media screen and (max-height: 600px) {
+		flex-direction: row;
+		justify-content: space-between;
+		padding: 10px 2dvw 10px 2dvw;
+	}
+	@media screen and (min-height: 601px) {
+		flex-direction: column;
+		padding: 5px 2dvw 10px 2dvw;
+	}
+	justify-content: space-evenly;
 	align-items: center;
-	flex: 1 0 0;
 	border-radius: 8px;
 	border: 1px solid #fff;
 	background: #2b2b2b;
@@ -28,36 +35,37 @@ const Card = styled.div`
 const LabelContainer = styled.span`
 	display: flex;
 	align-items: center;
-	gap: 10px;
 	align-self: stretch;
 `;
 
 const Label = styled.span`
 	color: #fff;
 	text-align: center;
-	font-size: 16px;
+	font-size: min(16px, 2dvh);
 	line-height: normal;
 `;
 
-const Text = styled.div`
+const Text = styled.p`
 	display: flex;
-	justify-content: center;
 	align-items: flex-end;
-	gap: 9px;
+	gap: 5px;
 `;
 
 const Value = styled.span`
 	color: #fff;
 	text-align: center;
-	font-size: 36px;
+	font-size: min(36px, 4dvh);
 	line-height: normal;
+	vertical-align: baseline;
+	line-height: 1;
 `;
 
 const Unit = styled.span`
 	color: #fff;
 	text-align: center;
-	font-size: 20px;
+	font-size: min(20px, 2dvh);
 	line-height: normal;
+	line-height: 1;
 `;
 
 const DetailCardComponent: React.FC<DetailCardComponentProps> = ({

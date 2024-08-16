@@ -4,13 +4,13 @@ import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
-import { Maintenance } from "@/api/models/models";
+import { MaintType } from "@/api/models/models";
 import { clientConfig, serverConfig } from "@/../config";
 import MaintenanceItemPageContent from "@/components/maintenance/MaintenanceItemPageContent";
 
 interface Params {
 	carId: number;
-	maintType: string;
+	maintType: MaintType;
 }
 
 const MaintenanceItemPage = async ({ params }: { params: Params }) => {
@@ -26,21 +26,15 @@ const MaintenanceItemPage = async ({ params }: { params: Params }) => {
 	}
 
 	const clientAPI = ClientAPI(tokens.token);
-	const maintenances: Maintenance[] = await clientAPI.car.getCarMaintenance({
-		car_id: params.carId,
+	const userCars = await clientAPI.user.getUserCars({
+		firebase_user_id: tokens.decodedToken.uid,
 	});
-
-	const filteredMaintenances = maintenances.filter(
-		(maintenance) =>
-			maintenance.maint_type === decodeURIComponent(params.maintType),
-	);
 
 	return (
 		<MaintenanceItemPageContent
-			maintenances={filteredMaintenances}
-			maintType={params.maintType}
-			carId={params.carId}
-			token={tokens.token}
+			maintType={decodeURIComponent(params.maintType) as MaintType}
+			tokens={tokens}
+			userCars={userCars}
 		/>
 	);
 };

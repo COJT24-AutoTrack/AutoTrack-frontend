@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { Anton } from "@next/font/google";
-import AddCarIcon from "/public/icons/AddIcon.svg";
+import { Anton } from "next/font/google";
+import { CirclePlus } from "lucide-react";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -21,13 +21,11 @@ const CardContainer = styled.div`
 `;
 
 const Card = styled.div`
-	padding: 20px;
 	display: flex;
-	height: 192px;
+	height: 20dvh;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: space-evenly;
 	align-items: center;
-	gap: 20px;
 	align-self: stretch;
 	border-radius: 8px;
 	border: 1px solid #fff;
@@ -37,10 +35,17 @@ const Card = styled.div`
 const AddTextSpan = styled.span`
 	color: #2b2b2b;
 	text-align: center;
-	font-size: 40px;
+	font-size: 6dvh;
 	font-style: normal;
 	font-weight: 400;
 	line-height: normal;
+`;
+
+const AddCarIconWrapper = styled.div`
+	svg {
+		width: 8dvh;
+		height: 8dvh;
+	}
 `;
 
 interface AddCarCardComponentProps {
@@ -53,7 +58,9 @@ const AddCarCardComponent: React.FC<AddCarCardComponentProps> = ({
 	<CardContainer onClick={onClick}>
 		<Card>
 			<AddTextSpan className={Anton400.className}>Add Car</AddTextSpan>
-			<AddCarIcon />
+			<AddCarIconWrapper>
+				<CirclePlus color="#2b2b2b" />
+			</AddCarIconWrapper>
 		</Card>
 	</CardContainer>
 );

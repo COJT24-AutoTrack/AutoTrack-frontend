@@ -2,39 +2,83 @@
 
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Car, Maintenance, MaintType } from "@/api/models/models";
+import {
+	Car,
+	Maintenance,
+	MaintType,
+	maintenanceTypeMap,
+} from "@/api/models/models";
 import CarSelect from "@/components/base/CarSelect";
 import MaintenanceDetail from "@/components/maintenance/MaintenanceDetail";
 import { media } from "@/styles/breakpoints";
 import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
+import { checkIsUserCars } from "@/module/checkUserCars";
+import { CirclePlus } from "lucide-react";
+
+const PageContainer = styled.div`
+	background-color: #1a1a1a;
+	min-height: 100vh;
+	color: #ffffff;
+`;
+
+const ContentContainer = styled.div`
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+	position: relative;
+	padding-bottom: 100px;
+`;
 
 const DetailContainer = styled.div`
 	display: flex;
 	flex-direction: column;
-	${media.SP} {
-		padding: 0px;
-		width: 100dvw;
+	gap: 20px;
+	${media.SPandTB} {
+		padding: 0;
+		width: 100%;
 	}
 	${media.PC} {
-		padding: 20px;
+		padding: 20px 0;
 	}
-	margin: 0;
 `;
 
-const Container = styled.div`
-	position: relative;
-	padding-bottom: 80px;
+const AddButton = styled.button`
+	position: fixed;
+	right: 20px;
+	bottom: 100px;
+	width: 60px;
+	height: 60px;
+	background-color: #f12424;
+	border: none;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	transition: background-color 0.3s;
+
+	&:hover {
+		background-color: #d61f1f;
+	}
+
+	svg {
+		width: 30px;
+		height: 30px;
+	}
 `;
 
 interface MaintenancePageProps {
 	userCars: Car[] | null;
-	token: string;
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
 }
 
 const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 	userCars,
-	token,
+	tokens,
 }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
 	const [maintenances, setMaintenances] = useState<Maintenance[] | null>(null);
@@ -46,10 +90,14 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 		}
 	};
 
+	const handleAddClick = () => {
+		window.location.href = `/maintenance/add?selectedCarIndex=${selectedCarIndex}`;
+	};
+
 	useEffect(() => {
 		const fetchMaintenances = async () => {
 			if (userCars && userCars.length !== 0) {
-				const clientAPI = ClientAPI(token);
+				const clientAPI = ClientAPI(tokens.token);
 				const response = await clientAPI.car.getCarMaintenance({
 					car_id: userCars[selectedCarIndex].car_id,
 				});
@@ -57,7 +105,7 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 			}
 		};
 		fetchMaintenances();
-	}, [selectedCarIndex, userCars, token]);
+	}, [selectedCarIndex, userCars, tokens.token]);
 
 	const getMaintTypeDetails = (maintType: MaintType) => {
 		const maintenance = maintenances?.find(
@@ -65,47 +113,69 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 		);
 		return maintenance
 			? {
+					title: maintenance.maint_title,
 					lastMaintenanceDate: new Date(
 						maintenance.maint_date,
 					).toLocaleDateString(),
 					detail: maintenance.maint_description,
 				}
-			: { lastMaintenanceDate: "", detail: "" };
+			: { title: "", lastMaintenanceDate: "", detail: "" };
 	};
 
-	const handleDetailClick = (carId: number, maintType: MaintType) => {
-		router.push(`/maintenance/${carId}/${maintType}`);
+	const handleDetailClick = async (carId: number, maintType: MaintType) => {
+		const isUserCar = await checkIsUserCars({ carId, tokens });
+		if (!isUserCar) {
+			alert("この車両は登録されていません");
+			window.location.href = "/";
+			return;
+		}
+		window.location.href = `/maintenance/${maintType}?selectedCarIndex=${selectedCarIndex}`;
 	};
 
 	if (!userCars) {
-		return <div>ユーザーの車が見つかりません</div>;
+		return <PageContainer>ユーザーの車が見つかりません</PageContainer>;
 	}
 
 	return (
-		<Container>
+		<PageContainer>
 			<CarSelect
 				userCars={userCars}
 				selectedCarIndex={selectedCarIndex}
 				switchCar={switchCar}
 			/>
-			<DetailContainer>
-				{Object.values(MaintType).map((maintType) => {
-					const { lastMaintenanceDate, detail } =
-						getMaintTypeDetails(maintType);
-					return (
-						<MaintenanceDetail
-							key={maintType}
-							title={maintType}
-							lastMaintenanceDate={lastMaintenanceDate}
-							detail={detail}
-							onDetailClick={() =>
-								handleDetailClick(userCars[selectedCarIndex].car_id, maintType)
-							}
-						/>
-					);
-				})}
-			</DetailContainer>
-		</Container>
+			<ContentContainer>
+				<DetailContainer>
+					{Object.values(MaintType).map((maintType) => {
+						const { title, lastMaintenanceDate, detail } =
+							getMaintTypeDetails(maintType);
+						return (
+							<MaintenanceDetail
+								key={maintType}
+								maintType={maintenanceTypeMap[maintType] || maintType}
+								title={title || ""}
+								lastMaintenanceDate={lastMaintenanceDate}
+								detail={detail}
+								onDetailClick={() => {
+									if (userCars.length === 0) {
+										alert("ユーザーの車が見つかりません");
+									} else {
+										handleDetailClick(
+											userCars[selectedCarIndex].car_id,
+											maintType,
+										);
+									}
+								}}
+							/>
+						);
+					})}
+				</DetailContainer>
+				{userCars.length !== 0 && (
+					<AddButton onClick={handleAddClick}>
+						<CirclePlus color="white" />
+					</AddButton>
+				)}
+			</ContentContainer>
+		</PageContainer>
 	);
 };
 

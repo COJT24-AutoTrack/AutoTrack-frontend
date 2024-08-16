@@ -1,6 +1,5 @@
 import {
 	Car,
-	carInfo,
 	FuelEfficiencyCalculationResult,
 	FuelEfficiency,
 	Tuning,
@@ -9,6 +8,9 @@ import {
 } from "@/api/models/models";
 
 export interface ClientAPIInterface {
+	test: {
+		getTest(): Promise<TestAPIInterface["getTest"]["response"]>;
+	};
 	user: {
 		createUser(
 			request: UserAPIInterface["createUser"]["request"],
@@ -81,6 +83,7 @@ export interface ClientAPIInterface {
 			request: MaintenanceAPIInterface["getMaintenance"]["request"],
 		): Promise<MaintenanceAPIInterface["getMaintenance"]["response"]>;
 		updateMaintenance(
+			maint_id: MaintenanceAPIInterface["updateMaintenance"]["maint_id"],
 			request: MaintenanceAPIInterface["updateMaintenance"]["request"],
 		): Promise<MaintenanceAPIInterface["updateMaintenance"]["response"]>;
 		deleteMaintenance(
@@ -152,6 +155,11 @@ export interface ClientAPIInterface {
 	};
 }
 
+export interface TestAPIInterface {
+	getTest: {
+		response: string;
+	};
+}
 export interface UserAPIInterface {
 	createUser: {
 		request: {
@@ -316,8 +324,8 @@ export interface MaintenanceAPIInterface {
 		response: Maintenance;
 	};
 	updateMaintenance: {
+		maint_id: number;
 		request: {
-			maint_id: number;
 			car_id: number;
 			maint_type: string;
 			maint_date: string;

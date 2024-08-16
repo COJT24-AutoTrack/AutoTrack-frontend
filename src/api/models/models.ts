@@ -52,7 +52,30 @@ export enum MaintType {
 	TimingBeltChange = "Timing Belt Change",
 	CoolantRefill = "Coolant Refill",
 	WasherFluidRefill = "Washer Fluid Refill",
+	Other = "Other",
 }
+
+export const maintenanceTypeMap: Record<string, string> = {
+	"Oil Change": "オイル交換",
+	"Oil Filter Change": "オイルフィルター交換",
+	"Headlight Change": "ヘッドライト交換",
+	"Position Light Change": "ポジションライト交換",
+	"Fog Light Change": "フォグライト交換",
+	"Turn Signal Change": "ウインカー交換",
+	"Brake Light Change": "ブレーキライト交換",
+	"License Plate Light Change": "ナンバー灯交換",
+	"Backup Light Change": "バックライト交換",
+	"Car Wash": "洗車",
+	"Wiper Blade Change": "ワイパーブレード交換",
+	"Brake Pad Change": "ブレーキパッド交換",
+	"Brake Disc Change": "ブレーキディスク交換",
+	"Tire Change": "タイヤ交換",
+	"Battery Change": "バッテリー交換",
+	"Timing Belt Change": "タイミングベルト交換",
+	"Coolant Refill": "クーラント補充",
+	"Washer Fluid Refill": "ウォッシャー液補充",
+	Other: "その他",
+};
 
 export interface Maintenance {
 	maint_id: number;

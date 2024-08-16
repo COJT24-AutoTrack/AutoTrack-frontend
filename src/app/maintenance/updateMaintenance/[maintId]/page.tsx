@@ -9,8 +9,7 @@ import UpdateMaintenancePageContent from "@/components/maintenance/UpdateMainten
 import { clientConfig, serverConfig } from "@/../config";
 
 interface Params {
-	carId: number;
-	maintId?: string;
+	maintId: string;
 }
 
 const UpdateMaintenancePage = async ({ params }: { params: Params }) => {
@@ -38,9 +37,7 @@ const UpdateMaintenancePage = async ({ params }: { params: Params }) => {
 
 	return (
 		<UpdateMaintenancePageContent
-			carId={Number(params.carId)}
 			token={tokens.token}
-			maintTypes={maintTypes}
 			maintenance={maintenance}
 		/>
 	);

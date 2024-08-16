@@ -1,17 +1,17 @@
 "use client";
 
-import { Car, FuelEfficiency } from "@/api/models/models";
+import { Car } from "@/api/models/models";
 import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
-import RefuelingCardGroup from "@/components/refueling/RefuelingCardGroup";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
+import TuningInfoCardGroup from "@/components/tuning/TuningInfoCardGroup";
+import type { Tuning } from "@/api/models/models";
 import { ClientAPI } from "@/api/clientImplement";
 import { CirclePlus } from "lucide-react";
 
 const Container = styled.div`
 	position: relative;
-	padding-bottom: 80px;
 `;
 
 const AddButton = styled.button`
@@ -48,17 +48,20 @@ const LoadingContainer = styled.div`
 	color: #666;
 `;
 
-interface RefuelingProps {
+interface TuningPageComponentProps {
 	userCars: Car[] | null;
-	token: string;
-	userId: string;
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
 }
 
-const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
+const TuningPageComponent: React.FC<TuningPageComponentProps> = ({
+	userCars,
+	tokens,
+}) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
-	const [fuelEfficiencies, setFuelEfficiencies] = useState<
-		FuelEfficiency[] | null
-	>(null);
+	const [tunings, setTunings] = useState<Tuning[] | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 
@@ -68,32 +71,32 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 		}
 	};
 
+	const handleAddClick = () => {
+		if (userCars) {
+			window.location.href = `/tuning/add?selectedCarIndex=${selectedCarIndex}`;
+		}
+	};
+
 	useEffect(() => {
-		const fetchFuelEfficiencies = async () => {
+		const fetchTunings = async () => {
 			if (userCars && userCars.length !== 0) {
 				setIsLoading(true);
 				try {
-					const clientAPI = ClientAPI(token);
-					const response = await clientAPI.car.getCarFuelEfficiency({
+					const clientAPI = ClientAPI(tokens.token);
+					const response = await clientAPI.car.getCarTuning({
 						car_id: userCars[selectedCarIndex].car_id,
 					});
-					setFuelEfficiencies(response);
+					setTunings(response);
 				} catch (error) {
-					console.error("Failed to fetch fuel efficiencies:", error);
+					console.error("Failed to fetch tunings:", error);
 					// エラー処理をここに追加することもできます
 				} finally {
 					setIsLoading(false);
 				}
 			}
 		};
-		fetchFuelEfficiencies();
-	}, [selectedCarIndex, userCars, token]);
-
-	const handleAddClick = () => {
-		if (userCars) {
-			window.location.href = `/refueling/add/${userCars[selectedCarIndex].car_id}`;
-		}
-	};
+		fetchTunings();
+	}, [selectedCarIndex, userCars, tokens.token]);
 
 	if (!userCars) {
 		return <div>ユーザーの車が見つかりません</div>;
@@ -107,15 +110,17 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 					selectedCarIndex={selectedCarIndex}
 					switchCar={switchCar}
 				/>
-				<div style={{ padding: "10px" }}>
-					{isLoading ? (
-						<LoadingContainer>データを読み込み中...</LoadingContainer>
-					) : (
-						fuelEfficiencies && (
-							<RefuelingCardGroup fuelEfficiencies={fuelEfficiencies} />
-						)
-					)}
-				</div>
+				{isLoading ? (
+					<LoadingContainer>データを読み込み中...</LoadingContainer>
+				) : (
+					tunings && (
+						<TuningInfoCardGroup
+							tunings={tunings.filter(
+								(tuning) => tuning.car_id === userCars[selectedCarIndex].car_id,
+							)}
+						/>
+					)
+				)}
 			</Container>
 			{userCars.length !== 0 && (
 				<AddButton onClick={handleAddClick}>
@@ -126,4 +131,4 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 	);
 };
 
-export default Refueling;
+export default TuningPageComponent;

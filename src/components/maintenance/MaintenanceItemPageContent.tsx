@@ -1,183 +1,241 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Maintenance } from "@/api/models/models";
-import BackIcon from "/public/icons/BackIcon.svg";
-import { useRouter } from "next/navigation";
-import AddIcon from "/public/icons/AddIcon.svg";
-import { ContentText } from "@/components/text/TextComponents";
+import { Anton } from "next/font/google";
+import {
+	Car,
+	Maintenance,
+	maintenanceTypeMap,
+	MaintType,
+} from "@/api/models/models";
+import { useRouter, useSearchParams } from "next/navigation";
+import CarSelect from "@/components/base/CarSelect";
+import { ClientAPI } from "@/api/clientImplement";
+import { ChevronRight, CirclePlus, Calendar, FileText } from "lucide-react";
 
-interface MaintenanceItemPageContentProps {
-	maintenances: Maintenance[];
-	maintType: string;
-	carId: number;
-	token: string;
-}
+const Anton400 = Anton({
+	weight: "400",
+	subsets: ["latin"],
+});
 
-const Container = styled.div`
-	padding: 20px;
+const PageContainer = styled.div`
+	background-color: #1a1a1a;
+	min-height: 100vh;
+	color: #ffffff;
 `;
 
 const TopBar = styled.div`
-	width: 100vw;
-	height: 50px;
-	padding-left: 10px;
+	width: 100%;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	background-color: #2b2b2b;
 `;
 
-const BackButton = styled.button`
-	display: flex;
-	align-items: center;
-	background: none;
-	border: none;
-	color: white;
-	cursor: pointer;
-
-	svg {
-		transform: rotate(180deg);
-		fill: white;
-		width: 24px;
-		height: 24px;
-		margin-right: 8px;
-	}
+const ContentContainer = styled.div`
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+	position: relative;
 `;
 
 const Title = styled.h2`
-	flex-grow: 1;
+	font-size: 24px;
 	text-align: center;
-	margin: 0;
-	color: white;
+	margin: 0 0 20px 0;
+	color: #ffffff;
 `;
 
 const MaintenanceCard = styled.div`
-	border: 1px solid #ccc;
+	background-color: #2b2b2b;
 	border-radius: 8px;
 	padding: 16px;
-	margin-bottom: 12px;
-	background-color: #1c1c1c;
+	margin-bottom: 16px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 `;
 
+const CardContent = styled.div`
+	flex: 1;
+`;
+
 const DateText = styled.p`
 	font-size: 14px;
-	margin: 0;
+	color: #999;
+	margin: 0 0 8px 0;
+	display: flex;
+	align-items: center;
+	gap: 5px;
 `;
 
 const DetailText = styled.p`
 	font-size: 16px;
 	margin: 0;
-	flex: 1;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	display: flex;
+	align-items: center;
+	gap: 5px;
 `;
 
 const DetailButton = styled.button`
-	background-color: #444;
-	color: #fff;
+	background: none;
+	color: #ffffff;
 	border: none;
-	padding: 8px;
+	padding: 8px 16px;
 	cursor: pointer;
 	border-radius: 4px;
-	margin-left: 16px;
+	font-size: 14px;
+	transition: background-color 0.3s;
+
+	&:hover {
+		background-color: rgba(255, 255, 255, 0.1);
+	}
 `;
 
-const SVGButton = styled.button`
-	position: absolute;
-	right: 14px;
+const AddButton = styled.button`
+	position: fixed;
+	right: 20px;
 	bottom: 100px;
-	width: 80px;
-	height: 80px;
-	background-color: transparent;
+	width: 60px;
+	height: 60px;
+	background-color: #f12424;
 	border: none;
+	border-radius: 50%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
+	transition: background-color 0.3s;
+
+	&:hover {
+		background-color: #d61f1f;
+	}
 
 	svg {
-		width: 100px;
-		height: 100px;
+		width: 30px;
+		height: 30px;
 	}
 `;
 
-const maintenanceTypeMap: Record<string, string> = {
-	"Oil Change": "オイル交換",
-	"Oil Filter Change": "オイルフィルター交換",
-	"Headlight Change": "ヘッドライト交換",
-	"Position Light Change": "ポジションライト交換",
-	"Fog Light Change": "フォグライト交換",
-	"Turn Signal Change": "ウインカー交換",
-	"Brake Light Change": "ブレーキライト交換",
-	"License Plate Light Change": "ナンバー灯交換",
-	"Backup Light Change": "バックライト交換",
-	"Car Wash": "洗車",
-	"Wiper Blade Change": "ワイパーブレード交換",
-	"Brake Pad Change": "ブレーキパッド交換",
-	"Brake Disc Change": "ブレーキディスク交換",
-	"Tire Change": "タイヤ交換",
-	"Battery Change": "バッテリー交換",
-	"Timing Belt Change": "タイミングベルト交換",
-	"Coolant Refill": "クーラント補充",
-	"Washer Fluid Refill": "ウォッシャー液補充",
-};
+interface MaintenanceItemPageContentProps {
+	maintType: MaintType;
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
+	userCars: Car[];
+}
 
 const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
-	maintenances,
 	maintType,
-	carId,
+	userCars,
+	tokens,
 }) => {
 	const router = useRouter();
-	const decodedMaintType = decodeURIComponent(maintType);
-	const maintTypeJP = maintenanceTypeMap[decodedMaintType] || "取得失敗";
-
-	const handleBackClick = () => {
-		router.back();
+	const maintTypeJP = maintenanceTypeMap[maintType] || "取得失敗";
+	const searchParams = useSearchParams();
+	const initialSelectedCarIndex = () => {
+		const param = searchParams.get("selectedCarIndex");
+		if (param) {
+			const index = parseInt(param, 10);
+			if (!isNaN(index) && index >= 0 && userCars && index < userCars.length) {
+				return index;
+			}
+		}
+		return 0; // デフォルト値
 	};
+
+	const [selectedCarIndex, setSelectedCarIndex] = useState(
+		initialSelectedCarIndex,
+	);
+	const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
 
 	const handleAddClick = () => {
-		router.push(`/maintenance/${carId}/${maintType}/add`);
+		window.location.href = `/maintenance/add?maintType=${maintType}&selectedCarIndex=${selectedCarIndex}`;
 	};
 
-	const handleDetailClick = (maintId: number) => {
-		router.push(`/maintenance/${carId}/${maintType}/${maintId}/add`);
+	const switchCar = () => {
+		if (userCars) {
+			setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
+		}
 	};
+
+	const filterMaintenancesByType = (
+		maintenances: Maintenance[],
+		targetType: MaintType,
+	): Maintenance[] => {
+		return maintenances.filter(
+			(maintenance) => maintenance.maint_type === targetType,
+		);
+	};
+
+	useEffect(() => {
+		const fetchMaintenance = async () => {
+			if (userCars && userCars.length !== 0) {
+				const clientAPI = ClientAPI(tokens.token);
+				const fetchedMaintenances: Maintenance[] =
+					await clientAPI.car.getCarMaintenance({
+						car_id: userCars[selectedCarIndex].car_id,
+					});
+				const filteredMaintenances = filterMaintenancesByType(
+					fetchedMaintenances,
+					maintType,
+				);
+				setMaintenances(filteredMaintenances);
+			}
+		};
+		fetchMaintenance();
+	}, [selectedCarIndex, userCars, tokens.token, maintType]);
 
 	return (
-		<>
+		<PageContainer>
 			<TopBar>
-				<BackButton onClick={handleBackClick}>
-					<BackIcon style={{ fill: "white" }} />
-					<ContentText>戻る</ContentText>
-				</BackButton>
+				<CarSelect
+					userCars={userCars}
+					selectedCarIndex={selectedCarIndex}
+					switchCar={switchCar}
+				/>
 			</TopBar>
-			<Container>
-				<Title>{maintTypeJP}記録一覧</Title>
+			<ContentContainer>
+				<Title className={Anton400.className}>{maintTypeJP}記録一覧</Title>
 				{maintenances.map((maintenance) => (
 					<MaintenanceCard key={maintenance.maint_id}>
-						<div>
+						<CardContent>
+							{maintenance.maint_type === "Other" && (
+								<DetailText>
+									<FileText size={16} />
+									タイトル: {maintenance.maint_title}
+								</DetailText>
+							)}
 							<DateText>
+								<Calendar size={16} />
 								日付: {new Date(maintenance.maint_date).toLocaleDateString()}
 							</DateText>
-							<DetailText>内容: {maintenance.maint_description}</DetailText>
-						</div>
+							<DetailText>
+								<FileText size={16} />
+								内容: {maintenance.maint_description}
+							</DetailText>
+						</CardContent>
 						<DetailButton
-							onClick={() => handleDetailClick(maintenance.maint_id)}
+							onClick={() => {
+								window.location.href = `/maintenance/updateMaintenance/${maintenance.maint_id}`;
+							}}
 						>
-							詳細
+							<ChevronRight />
 						</DetailButton>
 					</MaintenanceCard>
 				))}
-				<SVGButton onClick={handleAddClick}>
-					<AddIcon style={{ fill: "red" }} />
-				</SVGButton>
-			</Container>
-		</>
+				{userCars.length !== 0 && (
+					<AddButton onClick={handleAddClick}>
+						<CirclePlus color="white" />
+					</AddButton>
+				)}
+			</ContentContainer>
+		</PageContainer>
 	);
 };
 

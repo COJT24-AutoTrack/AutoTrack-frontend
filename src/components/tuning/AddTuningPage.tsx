@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import styled from "styled-components";
 import { Anton } from "next/font/google";
-import { Car, maintenanceTypeMap, MaintType } from "@/api/models/models";
-import { useRouter, useSearchParams } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
+import { Car } from "@/api/models/models";
 import { checkIsUserCars } from "@/module/checkUserCars";
 import CarSelect from "@/components/base/CarSelect";
-import { Settings, Calendar, FileText, Wrench } from "lucide-react";
+import { Calendar, Wrench, FileText } from "lucide-react";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -36,7 +36,6 @@ const Form = styled.form`
 const FormTitle = styled.h1`
 	font-size: 24px;
 	text-align: center;
-	margin-bottom: 20px;
 `;
 
 const FormElementContainer = styled.div`
@@ -67,20 +66,6 @@ const Input = styled.input`
 	}
 `;
 
-const Select = styled.select`
-	background-color: #2b2b2b;
-	border: 1px solid #ffffff;
-	border-radius: 4px;
-	color: #ffffff;
-	padding: 10px;
-	font-size: 16px;
-
-	&:focus {
-		outline: none;
-		border-color: #4a90e2;
-	}
-`;
-
 const Button = styled.button`
 	background-color: #f12424;
 	color: #ffffff;
@@ -96,29 +81,26 @@ const Button = styled.button`
 	}
 `;
 
-interface AddMaintenancePageContentProps {
-	userCars: Car[] | null;
+interface AddTuningProps {
 	tokens: {
 		token: string;
 		decodedToken: { uid: string };
 	};
-	maintTypes: MaintType[];
+	userCars: Car[] | null;
 }
 
-const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
-	userCars,
+const AddTuningPageContent: React.FC<AddTuningProps> = ({
 	tokens,
-	maintTypes,
+	userCars,
 }) => {
-	const [maintType, setMaintType] = useState<MaintType>(maintTypes[0]);
-	const [maintTitle, setMaintTitle] = useState("");
-	const [maintDate, setMaintDate] = useState("");
-	const [maintDescription, setMaintDescription] = useState("");
+	const [tuningName, setTuningName] = useState("");
+	const [tuningDate, setTuningDate] = useState("");
+	const [tuningDescription, setTuningDescription] = useState("");
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
 	const [isUserCar, setIsUserCar] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
-	const router = useRouter();
 	const searchParams = useSearchParams();
+	const router = useRouter();
 
 	useEffect(() => {
 		const checkUserCar = async () => {
@@ -146,22 +128,14 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 	}, [userCars, selectedCarIndex, tokens]);
 
 	useEffect(() => {
-		const maintTypeParam = searchParams.get("maintType");
-		if (maintTypeParam) {
-			const decodedMaintType = decodeURIComponent(maintTypeParam);
-			if (maintTypes.includes(decodedMaintType as MaintType)) {
-				setMaintType(decodedMaintType as MaintType);
-			}
-		}
 		const selectedCarIndexParam = searchParams.get("selectedCarIndex");
-
 		if (selectedCarIndexParam) {
 			setSelectedCarIndex(parseInt(selectedCarIndexParam));
 		}
-	}, [searchParams, maintTypes]);
+	}, [searchParams]);
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
+	const handleSubmit = async (event: React.FormEvent) => {
+		event.preventDefault();
 
 		if (!userCars || userCars.length === 0) {
 			alert("車両が登録されていません");
@@ -178,18 +152,16 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 		const clientAPI = ClientAPI(tokens.token);
 
 		try {
-			const response = await clientAPI.maintenance.createMaintenance({
+			const response = await clientAPI.tuning.createTuning({
 				car_id: userCars[selectedCarIndex].car_id,
-				maint_type: maintType,
-				maint_date: maintDate,
-				maint_description: maintDescription,
-				maint_title: maintTitle,
+				tuning_date: tuningDate,
+				tuning_name: tuningName,
+				tuning_description: tuningDescription,
 			});
-
 			if (response) {
-				window.location.href = `/maintenance`;
+				window.location.href = "/tuning";
 			} else {
-				alert("メンテナンス記録の追加に失敗しました");
+				alert("チューニング記録の追加に失敗しました");
 			}
 		} catch (error) {
 			console.error("Error creating maintenance record:", error);
@@ -221,58 +193,41 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 			<FormContainer>
 				<Form onSubmit={handleSubmit}>
 					<FormTitle className={Anton400.className}>
-						メンテナンス記録を追加
+						チューニング記録追加
 					</FormTitle>
 					<FormElementContainer>
 						<Label>
-							<Settings color="white" size={16} />
-							メンテナンスタイプ
-						</Label>
-						<Select
-							value={maintType}
-							onChange={(e) => setMaintType(e.target.value as MaintType)}
-						>
-							{maintTypes.map((type) => (
-								<option key={type} value={type}>
-									{maintenanceTypeMap[type] || type}
-								</option>
-							))}
-						</Select>
-					</FormElementContainer>
-					{maintType === "Other" && (
-						<FormElementContainer>
-							<Label>
-								<Wrench color="white" size={16} />
-								タイトル:
-							</Label>
-							<Input
-								type="text"
-								value={maintTitle}
-								onChange={(e) => setMaintTitle(e.target.value)}
-							/>
-						</FormElementContainer>
-					)}
-					<FormElementContainer>
-						<Label>
-							<Calendar color="white" size={16} />
-							メンテナンス日:
+							<Wrench color="white" />
+							<span>タイトル</span>
 						</Label>
 						<Input
-							type="date"
-							value={maintDate}
-							onChange={(e) => setMaintDate(e.target.value)}
+							type="text"
+							value={tuningName}
+							onChange={(e) => setTuningName(e.target.value)}
 							required
 						/>
 					</FormElementContainer>
 					<FormElementContainer>
 						<Label>
-							<FileText color="white" size={16} />
-							メンテナンス詳細:
+							<Calendar color="white" />
+							<span>日付</span>
+						</Label>
+						<Input
+							type="date"
+							value={tuningDate}
+							onChange={(e) => setTuningDate(e.target.value)}
+							required
+						/>
+					</FormElementContainer>
+					<FormElementContainer>
+						<Label>
+							<FileText color="white" />
+							<span>内容</span>
 						</Label>
 						<Input
 							type="text"
-							value={maintDescription}
-							onChange={(e) => setMaintDescription(e.target.value)}
+							value={tuningDescription}
+							onChange={(e) => setTuningDescription(e.target.value)}
 						/>
 					</FormElementContainer>
 					<Button type="submit">追加</Button>
@@ -282,4 +237,4 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 	);
 };
 
-export default AddMaintenancePageContent;
+export default AddTuningPageContent;
