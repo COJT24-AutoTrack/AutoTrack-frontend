@@ -175,7 +175,7 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 						</CarInfoItem>
 						<CarInfoItem>
 							<CarInfoLabel>
-								<Hash size={16} /> 車種番号
+								<Hash size={16} /> 型式番号
 							</CarInfoLabel>
 							<CarInfoValue>{userCar?.carmodelnum}</CarInfoValue>
 						</CarInfoItem>
