@@ -21,7 +21,7 @@ const RefuelingCardGroup: React.FC<RefuelingCardGroupProps> = ({
 }) => {
 	return (
 		<Container>
-			{fuelEfficiencies.map((fe) => (
+			{[...fuelEfficiencies].reverse().map((fe) => (
 				<RefuelingCard key={fe.fe_id} fuelEfficiency={fe} />
 			))}
 		</Container>
