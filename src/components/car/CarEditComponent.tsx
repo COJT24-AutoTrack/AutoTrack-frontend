@@ -210,7 +210,7 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 					</FormGroup>
 					<FormGroup>
 						<Label>
-							<Hash size={16} /> 車種番号
+							<Hash size={16} /> 型式番号
 						</Label>
 						<Input
 							value={car.carmodelnum}
