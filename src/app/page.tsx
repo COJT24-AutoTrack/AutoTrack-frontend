@@ -84,7 +84,7 @@ export default async function Home() {
 			0,
 		);
 		const totalGasCost = monthlyFuelEfficiencies.reduce(
-			(total, fe) => total + fe.fe_amount * fe.fe_unitprice,
+			(total, fe) => total + Math.round(fe.fe_amount * fe.fe_unitprice),
 			0,
 		);
 
