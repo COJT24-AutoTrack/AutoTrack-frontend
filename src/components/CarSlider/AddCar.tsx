@@ -172,7 +172,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 			newErrors.car_name = "車名を入力してください";
 		}
 		if (!carData.carmodelnum) {
-			newErrors.carmodelnum = "車種番号を入力してください";
+			newErrors.carmodelnum = "型式番号を入力してください";
 		}
 		if (!carData.car_color) {
 			newErrors.car_color = "車の色を入力してください";
@@ -247,7 +247,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 					<FormElementContainer>
 						<Label>
 							<Hash color="white" />
-							<p>車種番号</p>
+							<p>型式番号</p>
 						</Label>
 						<Input
 							type="text"
