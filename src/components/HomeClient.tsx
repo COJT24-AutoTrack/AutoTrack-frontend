@@ -93,18 +93,14 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 								<div style={{ flex: 1 }}>
 									<DetailCardComponent
 										label={"Mileage"}
-										value={selectedCar ? selectedCar.car_mileage : 0}
+										value={selectedCar ? selectedCar.total_mileage : 0}
 										unit={"Km"}
 									/>
 								</div>
 								<div style={{ flex: 1 }}>
 									<DetailCardComponent
 										label={"Fuel Cost"}
-										value={
-											selectedCar
-												? Number(selectedCar.total_gas_cost.toFixed())
-												: 0
-										}
+										value={selectedCar ? selectedCar.total_gas_cost : 0}
 										unit={"Yen"}
 									/>
 								</div>
@@ -134,7 +130,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 								/>
 								<DetailCardComponent
 									label={"Mileage"}
-									value={selectedCar ? selectedCar.car_mileage : 0}
+									value={selectedCar ? selectedCar.total_mileage : 0}
 									unit={"Km"}
 								/>
 								<DetailCardComponent
