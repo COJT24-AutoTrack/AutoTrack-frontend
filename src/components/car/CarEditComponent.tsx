@@ -17,6 +17,7 @@ import {
 	Image as ImageIcon,
 	Save,
 } from "lucide-react";
+import compressImage from "../../module/imageCompress"
 
 const Anton400 = Anton({
 	weight: "400",
@@ -147,16 +148,26 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 
 		if (image) {
 			const formData = new FormData();
-			formData.append("file", image);
+			const compressedImage = await compressImage(image);
 			try {
+				formData.append("file", compressedImage);
+
+				// デバッグ用ログ
+				console.log("Compressed Image:", compressedImage);
+				console.log("FormData Content:", formData.get("file"));
+
+				// API を呼び出して画像をアップロード
 				await clientAPI.image.uploadImage({
 					formData: formData,
 				});
 			} catch (e) {
+				// 圧縮またはアップロード失敗時のエラーハンドリング
+				console.error("Upload Error:", e);
 				alert((e as Error).message);
 				return;
 			}
 		}
+
 		try {
 			const response = await clientAPI.car.updateCar({
 				car_id: car.car_id,
