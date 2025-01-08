@@ -4,7 +4,8 @@ const compressImage = async (file: File): Promise<File> => {
     const options = {
         maxSizeMB: 1,           // 最大サイズ 1MB
         maxWidthOrHeight: 800, // 最大幅または高さ どれだけウィンドウを大きくしても800pxだったので一旦これで
-        useWebWorker: true      // 圧縮処理をバックグラウンドで実行
+        useWebWorker: true,      // 圧縮処理をバックグラウンドで実行
+        fileType: 'image/webp'  // WebP形式に変換
     };
     console.log('originalFile instanceof Blob', file instanceof Blob); // true
 
