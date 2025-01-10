@@ -17,7 +17,8 @@ import {
 	Image as ImageIcon,
 	Save,
 } from "lucide-react";
-import compressImage from "../../module/imageCompress"
+import compressImage from "../../module/imageCompress";
+import { v4 as uuidv4 } from "uuid";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -137,6 +138,7 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (!car) return;
+
 		const clientAPI = ClientAPI(tokens.token);
 
 		const isUserCar = await checkIsUserCars({ carId, tokens });
@@ -146,20 +148,34 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 			return;
 		}
 
+		let newImageURL = car.car_image_url; // 既存の画像URL
+
 		if (image) {
 			const formData = new FormData();
-			const compressedImage = await compressImage(image);
 			try {
-				formData.append("file", compressedImage);
+				// ファイル名を UUID に変更
+				const uuid = uuidv4();
+				const fileExtension = "webp"; // 圧縮後は常に WebP とする
+				const newFileName = `${uuid}.${fileExtension}`;
+
+				// 画像を圧縮
+				const compressedImage = await compressImage(image);
+
+				// ファイル名を UUID に変更して FormData に追加
+				const renamedFile = new File([compressedImage], newFileName, {
+					type: "image/webp",
+				});
+				formData.append("file", renamedFile);
 
 				// デバッグ用ログ
-				console.log("Compressed Image:", compressedImage);
+				console.log("Renamed Compressed File:", renamedFile);
 				console.log("FormData Content:", formData.get("file"));
 
 				// API を呼び出して画像をアップロード
-				await clientAPI.image.uploadImage({
-					formData: formData,
-				});
+				await clientAPI.image.uploadImage({ formData });
+
+				// 新しい画像URLを設定
+				newImageURL = `https://r2.autotrack.work/images/${newFileName}`;
 			} catch (e) {
 				// 圧縮またはアップロード失敗時のエラーハンドリング
 				console.error("Upload Error:", e);
@@ -169,6 +185,7 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 		}
 
 		try {
+			// 新しい画像URLを使用して車両情報を更新
 			const response = await clientAPI.car.updateCar({
 				car_id: car.car_id,
 				car_name: car.car_name,
@@ -177,7 +194,7 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 				car_mileage: car.car_mileage,
 				car_isflooding: car.car_isflooding,
 				car_issmoked: car.car_issmoked,
-				car_image_url: car.car_image_url,
+				car_image_url: newImageURL,
 			});
 			if (response) {
 				alert("車両情報が更新されました！");
