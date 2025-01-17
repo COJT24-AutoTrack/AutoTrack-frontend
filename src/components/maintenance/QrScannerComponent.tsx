@@ -11,7 +11,7 @@ const QrScannerComponent: React.FC = () => {
 		return (text.match(/\//g) || []).length;
 	};
 
-	// "/" の数でソートする関数 (5, 6, 7, 1, 4 の順)
+	// "/" の数でソートする関数
 	const sortBySlashCount = (list: string[], order: number[]): string[] => {
 		return list.sort((a, b) => {
 			const countA = countSlashes(a);
@@ -34,6 +34,7 @@ const QrScannerComponent: React.FC = () => {
 						const newResults = prevResults.includes(result.data)
 							? prevResults
 							: [...prevResults, result.data];
+						// "/"が(5, 6, 7, 1, 4)の順でソートされるようにする
 						return sortBySlashCount(newResults, [5, 6, 7, 1, 4]);
 					});
 				} else {
