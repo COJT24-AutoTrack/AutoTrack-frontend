@@ -153,6 +153,74 @@ export interface ClientAPIInterface {
 			request: ImageAPIInterface["uploadImage"]["request"],
 		): Promise<ImageAPIInterface["uploadImage"]["response"]>;
 	};
+
+	// 車検
+	carInspection: {
+		createCarInspection(
+			request: CarInspectionAPIInterface["createCarInspection"]["request"],
+		): Promise<CarInspectionAPIInterface["createCarInspection"]["response"]>;
+		getCarInspections(): Promise<
+			CarInspectionAPIInterface["getCarInspections"]["response"]
+		>;
+		getCarInspection(
+			request: CarInspectionAPIInterface["getCarInspection"]["request"],
+		): Promise<CarInspectionAPIInterface["getCarInspection"]["response"]>;
+		updateCarInspection(
+			request: CarInspectionAPIInterface["updateCarInspection"]["request"],
+		): Promise<CarInspectionAPIInterface["updateCarInspection"]["response"]>;
+		deleteCarInspection(
+			request: CarInspectionAPIInterface["deleteCarInspection"]["request"],
+		): Promise<void>;
+	};
+}
+
+export interface CarInspectionAPIInterface {
+	createCarInspection: {
+		request: {
+			car_id: number;
+			splitted_results: string[];
+			is_kcar: boolean;
+		};
+		response: {
+			inspection_id: number;
+			message?: string;
+		};
+	};
+	getCarInspections: {
+		request: never;
+		response: {
+			inspections: {
+				inspection_id: number;
+				car_id: number;
+				splitted_results: string[];
+				is_kcar: boolean;
+			}[];
+		};
+	};
+	getCarInspection: {
+		request: { inspection_id: number };
+		response: {
+			inspection_id: number;
+			car_id: number;
+			splitted_results: string[];
+			is_kcar: boolean;
+		};
+	};
+	updateCarInspection: {
+		request: {
+			inspection_id: number;
+			splitted_results: string[];
+			is_kcar: boolean;
+		};
+		response: {
+			inspection_id: number;
+			message?: string;
+		};
+	};
+	deleteCarInspection: {
+		request: { inspection_id: number };
+		response: void;
+	};
 }
 
 export interface TestAPIInterface {
