@@ -68,12 +68,13 @@ export default async function Home() {
 		totalMileage: number;
 	} => {
 		const now = new Date();
-		const oneMonthAgo = new Date();
-		oneMonthAgo.setMonth(now.getMonth() - 1);
+		const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+		const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
-		const monthlyFuelEfficiencies = fuelEfficiencies.filter(
-			(fe) => new Date(fe.fe_date) >= oneMonthAgo,
-		);
+		const monthlyFuelEfficiencies = fuelEfficiencies.filter((fe) => {
+			const feDate = new Date(fe.fe_date);
+			return feDate >= startOfMonth && feDate < endOfMonth;
+		});
 
 		const totalMileage = monthlyFuelEfficiencies.reduce(
 			(acc, fe) => acc + fe.fe_mileage,
