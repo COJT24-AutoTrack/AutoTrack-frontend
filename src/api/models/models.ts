@@ -125,6 +125,8 @@ export interface carInfo extends Car {
 	odd_after_wash: number;
 	odd_after_exchange: number;
 	monthly_fuel_efficiency: string;
+	monthly_gas_cost: number;
+	monthly_mileage: number;
 	total_gas_cost: number;
 	total_mileage: number;
 }
