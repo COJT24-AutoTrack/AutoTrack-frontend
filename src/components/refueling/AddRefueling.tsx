@@ -241,6 +241,22 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 							<ErrorMessage>{errors.mileage}</ErrorMessage>
 						)}
 					</FormElementContainer>
+					<FormElementContainer>
+						<Label>
+							<Navigation color="white" />
+							<p>総走行距離(km)</p>
+						</Label>
+						<Input
+							type="number"
+							step="0.01"
+							onChange={(e) => setMileage(Number(e.target.value))}
+							min="0.01"
+							required
+						/>
+						{isSubmitted && errors.mileage && (
+							<ErrorMessage>{errors.mileage}</ErrorMessage>
+						)}
+					</FormElementContainer>
 					<FuelEfficiencyDisplay>
 						<FuelEfficiencyLabel>
 							<Droplets color="#f12424" />
