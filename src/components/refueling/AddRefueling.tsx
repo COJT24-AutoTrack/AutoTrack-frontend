@@ -66,6 +66,11 @@ const Input = styled.input`
 	padding: 10px;
 	font-size: 16px;
 
+	&::placeholder {
+		color: #cccccc;
+		opacity: 1;
+	}
+
 	&:focus {
 		outline: none;
 		border-color: #4a90e2;
@@ -123,10 +128,15 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 	const [amount, setAmount] = useState<number | null>(null);
 	const [unitPrice, setUnitPrice] = useState<number | null>(null);
 
-	// 今回の増分走行距離(Δ)
+	// 前回の給油からの走行距離
 	const [deltaMileage, setDeltaMileage] = useState<number | null>(null);
-	// 入力された「総走行距離」
-	const [inputTotalMileage, setInputTotalMileage] = useState<number | null>(
+	// 月別走行距離
+	const [monthlyMileage, setMonthlyMileage] = useState<number | null>(null);
+	// 総走行距離
+	const [totalMileage, setTotalMileage] = useState<number | null>(null);
+
+	// フィールドがユーザーによって編集されているかを追跡
+	const [editingField, setEditingField] = useState<"delta" | "total" | null>(
 		null,
 	);
 
@@ -139,15 +149,46 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 
 	const router = useRouter();
 
-	// 初期表示で、現在の Car 情報を取得 (car_mileage を知るため)
+	// 丸め関数
+	const roundToTwo = (num: number): number => {
+		return Math.round(num * 100) / 100;
+	};
+
+	// 初期表示で、現在の Car 情報を取得 (car_mileage: 保存されている総走行距離を知るため)
 	useEffect(() => {
 		const fetchCar = async () => {
 			const clientAPI = ClientAPI(tokens.token);
-			const car = await clientAPI.car.getCar({ car_id: carId });
-			setCarInfo(car);
+			try {
+				const car = await clientAPI.car.getCar({ car_id: carId });
+				setCarInfo(car);
+			} catch (error) {
+				console.error("Error fetching car info:", error);
+				// エラーハンドリング（必要に応じて）
+				setErrors((prev) => ({
+					...prev,
+					fetchCar: "車両情報の取得に失敗しました。再度お試しください。",
+				}));
+			}
 		};
 		fetchCar();
 	}, [carId, tokens]);
+
+	// deltaMileage または totalMileage が変更された際にもう一方を計算
+	useEffect(() => {
+		if (!carInfo) return;
+		const oldCarMileage = carInfo.car_mileage || 0;
+
+		if (editingField === "total" && totalMileage !== null) {
+			const calculatedDelta = roundToTwo(totalMileage - oldCarMileage);
+			setDeltaMileage(calculatedDelta);
+		} else if (editingField === "delta" && deltaMileage !== null) {
+			const calculatedTotal = roundToTwo(oldCarMileage + deltaMileage);
+			setTotalMileage(calculatedTotal);
+		}
+		// リセット editingField 以降の変更をトリガーしないようにする
+		setEditingField(null);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [deltaMileage, totalMileage]);
 
 	const validateForm = () => {
 		const newErrors: { [key: string]: string } = {};
@@ -162,12 +203,12 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 			newErrors.amount = "有効な給油量を入力してください";
 		}
 
-		// 走行距離(今回Δ) と 総走行距離 のどちらか必須
-		const deltaInvalid = !deltaMileage || deltaMileage <= 0;
-		const totalInvalid = !inputTotalMileage || inputTotalMileage <= 0;
-		if (deltaInvalid && totalInvalid) {
+		// 月別走行距離 or 総走行距離 のどちらか必須
+		const monthlyInvalid = !monthlyMileage || monthlyMileage <= 0;
+		const totalInvalid = !totalMileage || totalMileage <= 0;
+		if (monthlyInvalid && totalInvalid) {
 			newErrors.mileage =
-				"走行距離(今回) か 総走行距離 のどちらか一方は入力してください。";
+				"月別走行距離 か 総走行距離 のどちらか一方は入力してください。";
 		}
 
 		setErrors(newErrors);
@@ -192,30 +233,25 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		const clientAPI = ClientAPI(tokens.token);
 		const oldCarMileage = carInfo?.car_mileage || 0;
 
-		// 入力された「総走行距離」が優先 -> そこからΔを計算
-		let usedDelta = 0;
+		// 給油時の走行距離（Δ）を求める
+		let calculatedDelta = 0;
 		let newCarMileage = oldCarMileage;
 
-		// ユーザーが「総走行距離」を入力した場合
-		if (inputTotalMileage && inputTotalMileage > 0) {
-			usedDelta = inputTotalMileage - oldCarMileage;
-			newCarMileage = inputTotalMileage;
-			// もし総走行距離が前回より小さい場合はエラーにするなどの処理も必要なら追加
+		if (totalMileage && totalMileage > 0) {
+			calculatedDelta = roundToTwo(totalMileage - oldCarMileage);
+			newCarMileage = roundToTwo(totalMileage);
 		} else if (deltaMileage && deltaMileage > 0) {
-			// ユーザーが「今回の走行距離(Δ)」のみ入力した場合
-			usedDelta = deltaMileage;
-			newCarMileage = oldCarMileage + usedDelta;
+			calculatedDelta = roundToTwo(deltaMileage);
+			newCarMileage = roundToTwo(oldCarMileage + deltaMileage);
 		}
 
 		// 1. FuelEfficiency にレコード作成
-		//    fe_mileage(= 今回の走行距離) と、必要なら fe_totalmileage(= newCarMileage) を送る
 		await clientAPI.fuelEfficiency.createFuelEfficiency({
 			car_id: Number(carId),
 			fe_date: date,
 			fe_amount: amount!,
 			fe_unitprice: unitPrice!,
-			fe_mileage: usedDelta, // 今回の増分走行距離
-			// fe_totalmileage: newCarMileage, // API が受け取れる場合は送る
+			fe_mileage: calculatedDelta, // 給油時の走行距離 (Δ)
 		});
 
 		// 2. Car の累計走行距離 car_mileage を更新
@@ -236,15 +272,21 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		router.push("/refueling");
 	};
 
-	// 燃費 = (「今回の走行距離」) / (給油量)
-	// 総走行距離を優先入力している場合は、(総走行距離-前回のcar_mileage) を使う
+	// 燃費計算
 	const oldCarMileage = carInfo?.car_mileage || 0;
-	const diff =
-		inputTotalMileage && inputTotalMileage > 0
-			? inputTotalMileage - oldCarMileage
+	const calculatedDelta =
+		totalMileage && totalMileage > 0
+			? roundToTwo(totalMileage - oldCarMileage)
 			: deltaMileage || 0;
 	const fuelEfficiency =
-		diff > 0 && amount && amount > 0 ? (diff / amount).toFixed(2) : "0";
+		calculatedDelta > 0 && amount && amount > 0
+			? (calculatedDelta / amount).toFixed(2)
+			: "0";
+
+	// プレースホルダーのテキストを定義
+	const totalMileagePlaceholder = `現在の走行距離: ${roundToTwo(oldCarMileage)} km`;
+	const deltaMileagePlaceholder =
+		calculatedDelta > 0 ? `${calculatedDelta} km` : "計算中...";
 
 	return (
 		<PageContainer>
@@ -252,6 +294,9 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 			<FormContainer>
 				<Form onSubmit={handleSignUp}>
 					<FormTitle>給油記録追加</FormTitle>
+
+					{/* エラーメッセージの表示 */}
+					{errors.fetchCar && <ErrorMessage>{errors.fetchCar}</ErrorMessage>}
 
 					{/* 日付 */}
 					<FormElementContainer>
@@ -280,6 +325,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 							type="number"
 							min="0.01"
 							step="0.01"
+							placeholder="例: 150.00"
 							value={unitPrice ?? ""}
 							onChange={(e) => setUnitPrice(Number(e.target.value))}
 							required
@@ -299,6 +345,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 							type="number"
 							step="0.01"
 							min="0.01"
+							placeholder="例: 45.67"
 							value={amount ?? ""}
 							onChange={(e) => setAmount(Number(e.target.value))}
 							required
@@ -308,11 +355,11 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 						)}
 					</FormElementContainer>
 
-					{/* 走行距離(今回) */}
+					{/* 前回の給油からの走行距離 */}
 					<FormElementContainer>
 						<Label>
 							<Navigation color="white" />
-							<p>走行距離(今回 km)</p>
+							<p>前回の給油からの走行距離(km)</p>
 						</Label>
 						<Input
 							type="number"
@@ -321,8 +368,13 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 							value={deltaMileage ?? ""}
 							onChange={(e) => {
 								setDeltaMileage(Number(e.target.value));
+								setEditingField("delta");
 							}}
+							placeholder={deltaMileagePlaceholder}
 						/>
+						{isSubmitted && errors.mileage && (
+							<ErrorMessage>{errors.mileage}</ErrorMessage>
+						)}
 					</FormElementContainer>
 
 					{/* 総走行距離 */}
@@ -335,10 +387,12 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 							type="number"
 							step="0.01"
 							min="0.01"
-							value={inputTotalMileage ?? ""}
+							value={totalMileage ?? ""}
 							onChange={(e) => {
-								setInputTotalMileage(Number(e.target.value));
+								setTotalMileage(Number(e.target.value));
+								setEditingField("total");
 							}}
+							placeholder={totalMileagePlaceholder}
 						/>
 						{isSubmitted && errors.mileage && (
 							<ErrorMessage>{errors.mileage}</ErrorMessage>
