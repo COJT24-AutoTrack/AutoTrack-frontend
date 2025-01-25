@@ -8,6 +8,7 @@ import { Anton } from "next/font/google";
 import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";
 import { Car } from "@/api/models/models";
+import { FuelEfficiency } from "@/api/models/models";
 import {
 	Calendar,
 	Droplets,
@@ -284,9 +285,9 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 			: "0";
 
 	// プレースホルダーのテキストを定義
-	const totalMileagePlaceholder = `現在の走行距離: ${roundToTwo(oldCarMileage)} km`;
-	const deltaMileagePlaceholder =
-		calculatedDelta > 0 ? `${calculatedDelta} km` : "計算中...";
+	// const totalMileagePlaceholder = `現在の走行距離: ${roundToTwo(oldCarMileage)} km`;
+	// const deltaMileagePlaceholder =
+	// 	calculatedDelta > 0 ? `${calculatedDelta} km` : "計算中...";
 
 	return (
 		<PageContainer>
@@ -370,7 +371,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 								setDeltaMileage(Number(e.target.value));
 								setEditingField("delta");
 							}}
-							placeholder={deltaMileagePlaceholder}
+							// placeholder={deltaMileagePlaceholder}
 						/>
 						{isSubmitted && errors.mileage && (
 							<ErrorMessage>{errors.mileage}</ErrorMessage>
@@ -378,7 +379,8 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 					</FormElementContainer>
 
 					{/* 総走行距離 */}
-					<FormElementContainer>
+					{/* 後から順不同に記録されることを考慮すると、deltaで入力されたかtotalで入力されたかを記録する必要があることがわかったため、一旦コメントアウト */}
+					{/* <FormElementContainer>
 						<Label>
 							<Navigation color="white" />
 							<p>総走行距離(km)</p>
@@ -397,7 +399,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 						{isSubmitted && errors.mileage && (
 							<ErrorMessage>{errors.mileage}</ErrorMessage>
 						)}
-					</FormElementContainer>
+					</FormElementContainer> */}
 
 					{/* 燃費表示 */}
 					<FuelEfficiencyDisplay>
