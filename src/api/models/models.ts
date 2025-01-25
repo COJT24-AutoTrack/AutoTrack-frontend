@@ -94,7 +94,7 @@ export interface FuelEfficiency {
 	fe_date: string;
 	fe_amount: number;
 	fe_unitprice: number;
-	fe_mileage: number;
+	fe_mileage: number; // 給油時のODOの表示値を保存
 	created_at?: string;
 	updated_at?: string;
 }
@@ -125,6 +125,8 @@ export interface carInfo extends Car {
 	odd_after_wash: number;
 	odd_after_exchange: number;
 	monthly_fuel_efficiency: string;
+	monthly_gas_cost: number;
+	monthly_mileage: number;
 	total_gas_cost: number;
 	total_mileage: number;
 }

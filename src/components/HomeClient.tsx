@@ -100,7 +100,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 								<div style={{ flex: 1 }}>
 									<DetailCardComponent
 										label={"Fuel Cost"}
-										value={selectedCar ? selectedCar.total_gas_cost : 0}
+										value={selectedCar ? selectedCar.monthly_gas_cost : 0}
 										unit={"Yen"}
 									/>
 								</div>
