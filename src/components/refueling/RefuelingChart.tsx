@@ -34,7 +34,6 @@ interface RefuelingChartProps {
 	fuelEfficiencies: FuelEfficiency[];
 }
 
-// スタイル
 const ChartContainer = styled.div`
 	max-width: 1000px;
 	margin: 0 auto;
@@ -93,7 +92,6 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 		axisText: "#999999",
 	};
 
-	// ---- 修正ここから ----
 	// フィルタ用に日付を用意
 	const now = new Date();
 	const oneMonthAgo = new Date(now.getTime());
@@ -121,7 +119,6 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 				return true;
 		}
 	});
-	// ---- 修正ここまで ----
 
 	// ソート
 	const sortedAsc = [...filteredData].sort(
