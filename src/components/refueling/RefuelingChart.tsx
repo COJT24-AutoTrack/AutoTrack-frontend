@@ -151,6 +151,9 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 	// 前回からの走行距離
 	const dataDistanceSinceLastRefuel = sortedAsc.map((fe) => fe.fe_mileage);
 
+	// 単価 (円/L)
+	const dataFuelUnitPrice = sortedAsc.map((fe) => fe.fe_unitprice);
+
 	// チャートデータ
 	const chartData: ChartData<"bar" | "line", number[], string> = {
 		labels,
@@ -203,85 +206,99 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 				fill: false,
 				tension: 0.2,
 			},
+			{
+				label: "単価",
+				data: dataFuelUnitPrice,
+				borderColor: "#ff8c00",
+				backgroundColor: "#ff8c00CC",
+				yAxisID: "yFuelCost",
+				type: "line",
+				fill: false,
+				tension: 0.2,
+			},
 		],
 	};
 
 	// オプション
 	const chartOptions: ChartOptions<"bar" | "line"> = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: "bottom",
-                labels: {
-                    usePointStyle: true,
-                    pointStyle: "circle",
-                    boxWidth: 6,
-                    boxHeight: 6,
-                    padding: 20,
-                    font: { size: 14 },
-                    color: colors.legendText,
-                },
-            },
-            tooltip: {
-                mode: "index",
-                intersect: false,
-                backgroundColor: colors.tooltipBackground,
-                titleColor: colors.tooltipTitle,
-                bodyColor: colors.tooltipBody,
-                borderWidth: 1,
-            },
-        },
-        scales: {
-            yFe: {
-                type: "linear",
-                position: "left",
-                ticks: {
-                    display: isPC,
-                    color: colors.axisText,
-                    callback: function (value) {
-                        return value === 0 ? "0 km/L" : value;
-                    },
-                },
-            },
-            yDist: {
-                type: "linear",
-                position: "right",
-                grid: { drawOnChartArea: false },
-                ticks: {
-                    display: isPC,
-                    color: colors.axisText,
-                    callback: function (value) {
-                        return value === 0 ? "0 km" : value;
-                    },
-                },
-            },
-            yFuelAmount: {
-                type: "linear",
-                position: "left",
-                grid: { drawOnChartArea: false },
-                ticks: {
-                    display: isPC,
-                    color: colors.axisText,
-                    callback: function (value) {
-                        return value === 0 ? "0 L" : value;
-                    },
-                },
-            },
-            yFuelCost: {
-                type: "linear",
-                position: "right",
-                grid: { drawOnChartArea: false },
-                ticks: {
-                    display: isPC,
-                    color: colors.axisText,
-                    callback: function (value) {
-                        return value === 0 ? "0 円" : value;
-                    },
-                },
-            },
-            x: { ticks: { display: isPC, color: colors.axisText } },
-        },
-    };
+		responsive: true,
+		plugins: {
+			legend: {
+				position: "bottom",
+				labels: {
+					usePointStyle: true,
+					pointStyle: "circle",
+					boxWidth: 6,
+					boxHeight: 6,
+					padding: 20,
+					font: { size: 14 },
+					color: colors.legendText,
+				},
+			},
+			tooltip: {
+				mode: "index",
+				intersect: false,
+				backgroundColor: colors.tooltipBackground,
+				titleColor: colors.tooltipTitle,
+				bodyColor: colors.tooltipBody,
+				borderWidth: 1,
+			},
+		},
+		scales: {
+			yFe: {
+				type: "linear",
+				position: "left",
+				ticks: {
+					display: isPC,
+					color: colors.axisText,
+					callback: function (value) {
+						return value === 0 ? "0 km/L" : value;
+					},
+				},
+			},
+			yDist: {
+				type: "linear",
+				position: "right",
+				grid: { drawOnChartArea: false },
+				ticks: {
+					display: isPC,
+					color: colors.axisText,
+					callback: function (value) {
+						return value === 0 ? "0 km" : value;
+					},
+				},
+			},
+			yFuelAmount: {
+				type: "linear",
+				position: "left",
+				grid: { drawOnChartArea: false },
+				ticks: {
+					display: isPC,
+					color: colors.axisText,
+					callback: function (value) {
+						return value === 0 ? "0 L" : value;
+					},
+				},
+			},
+
+			yFuelCost: {
+				type: "linear",
+				position: "right",
+				grid: { drawOnChartArea: false },
+				beginAtZero: false,
+				ticks: {
+					display: isPC,
+					color: colors.axisText,
+					callback: function (value) {
+						return value === 0 ? "0 円" : value;
+					},
+				},
+			},
+			x: {
+				ticks: { display: isPC, color: colors.axisText },
+			},
+		},
+	};
 
 	return (
 		<ChartContainer>
