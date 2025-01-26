@@ -4,6 +4,7 @@ import { Car, FuelEfficiency } from "@/api/models/models";
 import { useState, useEffect } from "react";
 import CarSelect from "@/components/base/CarSelect";
 import RefuelingCardGroup from "@/components/refueling/RefuelingCardGroup";
+import RefuelingChart from "@/components/refueling/RefuelingChart";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
@@ -68,6 +69,7 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 		}
 	};
 
+	// 給油データ取得
 	useEffect(() => {
 		const fetchFuelEfficiencies = async () => {
 			if (userCars && userCars.length !== 0) {
@@ -89,6 +91,7 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 		fetchFuelEfficiencies();
 	}, [selectedCarIndex, userCars, token]);
 
+	// 給油追加ボタン
 	const handleAddClick = () => {
 		if (userCars) {
 			window.location.href = `/refueling/add/${userCars[selectedCarIndex].car_id}`;
@@ -112,7 +115,13 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 						<LoadingContainer>データを読み込み中...</LoadingContainer>
 					) : (
 						fuelEfficiencies && (
-							<RefuelingCardGroup fuelEfficiencies={fuelEfficiencies} />
+							<>
+								{/* ▼ ここでグラフ表示 */}
+								<RefuelingChart fuelEfficiencies={fuelEfficiencies} />
+
+								{/* ▼ カード一覧表示 */}
+								<RefuelingCardGroup fuelEfficiencies={fuelEfficiencies} />
+							</>
 						)
 					)}
 				</div>

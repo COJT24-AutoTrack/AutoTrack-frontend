@@ -19,9 +19,9 @@ interface RefuelingCardGroupProps {
 const RefuelingCardGroup: React.FC<RefuelingCardGroupProps> = ({
 	fuelEfficiencies,
 }) => {
-	// 日付でソート（昇順）
-	const sortedFuelEfficiencies = [...fuelEfficiencies].sort((a, b) =>
-		new Date(b.fe_date).getTime() - new Date(a.fe_date).getTime()
+	// カードを表示するときは新しい日付が上に来るようにソート（降順）
+	const sortedFuelEfficiencies = [...fuelEfficiencies].sort(
+		(a, b) => new Date(b.fe_date).getTime() - new Date(a.fe_date).getTime(),
 	);
 
 	return (
