@@ -211,56 +211,80 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 
 	// オプション
 	const chartOptions: ChartOptions<"bar" | "line"> = {
-		responsive: true,
-		plugins: {
-			legend: {
-				position: "bottom",
-				labels: {
-					usePointStyle: true,
-					pointStyle: "circle",
-					boxWidth: 6,
-					boxHeight: 6,
-					padding: 20,
-					font: { size: 14 },
-					color: colors.legendText,
-				},
-			},
-			tooltip: {
-				mode: "index",
-				intersect: false,
-				backgroundColor: colors.tooltipBackground,
-				titleColor: colors.tooltipTitle,
-				bodyColor: colors.tooltipBody,
-				borderWidth: 1,
-			},
-		},
-		scales: {
-			yFe: {
-				type: "linear",
-				position: "left",
-				ticks: { display: isPC, color: colors.axisText },
-			},
-			yDist: {
-				type: "linear",
-				position: "right",
-				grid: { drawOnChartArea: false },
-				ticks: { display: isPC, color: colors.axisText },
-			},
-			yFuelAmount: {
-				type: "linear",
-				position: "left",
-				grid: { drawOnChartArea: false },
-				ticks: { display: isPC, color: colors.axisText },
-			},
-			yFuelCost: {
-				type: "linear",
-				position: "right",
-				grid: { drawOnChartArea: false },
-				ticks: { display: isPC, color: colors.axisText },
-			},
-			x: { ticks: { display: isPC, color: colors.axisText } },
-		},
-	};
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "bottom",
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: "circle",
+                    boxWidth: 6,
+                    boxHeight: 6,
+                    padding: 20,
+                    font: { size: 14 },
+                    color: colors.legendText,
+                },
+            },
+            tooltip: {
+                mode: "index",
+                intersect: false,
+                backgroundColor: colors.tooltipBackground,
+                titleColor: colors.tooltipTitle,
+                bodyColor: colors.tooltipBody,
+                borderWidth: 1,
+            },
+        },
+        scales: {
+            yFe: {
+                type: "linear",
+                position: "left",
+                ticks: {
+                    display: isPC,
+                    color: colors.axisText,
+                    callback: function (value) {
+                        return value === 0 ? "0 km/L" : value;
+                    },
+                },
+            },
+            yDist: {
+                type: "linear",
+                position: "right",
+                grid: { drawOnChartArea: false },
+                ticks: {
+                    display: isPC,
+                    color: colors.axisText,
+                    callback: function (value) {
+                        return value === 0 ? "0 km" : value;
+                    },
+                },
+            },
+            yFuelAmount: {
+                type: "linear",
+                position: "left",
+                grid: { drawOnChartArea: false },
+                ticks: {
+                    display: isPC,
+                    color: colors.axisText,
+                    callback: function (value) {
+                        return value === 0 ? "0 L" : value;
+                    },
+                },
+            },
+            yFuelCost: {
+                type: "linear",
+                position: "right",
+                grid: { drawOnChartArea: false },
+                ticks: {
+                    display: isPC,
+                    color: colors.axisText,
+                    callback: function (value) {
+                        return value === 0 ? "0 円" : value;
+                    },
+                },
+            },
+            x: { ticks: { display: isPC, color: colors.axisText } },
+        },
+    };
 
 	return (
 		<ChartContainer>
