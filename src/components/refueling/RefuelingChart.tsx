@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { usePCQuery } from "@/hooks/useBreakpoints";
 import {
 	Chart as ChartJS,
 	CategoryScale,
@@ -13,7 +14,6 @@ import {
 	Legend,
 	ChartOptions,
 	ChartData,
-	Tick,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { FuelEfficiency } from "@/api/models/models";
@@ -33,20 +33,20 @@ interface RefuelingChartProps {
 	fuelEfficiencies: FuelEfficiency[];
 }
 
-const RefuelingChart: React.FC<RefuelingChartProps> = ({
-	fuelEfficiencies,
-}) => {
+const RefuelingChart: React.FC<RefuelingChartProps> = ({ fuelEfficiencies }) => {
+	const isPC = usePCQuery(); // PC かどうかを判定
+
 	const colors = {
-		fuelEfficiency: "#ed3b70",
-		fuelEfficiencyTransparent: "#ed3b70",
-		cumulativeDistance: "#b1fbd1",
-		cumulativeDistanceTransparent: "#b1fbd1",
+		fuelEfficiency: "#EA4335",
+		fuelEfficiencyTransparent: "#EA4335CC",
+		cumulativeDistance: "#34A853",
+		cumulativeDistanceTransparent: "#34A853CC",
 		distanceSinceLastRefuel: "#22537466",
 		distanceSinceLastRefuelTransparent: "#22537466",
-		fuelAmount: "#5db2be",
-		fuelAmountTransparent: "#5db2be",
-		fuelCost: "#cce5f3",
-		fuelCostTransparent: "#cce5f3",
+		fuelAmount: "#4285F4",
+		fuelAmountTransparent: "#4285F4CC",
+		fuelCost: "#FBBC05",
+		fuelCostTransparent: "#FBBC05CC",
 		legendText: "#999999",
 		tooltipBackground: "#333333",
 		tooltipTitle: "#999999",
@@ -83,7 +83,7 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 		labels,
 		datasets: [
 			{
-				label: "燃費 (km/L)",
+				label: "燃費",
 				data: dataFuelEfficiency,
 				borderColor: colors.fuelEfficiency,
 				backgroundColor: colors.fuelEfficiencyTransparent,
@@ -93,7 +93,7 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 				tension: 0.2,
 			},
 			{
-				label: "累計走行距離 (km)",
+				label: "累計走行距離",
 				data: dataDistance,
 				borderColor: colors.cumulativeDistance,
 				backgroundColor: colors.cumulativeDistanceTransparent,
@@ -103,7 +103,7 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 				tension: 0.2,
 			},
 			{
-				label: "前回からの走行距離 (km)",
+				label: "走行距離",
 				data: dataDistanceSinceLastRefuel,
 				borderColor: colors.distanceSinceLastRefuel,
 				backgroundColor: colors.distanceSinceLastRefuelTransparent,
@@ -111,7 +111,7 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 				type: "bar",
 			},
 			{
-				label: "給油量 (L)",
+				label: "給油量",
 				data: dataFuelAmount,
 				borderColor: colors.fuelAmount,
 				backgroundColor: colors.fuelAmountTransparent,
@@ -121,7 +121,7 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 				tension: 0.2,
 			},
 			{
-				label: "給油金額 (円)",
+				label: "給油金額",
 				data: dataFuelCost,
 				borderColor: colors.fuelCost,
 				backgroundColor: colors.fuelCostTransparent,
@@ -139,10 +139,15 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 			legend: {
 				position: "bottom",
 				labels: {
-					color: colors.legendText,
+					usePointStyle: true,
+					pointStyle: "circle",
+					boxWidth: 6,
+					boxHeight: 6,
 					font: {
-						size: 14,
+						size: isPC ? 14 : 8,
+						weight: "bold",
 					},
+					color: colors.legendText,
 				},
 			},
 			tooltip: {
@@ -166,119 +171,63 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 			yFe: {
 				type: "linear",
 				position: "left",
-				title: {
-					display: false,
-				},
 				ticks: {
+					display: isPC,
 					color: colors.axisText,
-					font: {
-						size: 14,
-					},
-					callback: function (tickValue: string | number) {
-						if (typeof tickValue === "number" && tickValue === 0) {
-							return `${tickValue} km/L`;
-						}
-						return tickValue;
-					},
+					font: { size: 14 },
 				},
 			},
 			yDist: {
 				type: "linear",
 				position: "right",
-				title: {
-					display: false,
-				},
 				grid: {
 					drawOnChartArea: false,
 					color: colors.grid,
 				},
 				ticks: {
+					display: isPC,
 					color: colors.axisText,
-					font: {
-						size: 14,
-					},
-					callback: function (tickValue: string | number) {
-						if (typeof tickValue === "number" && tickValue === 0) {
-							return `${tickValue} km`;
-						}
-						return tickValue;
-					},
+					font: { size: 14 },
 				},
 			},
 			yFuelAmount: {
 				type: "linear",
 				position: "left",
-				title: {
-					display: false,
-				},
 				grid: {
 					drawOnChartArea: false,
 					color: colors.grid,
 				},
 				ticks: {
+					display: isPC,
 					color: colors.axisText,
-					font: {
-						size: 14,
-					},
-					callback: function (tickValue: string | number) {
-						if (typeof tickValue === "number" && tickValue === 0) {
-							return `${tickValue} L`;
-						}
-						return tickValue;
-					},
+					font: { size: 14 },
 				},
 			},
 			yFuelCost: {
 				type: "linear",
 				position: "right",
-				title: {
-					display: false,
-				},
 				grid: {
 					drawOnChartArea: false,
 					color: colors.grid,
 				},
 				ticks: {
+					display: isPC,
 					color: colors.axisText,
-					font: {
-						size: 14,
-					},
-					callback: function (tickValue: string | number) {
-						if (typeof tickValue === "number" && tickValue === 0) {
-							return `${tickValue} 円`;
-						}
-						return tickValue;
-					},
+					font: { size: 14 },
 				},
 			},
 			x: {
-				title: {
-					display: true,
-					text: "日付",
-					color: colors.axisText,
-					font: {
-						size: 16,
-					},
-				},
 				ticks: {
+					display: isPC,
 					color: colors.axisText,
-					font: {
-						size: 14,
-					},
+					font: { size: 14 },
 				},
 			},
 		},
 	};
 
 	return (
-		<div
-			style={{
-				maxWidth: 1000,
-				margin: "0 auto",
-				padding: "20px",
-				borderRadius: "8px",
-			}}
-		>
+		<div style={{ maxWidth: 1000, margin: "0 auto", padding: "20px", borderRadius: "8px" }}>
 			<Chart type="bar" data={chartData} options={chartOptions} />
 		</div>
 	);
