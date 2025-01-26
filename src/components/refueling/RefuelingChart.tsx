@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import styled from "styled-components";
 import { usePCQuery } from "@/hooks/useBreakpoints";
 import {
 	Chart as ChartJS,
@@ -33,15 +34,52 @@ interface RefuelingChartProps {
 	fuelEfficiencies: FuelEfficiency[];
 }
 
-const RefuelingChart: React.FC<RefuelingChartProps> = ({ fuelEfficiencies }) => {
-	const isPC = usePCQuery(); // PC かどうかを判定
+// スタイル
+const ChartContainer = styled.div`
+	max-width: 1000px;
+	margin: 0 auto;
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+`;
+
+const FilterButtonContainer = styled.div`
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-bottom: 15px;
+`;
+
+const FilterButton = styled.button`
+	background-color: #2b2b2b;
+	color: white;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: 0.2s;
+
+	&:hover {
+		background-color: #f12424;
+	}
+`;
+
+const RefuelingChart: React.FC<RefuelingChartProps> = ({
+	fuelEfficiencies,
+}) => {
+	const isPC = usePCQuery();
+	const [filterRange, setFilterRange] = useState<"1M" | "6M" | "1Y" | "ALL">(
+		"ALL",
+	);
 
 	const colors = {
 		fuelEfficiency: "#EA4335",
 		fuelEfficiencyTransparent: "#EA4335CC",
 		cumulativeDistance: "#34A853",
 		cumulativeDistanceTransparent: "#34A853CC",
-		distanceSinceLastRefuel: "#22537466",
+		distanceSinceLastRefuel: "#225374",
 		distanceSinceLastRefuelTransparent: "#22537466",
 		fuelAmount: "#4285F4",
 		fuelAmountTransparent: "#4285F4CC",
@@ -55,30 +93,68 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({ fuelEfficiencies }) => 
 		axisText: "#999999",
 	};
 
-	const sortedAsc = [...fuelEfficiencies].sort(
+	// ---- 修正ここから ----
+	// フィルタ用に日付を用意
+	const now = new Date();
+	const oneMonthAgo = new Date(now.getTime());
+	oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+	const sixMonthsAgo = new Date(now.getTime());
+	sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+	const oneYearAgo = new Date(now.getTime());
+	oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+	// データをフィルタリング
+	const filteredData = fuelEfficiencies.filter((fe) => {
+		const feDate = new Date(fe.fe_date);
+
+		switch (filterRange) {
+			case "1M":
+				return feDate >= oneMonthAgo;
+			case "6M":
+				return feDate >= sixMonthsAgo;
+			case "1Y":
+				return feDate >= oneYearAgo;
+			case "ALL":
+			default:
+				return true;
+		}
+	});
+	// ---- 修正ここまで ----
+
+	// ソート
+	const sortedAsc = [...filteredData].sort(
 		(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime(),
 	);
 
+	// ラベル(日付)
 	const labels = sortedAsc.map((fe) => fe.fe_date.slice(0, 10));
 
+	// 燃費 (km/L)
 	const dataFuelEfficiency = sortedAsc.map((fe) =>
 		fe.fe_amount ? fe.fe_mileage / fe.fe_amount : 0,
 	);
 
+	// 給油量 (L)
 	const dataFuelAmount = sortedAsc.map((fe) => fe.fe_amount || 0);
 
+	// 給油金額 (円)
 	const dataFuelCost = sortedAsc.map((fe) =>
 		fe.fe_amount ? fe.fe_unitprice * fe.fe_amount : 0,
 	);
 
+	// 走行距離 (累計)
 	let cumulative = 0;
 	const dataDistance = sortedAsc.map((fe) => {
 		cumulative += fe.fe_mileage;
 		return cumulative;
 	});
 
+	// 前回からの走行距離
 	const dataDistanceSinceLastRefuel = sortedAsc.map((fe) => fe.fe_mileage);
 
+	// チャートデータ
 	const chartData: ChartData<"bar" | "line", number[], string> = {
 		labels,
 		datasets: [
@@ -133,6 +209,7 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({ fuelEfficiencies }) => 
 		],
 	};
 
+	// オプション
 	const chartOptions: ChartOptions<"bar" | "line"> = {
 		responsive: true,
 		plugins: {
@@ -143,10 +220,8 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({ fuelEfficiencies }) => 
 					pointStyle: "circle",
 					boxWidth: 6,
 					boxHeight: 6,
-					font: {
-						size: isPC ? 14 : 8,
-						weight: "bold",
-					},
+					padding: 20,
+					font: { size: 14 },
 					color: colors.legendText,
 				},
 			},
@@ -158,78 +233,48 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({ fuelEfficiencies }) => 
 				bodyColor: colors.tooltipBody,
 				borderWidth: 1,
 			},
-			title: {
-				display: false,
-			},
-		},
-		interaction: {
-			mode: "nearest",
-			axis: "x",
-			intersect: false,
 		},
 		scales: {
 			yFe: {
 				type: "linear",
 				position: "left",
-				ticks: {
-					display: isPC,
-					color: colors.axisText,
-					font: { size: 14 },
-				},
+				ticks: { display: isPC, color: colors.axisText },
 			},
 			yDist: {
 				type: "linear",
 				position: "right",
-				grid: {
-					drawOnChartArea: false,
-					color: colors.grid,
-				},
-				ticks: {
-					display: isPC,
-					color: colors.axisText,
-					font: { size: 14 },
-				},
+				grid: { drawOnChartArea: false },
+				ticks: { display: isPC, color: colors.axisText },
 			},
 			yFuelAmount: {
 				type: "linear",
 				position: "left",
-				grid: {
-					drawOnChartArea: false,
-					color: colors.grid,
-				},
-				ticks: {
-					display: isPC,
-					color: colors.axisText,
-					font: { size: 14 },
-				},
+				grid: { drawOnChartArea: false },
+				ticks: { display: isPC, color: colors.axisText },
 			},
 			yFuelCost: {
 				type: "linear",
 				position: "right",
-				grid: {
-					drawOnChartArea: false,
-					color: colors.grid,
-				},
-				ticks: {
-					display: isPC,
-					color: colors.axisText,
-					font: { size: 14 },
-				},
+				grid: { drawOnChartArea: false },
+				ticks: { display: isPC, color: colors.axisText },
 			},
-			x: {
-				ticks: {
-					display: isPC,
-					color: colors.axisText,
-					font: { size: 14 },
-				},
-			},
+			x: { ticks: { display: isPC, color: colors.axisText } },
 		},
 	};
 
 	return (
-		<div style={{ maxWidth: 1000, margin: "0 auto", padding: "20px", borderRadius: "8px" }}>
+		<ChartContainer>
+			<FilterButtonContainer>
+				<FilterButton onClick={() => setFilterRange("1M")}>1ヶ月</FilterButton>
+				<FilterButton onClick={() => setFilterRange("6M")}>半年</FilterButton>
+				<FilterButton onClick={() => setFilterRange("1Y")}>1年</FilterButton>
+				<FilterButton onClick={() => setFilterRange("ALL")}>
+					全期間
+				</FilterButton>
+			</FilterButtonContainer>
+
 			<Chart type="bar" data={chartData} options={chartOptions} />
-		</div>
+		</ChartContainer>
 	);
 };
 
