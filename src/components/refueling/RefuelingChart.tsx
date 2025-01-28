@@ -18,6 +18,7 @@ import {
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { FuelEfficiency } from "@/api/models/models";
+import { before } from "node:test";
 
 ChartJS.register(
 	CategoryScale,
@@ -84,6 +85,10 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 		fuelAmountTransparent: "#4285F4CC",
 		fuelCost: "#FBBC05",
 		fuelCostTransparent: "#FBBC05CC",
+		fuelUnitPrice: "#ff8c00",
+		fuelUnitPriceTransparent: "#ff8c00CC",
+		averageFuelEfficiency: "#EA433544",
+		averageFuelEfficiencyTranceparent: "#EA4335CC",
 		legendText: "#999999",
 		tooltipBackground: "#333333",
 		tooltipTitle: "#999999",
@@ -132,6 +137,11 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 	const dataFuelEfficiency = sortedAsc.map((fe) =>
 		fe.fe_amount ? fe.fe_mileage / fe.fe_amount : 0,
 	);
+
+	// 平均燃費 (km/L)
+	const averageFuelEfficiency =
+		dataFuelEfficiency.reduce((acc, cur) => acc + cur, 0) /
+		dataFuelEfficiency.length;
 
 	// 給油量 (L)
 	const dataFuelAmount = sortedAsc.map((fe) => fe.fe_amount || 0);
@@ -209,13 +219,26 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 			{
 				label: "単価",
 				data: dataFuelUnitPrice,
-				borderColor: "#ff8c00",
-				backgroundColor: "#ff8c00CC",
+				borderColor: colors.fuelUnitPrice,
+				backgroundColor: colors.fuelUnitPriceTransparent,
 				yAxisID: "yFuelCost",
 				type: "line",
 				fill: false,
 				tension: 0.2,
 			},
+			{
+				label: "平均燃費",
+				data: Array(labels.length).fill(averageFuelEfficiency),
+				borderColor: colors.averageFuelEfficiency,
+				backgroundColor: colors.averageFuelEfficiencyTranceparent,
+				yAxisID: "yFe",
+				type: "line",
+				fill: false,
+				tension: 0,
+				stepped: "before",
+				borderDash: [5, 5],
+				pointRadius: 0,
+			}
 		],
 	};
 
