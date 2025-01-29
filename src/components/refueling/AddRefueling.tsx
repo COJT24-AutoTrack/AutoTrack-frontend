@@ -252,7 +252,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 			fe_date: date,
 			fe_amount: amount!,
 			fe_unitprice: unitPrice!,
-			fe_mileage: calculatedDelta, // 給油時の走行距離 (Δ)
+			fe_mileage: totalMileage || 0,
 		});
 
 		// 2. Car の累計走行距離 car_mileage を更新
@@ -285,7 +285,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 			: "0";
 
 	// プレースホルダーのテキストを定義
-	// const totalMileagePlaceholder = `現在の走行距離: ${roundToTwo(oldCarMileage)} km`;
+	const totalMileagePlaceholder = `現在の走行距離: ${roundToTwo(oldCarMileage)} km`;
 	// const deltaMileagePlaceholder =
 	// 	calculatedDelta > 0 ? `${calculatedDelta} km` : "計算中...";
 
@@ -357,7 +357,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 					</FormElementContainer>
 
 					{/* 前回の給油からの走行距離 */}
-					<FormElementContainer>
+					{/* <FormElementContainer>
 						<Label>
 							<Navigation color="white" />
 							<p>前回の給油からの走行距離(km)</p>
@@ -376,11 +376,11 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 						{isSubmitted && errors.mileage && (
 							<ErrorMessage>{errors.mileage}</ErrorMessage>
 						)}
-					</FormElementContainer>
+					</FormElementContainer> */}
 
 					{/* 総走行距離 */}
 					{/* 後から順不同に記録されることを考慮すると、deltaで入力されたかtotalで入力されたかを記録する必要があることがわかったため、一旦コメントアウト */}
-					{/* <FormElementContainer>
+					<FormElementContainer>
 						<Label>
 							<Navigation color="white" />
 							<p>総走行距離(km)</p>
@@ -399,7 +399,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 						{isSubmitted && errors.mileage && (
 							<ErrorMessage>{errors.mileage}</ErrorMessage>
 						)}
-					</FormElementContainer> */}
+					</FormElementContainer>
 
 					{/* 燃費表示 */}
 					<FuelEfficiencyDisplay>

@@ -369,6 +369,7 @@ export interface FuelEfficiencyAPIInterface {
 			fe_amount: number;
 			fe_unitprice: number;
 			fe_mileage: number;
+			fe_delta_mileage: number;
 		};
 		response: FuelEfficiency;
 	};
