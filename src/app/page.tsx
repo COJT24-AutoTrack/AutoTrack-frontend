@@ -20,6 +20,8 @@ export default async function Home() {
 		redirect("/signin");
 	}
 
+	console.log("Decoded token uid", tokens.decodedToken.uid);
+
 	const clientAPI = ClientAPI(tokens.token);
 
 	try {

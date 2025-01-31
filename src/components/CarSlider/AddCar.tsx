@@ -160,10 +160,6 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		if (file) {
 			setImage(file);
 			setPreview(URL.createObjectURL(file));
-			setCarData((prevData) => ({
-				...prevData,
-				car_image_url: `https://r2.autotrack.work/images/${file.name}`,
-			}));
 		}
 	};
 
@@ -189,15 +185,9 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 
 	const handleSaveCar = async (event: React.FormEvent) => {
 		event.preventDefault();
-
-		if (!validateForm()) {
-			return;
-		}
+		if (!validateForm()) return;
 
 		const clientAPI = ClientAPI(tokens.token);
-		let newImageURL =
-			carData.car_image_url ||
-			"https://r2.autotrack.work/images/No_Image9e6034d5.png";
 
 		if (image) {
 			const formData = new FormData();
@@ -221,10 +211,15 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 				console.log("FormData Content:", formData.get("file"));
 
 				// API を呼び出して画像をアップロード
-				await clientAPI.image.uploadImage({ formData });
+				const res = await clientAPI.image.uploadImage({ formData });
+
+				console.log("res:", res);
 
 				// 新しい画像URLを設定
-				newImageURL = `https://r2.autotrack.work/images/${newFileName}`;
+				setCarData((prevData) => ({
+					...prevData,
+					car_image_url: res.imgURL,
+				}));
 			} catch (e) {
 				// 圧縮またはアップロード失敗時のエラーハンドリング
 				console.error("Upload Error:", e);
@@ -234,13 +229,11 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		}
 
 		try {
-			const newCar = await clientAPI.car.createCar({
+			const body = {
 				firebase_user_id: tokens.decodedToken.uid,
-				car: {
-					...carData,
-					car_image_url: newImageURL,
-				} as Car,
-			});
+				car: carData as Car,
+			};
+			const newCar = await clientAPI.car.createCar(body);
 
 			if (newCar) {
 				alert("新しい車が追加されました！");
