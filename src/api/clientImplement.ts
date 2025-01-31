@@ -7,6 +7,7 @@ import { MaintenanceAPI } from "@/api/handlers/maintenance";
 import { AccidentAPI } from "@/api/handlers/accidents";
 import { PeriodicInspectionAPI } from "@/api/handlers/periodic_inspections";
 import { ImageAPI } from "@/api/handlers/images";
+import { CarInspectionAPI } from "@/api/handlers/car_inspections";
 import { ClientAPIInterface } from "./client";
 
 export const ClientAPI = (jwt: string): ClientAPIInterface => ({
@@ -23,4 +24,5 @@ export const ClientAPI = (jwt: string): ClientAPIInterface => ({
 	accident: AccidentAPI(jwt),
 	periodicInspection: PeriodicInspectionAPI(jwt),
 	image: ImageAPI(jwt),
+	carInspection: CarInspectionAPI(jwt),
 });

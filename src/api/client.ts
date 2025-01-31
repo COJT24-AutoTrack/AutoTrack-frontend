@@ -153,15 +153,10 @@ export interface ClientAPIInterface {
 			request: ImageAPIInterface["uploadImage"]["request"],
 		): Promise<ImageAPIInterface["uploadImage"]["response"]>;
 	};
-
-	// 車検
 	carInspection: {
 		createCarInspection(
 			request: CarInspectionAPIInterface["createCarInspection"]["request"],
 		): Promise<CarInspectionAPIInterface["createCarInspection"]["response"]>;
-		getCarInspections(): Promise<
-			CarInspectionAPIInterface["getCarInspections"]["response"]
-		>;
 		getCarInspection(
 			request: CarInspectionAPIInterface["getCarInspection"]["request"],
 		): Promise<CarInspectionAPIInterface["getCarInspection"]["response"]>;
@@ -170,56 +165,7 @@ export interface ClientAPIInterface {
 		): Promise<CarInspectionAPIInterface["updateCarInspection"]["response"]>;
 		deleteCarInspection(
 			request: CarInspectionAPIInterface["deleteCarInspection"]["request"],
-		): Promise<void>;
-	};
-}
-
-export interface CarInspectionAPIInterface {
-	createCarInspection: {
-		request: {
-			car_id: number;
-			splitted_results: string[];
-			is_kcar: boolean;
-		};
-		response: {
-			inspection_id: number;
-			message?: string;
-		};
-	};
-	getCarInspections: {
-		request: never;
-		response: {
-			inspections: {
-				inspection_id: number;
-				car_id: number;
-				splitted_results: string[];
-				is_kcar: boolean;
-			}[];
-		};
-	};
-	getCarInspection: {
-		request: { inspection_id: number };
-		response: {
-			inspection_id: number;
-			car_id: number;
-			splitted_results: string[];
-			is_kcar: boolean;
-		};
-	};
-	updateCarInspection: {
-		request: {
-			inspection_id: number;
-			splitted_results: string[];
-			is_kcar: boolean;
-		};
-		response: {
-			inspection_id: number;
-			message?: string;
-		};
-	};
-	deleteCarInspection: {
-		request: { inspection_id: number };
-		response: void;
+		): Promise<CarInspectionAPIInterface["deleteCarInspection"]["response"]>;
 	};
 }
 
@@ -530,4 +476,33 @@ export interface ImageAPIInterface {
 			imgURL: string;
 		};
 	};
+}
+
+export interface CarInspectionAPIInterface {
+	createCarInspection: {
+		request: {
+			car_id: number;
+			inspection_data: string;
+		};
+		response: any;
+	}
+	getCarInspection: {
+		request: {
+			car_id: number;
+		};
+		response: string;
+	}
+	updateCarInspection: {
+		request: {
+			car_id: number;
+			inspection_data: string;
+		};
+		response: any;
+	}
+	deleteCarInspection: {
+		request: {
+			car_id: number;
+		};
+		response: void;
+	}
 }
