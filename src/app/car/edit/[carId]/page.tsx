@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { clientConfig, serverConfig } from "@/../config";
 import CarEditComponent from "@/components/car/CarEditComponent";
 
-const CarEditPage = async ({ params }: { params: { carId: number } }) => {
+const CarEditPage = async ({ params }: { params: { carId: string } }) => {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,

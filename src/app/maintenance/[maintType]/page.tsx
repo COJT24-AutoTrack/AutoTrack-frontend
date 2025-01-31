@@ -9,7 +9,7 @@ import { clientConfig, serverConfig } from "@/../config";
 import MaintenanceItemPageContent from "@/components/maintenance/MaintenanceItemPageContent";
 
 interface Params {
-	carId: number;
+	carId: string;
 	maintType: MaintType;
 }
 

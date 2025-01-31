@@ -5,6 +5,7 @@ import {
 	Tuning,
 	Maintenance,
 	User,
+	CarInspection,
 } from "@/api/models/models";
 
 export interface ClientAPIInterface {
@@ -153,6 +154,20 @@ export interface ClientAPIInterface {
 			request: ImageAPIInterface["uploadImage"]["request"],
 		): Promise<ImageAPIInterface["uploadImage"]["response"]>;
 	};
+	carInspection: {
+		createCarInspection(
+			request: CarInspectionAPIInterface["createCarInspection"]["request"],
+		): Promise<CarInspectionAPIInterface["createCarInspection"]["response"]>;
+		getCarInspection(
+			request: CarInspectionAPIInterface["getCarInspection"]["request"],
+		): Promise<CarInspectionAPIInterface["getCarInspection"]["response"]>;
+		updateCarInspection(
+			request: CarInspectionAPIInterface["updateCarInspection"]["request"],
+		): Promise<CarInspectionAPIInterface["updateCarInspection"]["response"]>;
+		deleteCarInspection(
+			request: CarInspectionAPIInterface["deleteCarInspection"]["request"],
+		): Promise<CarInspectionAPIInterface["deleteCarInspection"]["response"]>;
+	};
 }
 
 export interface TestAPIInterface {
@@ -214,54 +229,54 @@ export interface CarAPIInterface {
 	};
 	getCar: {
 		request: {
-			car_id: number;
+			car_id: string;
 		};
 		response: Car;
 	};
 	updateCar: {
 		request: {
-			car_id: number;
+			car_id: string;
 			car_name: string;
 			carmodelnum: string;
 			car_color: string;
 			car_mileage: number;
-			car_isflooding: boolean;
-			car_issmoked: boolean;
+			car_isflooding: 0 | 1;
+			car_issmoked: 0 | 1;
 			car_image_url: string;
 		};
 		response: Car;
 	};
 	deleteCar: {
 		request: {
-			car_id: number;
+			car_id: string;
 		};
 	};
 	updateCarImage: {
 		request: {
-			car_id: number;
+			car_id: string;
 			image: string;
 		};
 	};
 	deleteCarImage: {
 		request: {
-			car_id: number;
+			car_id: string;
 		};
 	};
 	getCarTuning: {
 		request: {
-			car_id: number;
+			car_id: string;
 		};
 		response: Tuning[];
 	};
 	getCarMaintenance: {
 		request: {
-			car_id: number;
+			car_id: string;
 		};
 		response: Maintenance[];
 	};
 	getCarFuelEfficiency: {
 		request: {
-			car_id: number;
+			car_id: string;
 		};
 		response: FuelEfficiency[];
 	};
@@ -270,7 +285,7 @@ export interface CarAPIInterface {
 export interface TuningAPIInterface {
 	createTuning: {
 		request: {
-			car_id: number;
+			car_id: string;
 			tuning_name: string;
 			tuning_date: string;
 			tuning_description: string;
@@ -282,14 +297,14 @@ export interface TuningAPIInterface {
 	};
 	getTuning: {
 		request: {
-			tuning_id: number;
+			tuning_id: string;
 		};
 		response: Tuning;
 	};
 	updateTuning: {
 		request: {
-			tuning_id: number;
-			car_id: number;
+			tuning_id: string;
+			car_id: string;
 			tuning_name: string;
 			tuning_date: string;
 			tuning_description: string;
@@ -298,7 +313,7 @@ export interface TuningAPIInterface {
 	};
 	deleteTuning: {
 		request: {
-			tuning_id: number;
+			tuning_id: string;
 		};
 	};
 }
@@ -306,7 +321,7 @@ export interface TuningAPIInterface {
 export interface MaintenanceAPIInterface {
 	createMaintenance: {
 		request: {
-			car_id: number;
+			car_id: string;
 			maint_type: string;
 			maint_date: string;
 			maint_description: string;
@@ -319,14 +334,14 @@ export interface MaintenanceAPIInterface {
 	};
 	getMaintenance: {
 		request: {
-			maint_id: number;
+			maint_id: string;
 		};
 		response: Maintenance;
 	};
 	updateMaintenance: {
-		maint_id: number;
+		maint_id: string;
 		request: {
-			car_id: number;
+			car_id: string;
 			maint_type: string;
 			maint_date: string;
 			maint_description: string;
@@ -336,7 +351,7 @@ export interface MaintenanceAPIInterface {
 	};
 	deleteMaintenance: {
 		request: {
-			maint_id: number;
+			maint_id: string;
 		};
 	};
 }
@@ -344,7 +359,7 @@ export interface MaintenanceAPIInterface {
 export interface FuelEfficiencyAPIInterface {
 	createFuelEfficiency: {
 		request: {
-			car_id: number;
+			car_id: string;
 			fe_date: string;
 			fe_amount: number;
 			fe_unitprice: number;
@@ -357,14 +372,14 @@ export interface FuelEfficiencyAPIInterface {
 	};
 	getFuelEfficiency: {
 		request: {
-			fe_id: number;
+			fe_id: string;
 		};
 		response: FuelEfficiency;
 	};
 	updateFuelEfficiency: {
 		request: {
-			fe_id: number;
-			car_id: number;
+			fe_id: string;
+			car_id: string;
 			fe_date: string;
 			fe_amount: number;
 			fe_unitprice: number;
@@ -374,12 +389,12 @@ export interface FuelEfficiencyAPIInterface {
 	};
 	deleteFuelEfficiency: {
 		request: {
-			fe_id: number;
+			fe_id: string;
 		};
 	};
 	calculateFuelEfficiencies: {
 		request: {
-			car_id: number;
+			car_id: string;
 		};
 		response: FuelEfficiencyCalculationResult;
 	};
@@ -388,7 +403,7 @@ export interface FuelEfficiencyAPIInterface {
 export interface AccidentAPIInterface {
 	createAccident: {
 		request: {
-			car_id: number;
+			car_id: string;
 			accident_date: string;
 			accident_description: string;
 		};
@@ -399,14 +414,14 @@ export interface AccidentAPIInterface {
 	};
 	getAccident: {
 		request: {
-			accident_id: number;
+			accident_id: string;
 		};
 		response: any;
 	};
 	updateAccident: {
 		request: {
-			accident_id: number;
-			car_id: number;
+			accident_id: string;
+			car_id: string;
 			accident_date: string;
 			accident_description: string;
 		};
@@ -414,7 +429,7 @@ export interface AccidentAPIInterface {
 	};
 	deleteAccident: {
 		request: {
-			accident_id: number;
+			accident_id: string;
 		};
 	};
 }
@@ -422,7 +437,7 @@ export interface AccidentAPIInterface {
 export interface PeriodicInspectionAPIInterface {
 	createPeriodicInspection: {
 		request: {
-			car_id: number;
+			car_id: string;
 			pi_date: string;
 			pi_description: string;
 		};
@@ -433,14 +448,14 @@ export interface PeriodicInspectionAPIInterface {
 	};
 	getPeriodicInspection: {
 		request: {
-			pi_id: number;
+			pi_id: string;
 		};
 		response: any;
 	};
 	updatePeriodicInspection: {
 		request: {
-			pi_id: number;
-			car_id: number;
+			pi_id: string;
+			car_id: string;
 			pi_date: string;
 			pi_description: string;
 		};
@@ -448,7 +463,7 @@ export interface PeriodicInspectionAPIInterface {
 	};
 	deletePeriodicInspection: {
 		request: {
-			pi_id: number;
+			pi_id: string;
 		};
 	};
 }
@@ -461,5 +476,33 @@ export interface ImageAPIInterface {
 		response: {
 			imgURL: string;
 		};
+	};
+}
+
+export interface CarInspectionAPIInterface {
+	createCarInspection: {
+		request: {
+			car_id: string;
+			inspection_data: CarInspection;
+		};
+		response: void;
+	};
+	getCarInspection: {
+		request: {
+			car_id: string;
+		};
+		response: CarInspection;
+	};
+	updateCarInspection: {
+		request: {
+			car_id: string;
+		};
+		response: void;
+	};
+	deleteCarInspection: {
+		request: {
+			car_id: string;
+		};
+		response: void;
 	};
 }

@@ -133,7 +133,7 @@ const ButtonsContainer = styled.div`
 `;
 
 interface UpdateFuelingProps {
-	feId: number;
+	feId: string;
 	tokens: {
 		token: string;
 		decodedToken: { uid: string };

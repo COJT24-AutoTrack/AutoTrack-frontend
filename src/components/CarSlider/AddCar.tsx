@@ -17,6 +17,8 @@ import {
 	Image,
 	ChevronLeft,
 } from "lucide-react";
+import compressImage from "../../module/imageCompress"; // 画像圧縮モジュールのインポート
+import { v4 as uuidv4 } from "uuid"; // UUID のインポート
 
 const Anton400 = Anton({
 	weight: "400",
@@ -130,8 +132,8 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		carmodelnum: "",
 		car_color: "",
 		car_mileage: 0,
-		car_isflooding: false,
-		car_issmoked: false,
+		car_isflooding: 0,
+		car_issmoked: 0,
 		car_image_url: "https://r2.autotrack.work/images/No_Image9e6034d5.png",
 	});
 	const [image, setImage] = useState<File | null>(null);
@@ -158,10 +160,6 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		if (file) {
 			setImage(file);
 			setPreview(URL.createObjectURL(file));
-			setCarData((prevData) => ({
-				...prevData,
-				car_image_url: `https://r2.autotrack.work/images/${file.name}`,
-			}));
 		}
 	};
 
@@ -187,36 +185,64 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 
 	const handleSaveCar = async (event: React.FormEvent) => {
 		event.preventDefault();
-
-		if (!validateForm()) {
-			return;
-		}
+		if (!validateForm()) return;
 
 		const clientAPI = ClientAPI(tokens.token);
+
 		if (image) {
 			const formData = new FormData();
-			formData.append("file", image);
-
 			try {
-				await clientAPI.image.uploadImage({
-					formData: formData,
+				// UUID を生成してファイル名を変更
+				const uuid = uuidv4();
+				const fileExtension = "webp"; // 圧縮後は常に WebP とする
+				const newFileName = `${uuid}.${fileExtension}`;
+
+				// 画像を圧縮
+				const compressedImage = await compressImage(image);
+
+				// ファイル名を UUID に変更して FormData に追加
+				const renamedFile = new File([compressedImage], newFileName, {
+					type: "image/webp",
 				});
+				formData.append("file", renamedFile);
+
+				// デバッグ用ログ
+				console.log("Renamed Compressed File:", renamedFile);
+				console.log("FormData Content:", formData.get("file"));
+
+				// API を呼び出して画像をアップロード
+				const res = await clientAPI.image.uploadImage({ formData });
+
+				console.log("res:", res);
+
+				const updateCarData = {
+					...carData,
+					car_image_url: res.imgURL,
+				};
+
+				const body = {
+					firebase_user_id: tokens.decodedToken.uid,
+					car: updateCarData as Car,
+				};
+
+				const newCar = await clientAPI.car.createCar(body);
+
+				if (newCar) {
+					alert("新しい車が追加されました！");
+					window.location.href = "/";
+				}
 			} catch (e) {
+				// 圧縮またはアップロード失敗時のエラーハンドリング
+				console.error("Upload Error:", e);
 				alert((e as Error).message);
 				return;
 			}
 		}
-		try {
-			const newCar = await clientAPI.car.createCar({
-				firebase_user_id: tokens.decodedToken.uid,
-				car: carData as Car,
-			});
 
-			if (newCar) {
-				window.location.href = "/";
-			}
+		try {
 		} catch (e) {
-			alert((e as Error).message);
+			console.error("Failed to create car:", e);
+			alert("車の登録に失敗しました。もう一度お試しください。");
 		}
 	};
 
@@ -296,7 +322,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 						<CheckboxInput
 							type="checkbox"
 							name="car_isflooding"
-							checked={carData.car_isflooding}
+							checked={Boolean(carData.car_isflooding)}
 							onChange={handleChange}
 						/>
 						<Label>
@@ -308,7 +334,7 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 						<CheckboxInput
 							type="checkbox"
 							name="car_issmoked"
-							checked={carData.car_issmoked}
+							checked={Boolean(carData.car_issmoked)}
 							onChange={handleChange}
 						/>
 						<Label>

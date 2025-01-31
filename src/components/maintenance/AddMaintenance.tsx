@@ -9,6 +9,7 @@ import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";
 import CarSelect from "@/components/base/CarSelect";
 import { Settings, Calendar, FileText, Wrench } from "lucide-react";
+import QrScannerComponent from "./QrScannerComponent";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -211,6 +212,10 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 		}
 	};
 
+	if (!userCars) {
+		return <PageContainer>ユーザーの車が見つかりません</PageContainer>;
+	}
+
 	return (
 		<PageContainer>
 			<CarSelect
@@ -223,35 +228,21 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 					<FormTitle className={Anton400.className}>
 						メンテナンス記録を追加
 					</FormTitle>
+					<QrScannerComponent
+						tokens={tokens}
+						carId={userCars[selectedCarIndex].car_id}
+					/>
 					<FormElementContainer>
 						<Label>
-							<Settings color="white" size={16} />
-							メンテナンスタイプ
+							<Wrench color="white" size={16} />
+							タイトル:
 						</Label>
-						<Select
-							value={maintType}
-							onChange={(e) => setMaintType(e.target.value as MaintType)}
-						>
-							{maintTypes.map((type) => (
-								<option key={type} value={type}>
-									{maintenanceTypeMap[type] || type}
-								</option>
-							))}
-						</Select>
+						<Input
+							type="text"
+							value={maintTitle}
+							onChange={(e) => setMaintTitle(e.target.value)}
+						/>
 					</FormElementContainer>
-					{maintType === "Other" && (
-						<FormElementContainer>
-							<Label>
-								<Wrench color="white" size={16} />
-								タイトル:
-							</Label>
-							<Input
-								type="text"
-								value={maintTitle}
-								onChange={(e) => setMaintTitle(e.target.value)}
-							/>
-						</FormElementContainer>
-					)}
 					<FormElementContainer>
 						<Label>
 							<Calendar color="white" size={16} />
@@ -267,7 +258,7 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 					<FormElementContainer>
 						<Label>
 							<FileText color="white" size={16} />
-							メンテナンス詳細:
+							メンテナンス内容:
 						</Label>
 						<Input
 							type="text"

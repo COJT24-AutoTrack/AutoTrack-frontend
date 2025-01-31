@@ -14,7 +14,7 @@ export const TestAPI = (jwt: string) => ({
 			jwt,
 		);
 		if (!response.ok) {
-			throw new Error("Failed to fetch accidents");
+			throw new Error("Failed to fetch test");
 		}
 		const accidents = await response.json();
 		return accidents;

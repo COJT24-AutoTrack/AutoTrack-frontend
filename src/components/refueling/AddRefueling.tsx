@@ -119,7 +119,7 @@ interface AddFuelEfficiencyProps {
 		token: string;
 		decodedToken: { uid: string };
 	};
-	carId: number;
+	carId: string;
 }
 
 const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
@@ -203,6 +203,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		const clientAPI = ClientAPI(tokens.token);
 
 		await clientAPI.fuelEfficiency.createFuelEfficiency({
+			car_id: carId,
 			car_id: carId,
 			fe_date: date,
 			fe_amount: amount!,

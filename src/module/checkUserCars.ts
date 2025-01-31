@@ -5,7 +5,7 @@ export const checkIsUserCars = async ({
 	carId,
 	tokens,
 }: {
-	carId: number;
+	carId: string;
 	tokens: {
 		token: string;
 		decodedToken: { uid: string };
@@ -22,7 +22,7 @@ export const checkIsUserCars = async ({
 	const userCarIds = userCars.map((car) => car.car_id);
 
 	// 明示的に数値に変換して比較
-	const result = userCarIds.includes(Number(carId));
+	const result = userCarIds.includes(carId);
 
 	return result;
 };

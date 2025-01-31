@@ -104,7 +104,7 @@ const Button = styled.button`
 `;
 
 interface CarEditComponentProps {
-	carId: number;
+	carId: string;
 	tokens: {
 		token: string;
 		decodedToken: { uid: string };
@@ -115,7 +115,15 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 	carId,
 	tokens,
 }) => {
-	const [car, setCar] = useState<Car | null>(null);
+	const [carData, setCarData] = useState<Partial<Car>>({
+		car_name: "",
+		carmodelnum: "",
+		car_color: "",
+		car_mileage: 0,
+		car_isflooding: 0,
+		car_issmoked: 0,
+		car_image_url: "https://r2.autotrack.work/images/No_Image9e6034d5.png",
+	});
 	const [image, setImage] = useState<File | null>(null);
 	const [preview, setPreview] = useState<string | null>(null);
 
@@ -126,7 +134,7 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 				const response = await clientAPI.car.getCar({
 					car_id: carId,
 				});
-				setCar(response);
+				setCarData(response);
 			} catch (error) {
 				console.error("Failed to fetch car:", error);
 				alert("Failed to fetch car data. Please try again.");
@@ -137,7 +145,7 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (!car) return;
+		if (!carData) return;
 
 		const clientAPI = ClientAPI(tokens.token);
 
@@ -147,8 +155,6 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 			window.location.href = "/";
 			return;
 		}
-
-		let newImageURL = car.car_image_url; // 既存の画像URL
 
 		if (image) {
 			const formData = new FormData();
@@ -175,7 +181,10 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 				await clientAPI.image.uploadImage({ formData });
 
 				// 新しい画像URLを設定
-				newImageURL = `https://r2.autotrack.work/images/${newFileName}`;
+				setCarData((prevData) => ({
+					...prevData,
+					car_image_url: `https://r2.autotrack.work/images/${newFileName}`,
+				}));
 			} catch (e) {
 				// 圧縮またはアップロード失敗時のエラーハンドリング
 				console.error("Upload Error:", e);
@@ -186,16 +195,11 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 
 		try {
 			// 新しい画像URLを使用して車両情報を更新
-			const response = await clientAPI.car.updateCar({
-				car_id: car.car_id,
-				car_name: car.car_name,
-				carmodelnum: car.carmodelnum,
-				car_color: car.car_color,
-				car_mileage: car.car_mileage,
-				car_isflooding: car.car_isflooding,
-				car_issmoked: car.car_issmoked,
-				car_image_url: newImageURL,
-			});
+			console.log("request:", carData as Car);
+
+			const response = await clientAPI.car.updateCar(carData as Car);
+
+			console.log("response:", response);
 			if (response) {
 				alert("車両情報が更新されました！");
 				window.location.href = "/";
@@ -211,16 +215,10 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 		if (file) {
 			setImage(file);
 			setPreview(URL.createObjectURL(file));
-			if (car) {
-				setCar({
-					...car,
-					car_image_url: `https://r2.autotrack.work/images/${file.name}`,
-				});
-			}
 		}
 	};
 
-	if (!car) return <div>Loading...</div>;
+	if (!carData) return <div>Loading...</div>;
 
 	return (
 		<PageContainer>
@@ -232,8 +230,10 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 							<CarIcon size={16} /> 車名
 						</Label>
 						<Input
-							value={car.car_name}
-							onChange={(e) => setCar({ ...car, car_name: e.target.value })}
+							value={carData.car_name}
+							onChange={(e) =>
+								setCarData({ ...carData, car_name: e.target.value })
+							}
 						/>
 					</FormGroup>
 					<FormGroup>
@@ -241,8 +241,10 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 							<Hash size={16} /> 型式番号
 						</Label>
 						<Input
-							value={car.carmodelnum}
-							onChange={(e) => setCar({ ...car, carmodelnum: e.target.value })}
+							value={carData.carmodelnum}
+							onChange={(e) =>
+								setCarData({ ...carData, carmodelnum: e.target.value })
+							}
 						/>
 					</FormGroup>
 					<FormGroup>
@@ -250,8 +252,10 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 							<Palette size={16} /> 色
 						</Label>
 						<Input
-							value={car.car_color}
-							onChange={(e) => setCar({ ...car, car_color: e.target.value })}
+							value={carData.car_color}
+							onChange={(e) =>
+								setCarData({ ...carData, car_color: e.target.value })
+							}
 						/>
 					</FormGroup>
 					<FormGroup>
@@ -260,18 +264,21 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 						</Label>
 						<Input
 							type="number"
-							value={car.car_mileage}
+							value={carData.car_mileage}
 							onChange={(e) =>
-								setCar({ ...car, car_mileage: Number(e.target.value) })
+								setCarData({ ...carData, car_mileage: Number(e.target.value) })
 							}
 						/>
 					</FormGroup>
 					<FormGroup>
 						<Label>
 							<Checkbox
-								checked={car.car_isflooding}
+								checked={Boolean(carData.car_isflooding)}
 								onChange={(e) =>
-									setCar({ ...car, car_isflooding: e.target.checked })
+									setCarData({
+										...carData,
+										car_isflooding: e.target.checked ? 1 : 0,
+									})
 								}
 							/>
 							<Droplet size={16} /> 浸水車
@@ -280,9 +287,12 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 					<FormGroup>
 						<Label>
 							<Checkbox
-								checked={car.car_issmoked}
+								checked={Boolean(carData.car_issmoked)}
 								onChange={(e) =>
-									setCar({ ...car, car_issmoked: e.target.checked })
+									setCarData({
+										...carData,
+										car_issmoked: e.target.checked ? 1 : 0,
+									})
 								}
 							/>
 							<Cigarette size={16} /> 喫煙車
