@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import QrScanner from "qr-scanner";
 import styled from "styled-components";
+import { CarInspection, StandardCarInspection, KCarInspection } from "@/api/models/models";
+import { ClientAPI } from "@/api/clientImplement";
 
 // ===== スタイル定義 =====
 const ScannerContainer = styled.div`
@@ -106,7 +108,6 @@ const fuelTypeMap: Record<string, string> = {
 	"00": "-",
 };
 
-// ===== ユーティリティ関数 =====
 const convertAxleWeight = (value: string): string => {
 	const numericValue = parseInt(value, 10) * 10;
 	return isNaN(numericValue) ? "-" : `${numericValue}kg`;
@@ -221,12 +222,10 @@ const KcarHeaders = [
 // ===== "/" の数をカウントして並べ替える =====
 const countSlashes = (text: string): number => (text.match(/\//g) || []).length;
 
-// ※ここでは普通車・軽自動車どちらもこのソートを使う、という前提のままにしています。
-//   （必要に応じて車種別に分けても構いません）
 const sortBySlashCount = (list: string[]): string[] => {
 	let order: number[] = [];
 	if (list[0]?.[0] === "K") {
-		// 軽自動車の場合に、特定の並びを期待するならここを調整
+		// 軽自動車の場合
 		order = [19, 6];
 	} else {
 		// 普通車の場合
@@ -237,17 +236,22 @@ const sortBySlashCount = (list: string[]): string[] => {
 	);
 };
 
-// ===== メインコンポーネント =====
-const QrScannerComponent: React.FC = () => {
+interface QrScannerComponentProps {
+	tokens: {
+		token: string;
+		decodedToken: { uid: string };
+	};
+	carId: number;
+}
+
+const QrScannerComponent: React.FC<QrScannerComponentProps> = ({ tokens, carId }) => {
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const scannerRef = useRef<QrScanner | null>(null);
 
-	// それぞれの状態管理
 	const [scannedResults, setScannedResults] = useState<string[]>([]);
 	const [splittedResults, setSplittedResults] = useState<string[]>([]);
-
-	// 追加: 軽自動車かどうかを持つフラグ
 	const [isKcar, setIsKcar] = useState<boolean>(false);
+	const [carInspection, setCarInspection] = useState<CarInspection | null>(null);
 
 	useEffect(() => {
 		if (!videoRef.current) return;
@@ -268,7 +272,6 @@ const QrScannerComponent: React.FC = () => {
 						const sortedResults = sortBySlashCount(newResults);
 
 						// ------ ここで “最初の要素” をチェックし、Kcar かどうか判定 ------
-						// ※ 実際の運用では、5枚/4枚すべてが揃った段階で判定してもOK
 						if (sortedResults.length > 0) {
 							if (sortedResults[0][0] === "K") {
 								setIsKcar(true);

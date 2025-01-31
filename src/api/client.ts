@@ -5,6 +5,7 @@ import {
 	Tuning,
 	Maintenance,
 	User,
+	CarInspection,
 } from "@/api/models/models";
 
 export interface ClientAPIInterface {
@@ -482,22 +483,21 @@ export interface CarInspectionAPIInterface {
 	createCarInspection: {
 		request: {
 			car_id: number;
-			inspection_data: string;
+			inspection_data: CarInspection;
 		};
-		response: any;
+		response: void;
 	}
 	getCarInspection: {
 		request: {
 			car_id: number;
 		};
-		response: string;
+		response: CarInspection;
 	}
 	updateCarInspection: {
 		request: {
 			car_id: number;
-			inspection_data: string;
 		};
-		response: any;
+		response: void;
 	}
 	deleteCarInspection: {
 		request: {
