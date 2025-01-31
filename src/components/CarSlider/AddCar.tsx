@@ -215,11 +215,22 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 
 				console.log("res:", res);
 
-				// 新しい画像URLを設定
-				setCarData((prevData) => ({
-					...prevData,
+				const updateCarData = {
+					...carData,
 					car_image_url: res.imgURL,
-				}));
+				};
+
+				const body = {
+					firebase_user_id: tokens.decodedToken.uid,
+					car: updateCarData as Car,
+				};
+
+				const newCar = await clientAPI.car.createCar(body);
+
+				if (newCar) {
+					alert("新しい車が追加されました！");
+					window.location.href = "/";
+				}
 			} catch (e) {
 				// 圧縮またはアップロード失敗時のエラーハンドリング
 				console.error("Upload Error:", e);
@@ -229,16 +240,6 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		}
 
 		try {
-			const body = {
-				firebase_user_id: tokens.decodedToken.uid,
-				car: carData as Car,
-			};
-			const newCar = await clientAPI.car.createCar(body);
-
-			if (newCar) {
-				alert("新しい車が追加されました！");
-				window.location.href = "/";
-			}
 		} catch (e) {
 			console.error("Failed to create car:", e);
 			alert("車の登録に失敗しました。もう一度お試しください。");
