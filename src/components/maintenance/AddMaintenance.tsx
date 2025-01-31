@@ -9,6 +9,7 @@ import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";
 import CarSelect from "@/components/base/CarSelect";
 import { Settings, Calendar, FileText, Wrench } from "lucide-react";
+import QrScannerComponent from "./QrScannerComponent";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -117,8 +118,22 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
 	const [isUserCar, setIsUserCar] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [scannedData, setScannedData] = useState<string | null>(null); // QRコードデータの保存
 	const router = useRouter();
 	const searchParams = useSearchParams();
+
+	useEffect(() => {
+		if (scannedData) {
+			try {
+				const parsedData = JSON.parse(scannedData);
+				if (parsedData.maintTitle) setMaintTitle(parsedData.maintTitle);
+				if (parsedData.maintDate) setMaintDate(parsedData.maintDate);
+				if (parsedData.maintDescription) setMaintDescription(parsedData.maintDescription);
+			} catch (error) {
+				console.error("QRコードデータの解析に失敗:", error);
+			}
+		}
+	}, [scannedData]);
 
 	useEffect(() => {
 		const checkUserCar = async () => {
@@ -223,57 +238,20 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 					<FormTitle className={Anton400.className}>
 						メンテナンス記録を追加
 					</FormTitle>
+					<QrScannerComponent />
 					<FormElementContainer>
 						<Label>
-							<Settings color="white" size={16} />
-							メンテナンスタイプ
+							<Wrench color="white" size={16} />
+							タイトル:
 						</Label>
-						<Select
-							value={maintType}
-							onChange={(e) => setMaintType(e.target.value as MaintType)}
-						>
-							{maintTypes.map((type) => (
-								<option key={type} value={type}>
-									{maintenanceTypeMap[type] || type}
-								</option>
-							))}
-						</Select>
+						<Input type="text" value={maintTitle} onChange={(e) => setMaintTitle(e.target.value)} />
 					</FormElementContainer>
-					{maintType === "Other" && (
-						<FormElementContainer>
-							<Label>
-								<Wrench color="white" size={16} />
-								タイトル:
-							</Label>
-							<Input
-								type="text"
-								value={maintTitle}
-								onChange={(e) => setMaintTitle(e.target.value)}
-							/>
-						</FormElementContainer>
-					)}
 					<FormElementContainer>
 						<Label>
 							<Calendar color="white" size={16} />
 							メンテナンス日:
 						</Label>
-						<Input
-							type="date"
-							value={maintDate}
-							onChange={(e) => setMaintDate(e.target.value)}
-							required
-						/>
-					</FormElementContainer>
-					<FormElementContainer>
-						<Label>
-							<FileText color="white" size={16} />
-							メンテナンス詳細:
-						</Label>
-						<Input
-							type="text"
-							value={maintDescription}
-							onChange={(e) => setMaintDescription(e.target.value)}
-						/>
+						<Input type="date" value={maintDate} onChange={(e) => setMaintDate(e.target.value)} required />
 					</FormElementContainer>
 					<Button type="submit">追加</Button>
 				</Form>
