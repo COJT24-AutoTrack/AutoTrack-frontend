@@ -204,7 +204,6 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 
 		await clientAPI.fuelEfficiency.createFuelEfficiency({
 			car_id: carId,
-			car_id: carId,
 			fe_date: date,
 			fe_amount: amount!,
 			fe_unitprice: unitPrice!,

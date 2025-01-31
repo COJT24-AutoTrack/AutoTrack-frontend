@@ -19,44 +19,54 @@ interface RefuelingCardGroupProps {
 const RefuelingCardGroup: React.FC<RefuelingCardGroupProps> = ({
 	fuelEfficiencies,
 }) => {
-	// 燃費計算用にソート　->　表示用に逆順にする処理をしている
+	// 日付順に昇順ソート（新しいデータが後ろ）
 	const ascendingFuelEfficiencies = [...fuelEfficiencies].sort(
 		(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime()
 	);
 
+	// 表示用に逆順（最新のデータが上）
 	const sortedFuelEfficiencies = [...ascendingFuelEfficiencies].reverse();
 
 	let prevMileage: number | null = null;
-	const fuelEfficiencyMap = new Map<number, { fuelEfficiency: number | null; deltaMileage: number | null }>();
+
+	// `Map` のキーを `string` に統一
+	const fuelEfficiencyMap = new Map<string, { fuelEfficiency: number | null; deltaMileage: number | null }>();
 
 	ascendingFuelEfficiencies.forEach((fe, index) => {
 		let fuelEfficiency: number | null = null;
 		let deltaMileage: number | null = null;
 
-		if (prevMileage !== null && fe.fe_mileage > prevMileage && fe.fe_amount > 0) {
-			fuelEfficiency = (fe.fe_mileage - prevMileage) / fe.fe_amount;
+		// `fe.fe_mileage` を `number` に変換
+		const currentMileage = Number(fe.fe_mileage);
+		const key = String(fe.fe_id); // `fe_id` を `string` に変換してキーにする
+
+		if (prevMileage !== null && currentMileage > prevMileage && Number(fe.fe_amount) > 0) {
+			fuelEfficiency = (currentMileage - prevMileage) / Number(fe.fe_amount);
 		}
 
 		if (index > 0) {
-			deltaMileage = fe.fe_mileage - ascendingFuelEfficiencies[index - 1].fe_mileage;
+			const previousMileage = Number(ascendingFuelEfficiencies[index - 1].fe_mileage);
+			deltaMileage = currentMileage - previousMileage;
 		}
 
-		fuelEfficiencyMap.set(fe.fe_id, { fuelEfficiency, deltaMileage });
+		// `Map` に登録
+		fuelEfficiencyMap.set(key, { fuelEfficiency, deltaMileage });
 
-		prevMileage = fe.fe_mileage;
+		prevMileage = currentMileage;
 	});
 
 	return (
 		<Container>
 			{sortedFuelEfficiencies.map((fe) => {
-				const { fuelEfficiency, deltaMileage } = fuelEfficiencyMap.get(fe.fe_id) || {
+				const key = String(fe.fe_id);
+				const { fuelEfficiency, deltaMileage } = fuelEfficiencyMap.get(key) || {
 					fuelEfficiency: null,
 					deltaMileage: null,
 				};
 
 				return (
 					<RefuelingCard
-						key={fe.fe_id}
+						key={key}
 						fuelEfficiency={fe}
 						calculatedFuelEfficiency={fuelEfficiency}
 						deltaMileage={deltaMileage}
@@ -68,4 +78,3 @@ const RefuelingCardGroup: React.FC<RefuelingCardGroupProps> = ({
 };
 
 export default RefuelingCardGroup;
-
