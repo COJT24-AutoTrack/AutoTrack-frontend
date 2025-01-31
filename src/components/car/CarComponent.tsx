@@ -111,7 +111,7 @@ const DeleteButton = styled(Button)`
 `;
 
 interface CarComponentProps {
-	carId: number;
+	carId: string;
 	tokens: {
 		token: string;
 		decodedToken: { uid: string };

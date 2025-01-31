@@ -122,7 +122,7 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 			: { title: "", lastMaintenanceDate: "", detail: "" };
 	};
 
-	const handleDetailClick = async (carId: number, maintType: MaintType) => {
+	const handleDetailClick = async (carId: string, maintType: MaintType) => {
 		const isUserCar = await checkIsUserCars({ carId, tokens });
 		if (!isUserCar) {
 			alert("この車両は登録されていません");

@@ -11,7 +11,7 @@ import UpdateTuning from "@/components/tuning/UpdateTuning";
 export default async function UpdateTuningPage({
 	params,
 }: {
-	params: { tuningId: number };
+	params: { tuningId: string };
 }) {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
