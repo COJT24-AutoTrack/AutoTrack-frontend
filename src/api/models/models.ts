@@ -143,42 +143,44 @@ export interface FuelEfficiencyCalculationResult {
 interface BaseCarInspection {
 	car_id: number;
 	is_kcar: 0 | 1;
-	version_info_1?: string;
+
 	registration_version_info?: string; // 登録情報のバージョン情報
-	chassis_number_stamp_location?: string;
-	model_specification_number_category_classification_number?: string;
-	expiration_date?: string; // YYYY-MM-DD
-	first_registration_year_month?: string; // YYYY-MM
-	model?: string;
+	chassis_number_stamp_location?: string; // 車台番号打刻位置
+	model_specification_number_category_classification_number?: string; // 型式指定番号・類別区分番号
+	expiration_date?: string; // 有効期間の満了日
+	first_registration_year_month?: string; // 初度登録年月
+	model?: string; // 型式
 	axle_weight_ff?: number; // 軸重(前前)
 	axle_weight_fr?: number; // 軸重(前後)
 	axle_weight_rf?: number; // 軸重(後前)
 	axle_weight_rr?: number; // 軸重(後後)
-	noise_regulation?: string;
-	proximity_exhaust_noise_limit?: number; // dB
-	drive_system?: string;
-	opacimeter_measured_car?: boolean;
-	nox_pm_measurement_mode?: string;
-	nox_value?: number; // g/km
-	pm_value?: number; // g/km
-	fuel_type_code?: string;
-	version_info_2?: string;
-	car_registration_number?: string;
-	plate_count_size_preferred_number_identifier?: string;
-	chassis_number?: string;
-	engine_model?: string;
-	document_type?: string;
+	noise_regulation?: string; // 騒音規制
+	proximity_exhaust_noise_limit?: number; // 接近排気騒音規制
+	drive_system?: string; // 駆動方式
+	opacimeter_measured_car?: 0 | 1; // オパシメータ測定車
+	nox_pm_measurement_mode?: string; // NOx・PM測定モード
+	nox_value?: number; // NOx
+	pm_value?: number; // PM
+	fuel_type_code?: string; // 燃料種類コード
+	version_info_2?: string; // バージョン情報2
+	car_registration_number?: string; // 自動車登録番号および車両番号
+	plate_count_size_preferred_number_identifier?: string; // 標板の枚数・大きさ・希望番号の識別
+	chassis_number?: string; // 車台番号
+	engine_model?: string; // 原動機型式
+	document_type?: string; // 帳票種別
 }
 export interface CarInspection extends BaseCarInspection {
-	safety_standard_application_date?: string;
-	system_id_1?: string;
-	system_id_2?: string;
-	version_number?: string;
-	preliminary_item?: string;
+	version_info_1?: string; // バージョン情報1
+	version_info_2?: string; // バージョン情報2
+	safety_standard_application_date?: string; // 保安基準適用年月日
+	system_id_1?: string; // システムID1
+	system_id_2?: string; // システムID2
+	preliminary_item?: string; // 予備項目
 }
 
 export interface StandardCarInspection extends BaseCarInspection {
 	safety_standard_application_date?: string;
+	version_info_1?: string; // バージョン情報1
 }
 
 export interface KCarInspection extends BaseCarInspection {

@@ -456,7 +456,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 						? parseInt(splittedResults[12], 10)
 						: undefined,
 					drive_system: splittedResults[13] ?? "",
-					opacimeter_measured_car: splittedResults[14] === "1",
+					opacimeter_measured_car: parseInt(splittedResults[14], 10) as 0 | 1,
 					nox_pm_measurement_mode: splittedResults[15] ?? "",
 					nox_value: splittedResults[16]
 						? parseFloat(splittedResults[16])
@@ -467,7 +467,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 					fuel_type_code: splittedResults[18] ?? "",
 					preliminary_item: splittedResults[19] ?? "",
 					system_id_2: splittedResults[20] ?? "",
-					version_info_1: splittedResults[21] ?? "",
+					version_info_2: splittedResults[21] ?? "",
 					car_registration_number: splittedResults[22] ?? "",
 					plate_count_size_preferred_number_identifier:
 						splittedResults[23] ?? "",
@@ -510,7 +510,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 						? parseInt(splittedResults[11], 10)
 						: undefined,
 					drive_system: splittedResults[12] ?? "",
-					opacimeter_measured_car: splittedResults[13] === "1",
+					opacimeter_measured_car: parseInt(splittedResults[13], 10) as 0 | 1,
 					nox_pm_measurement_mode: splittedResults[14] ?? "",
 					nox_value: splittedResults[15]
 						? parseFloat(splittedResults[15])
