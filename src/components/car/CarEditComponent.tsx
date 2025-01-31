@@ -186,7 +186,7 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 
 		try {
 			// 新しい画像URLを使用して車両情報を更新
-			const response = await clientAPI.car.updateCar({
+			const request = {
 				car_id: car.car_id,
 				car_name: car.car_name,
 				carmodelnum: car.carmodelnum,
@@ -195,7 +195,12 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 				car_isflooding: car.car_isflooding,
 				car_issmoked: car.car_issmoked,
 				car_image_url: newImageURL,
-			});
+			};
+			console.log("request:", request);
+
+			const response = await clientAPI.car.updateCar(request);
+
+			console.log("response:", response);
 			if (response) {
 				alert("車両情報が更新されました！");
 				window.location.href = "/";
@@ -269,9 +274,9 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 					<FormGroup>
 						<Label>
 							<Checkbox
-								checked={car.car_isflooding}
+								checked={Boolean(car.car_isflooding)}
 								onChange={(e) =>
-									setCar({ ...car, car_isflooding: e.target.checked })
+									setCar({ ...car, car_isflooding: e.target.checked ? 1 : 0 })
 								}
 							/>
 							<Droplet size={16} /> 浸水車
@@ -280,9 +285,9 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 					<FormGroup>
 						<Label>
 							<Checkbox
-								checked={car.car_issmoked}
+								checked={Boolean(car.car_issmoked)}
 								onChange={(e) =>
-									setCar({ ...car, car_issmoked: e.target.checked })
+									setCar({ ...car, car_issmoked: e.target.checked ? 1 : 0 })
 								}
 							/>
 							<Cigarette size={16} /> 喫煙車

@@ -263,8 +263,8 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 				carmodelnum: carInfo?.carmodelnum || "",
 				car_color: carInfo?.car_color || "",
 				car_image_url: carInfo?.car_image_url || "",
-				car_issmoked: carInfo?.car_issmoked || false,
-				car_isflooding: carInfo?.car_isflooding || false,
+				car_issmoked: carInfo?.car_issmoked || 0,
+				car_isflooding: carInfo?.car_isflooding || 0,
 				car_mileage: newCarMileage,
 			});
 		}
