@@ -17,6 +17,8 @@ import {
 	Image,
 	ChevronLeft,
 } from "lucide-react";
+import compressImage from "../../module/imageCompress"; // 画像圧縮モジュールのインポート
+import { v4 as uuidv4 } from "uuid"; // UUID のインポート
 
 const Anton400 = Anton({
 	weight: "400",
@@ -192,33 +194,61 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 			return;
 		}
 
-		const clientAPI = ClientAPI(tokens.token);
-		if (image) {
-			const formData = new FormData();
-			formData.append("file", image);
+        const clientAPI = ClientAPI(tokens.token);
+        let newImageURL = carData.car_image_url || "https://r2.autotrack.work/images/No_Image9e6034d5.png";
 
-			try {
-				await clientAPI.image.uploadImage({
-					formData: formData,
-				});
-			} catch (e) {
-				alert((e as Error).message);
-				return;
-			}
-		}
-		try {
-			const newCar = await clientAPI.car.createCar({
-				firebase_user_id: tokens.decodedToken.uid,
-				car: carData as Car,
-			});
+        if (image) {
+            const formData = new FormData();
+            try {
+                // UUID を生成してファイル名を変更
+                const uuid = uuidv4();
+                const fileExtension = "webp"; // 圧縮後は常に WebP とする
+                const newFileName = `${uuid}.${fileExtension}`;
 
-			if (newCar) {
-				window.location.href = "/";
-			}
-		} catch (e) {
-			alert((e as Error).message);
-		}
-	};
+                // 画像を圧縮
+                const compressedImage = await compressImage(image);
+
+                // ファイル名を UUID に変更して FormData に追加
+                const renamedFile = new File([compressedImage], newFileName, {
+                    type: "image/webp",
+                });
+                formData.append("file", renamedFile);
+
+                // デバッグ用ログ
+                console.log("Renamed Compressed File:", renamedFile);
+                console.log("FormData Content:", formData.get("file"));
+
+                // API を呼び出して画像をアップロード
+                await clientAPI.image.uploadImage({ formData });
+
+                // 新しい画像URLを設定
+                newImageURL = `https://r2.autotrack.work/images/${newFileName}`;
+            } catch (e) {
+                // 圧縮またはアップロード失敗時のエラーハンドリング
+                console.error("Upload Error:", e);
+                alert((e as Error).message);
+                return;
+            }
+        }
+
+        try {
+            const newCar = await clientAPI.car.createCar({
+                firebase_user_id: tokens.decodedToken.uid,
+                car: {
+                    ...carData,
+                    car_image_url: newImageURL,
+                } as Car,
+            });
+
+            if (newCar) {
+                alert("新しい車が追加されました！");
+                window.location.href = "/";
+            }
+        } catch (e) {
+            console.error("Failed to create car:", e);
+            alert("車の登録に失敗しました。もう一度お試しください。");
+        }
+    };
 
 	return (
 		<PageContainer>
