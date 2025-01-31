@@ -18,7 +18,6 @@ import {
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { FuelEfficiency } from "@/api/models/models";
-import { before } from "node:test";
 
 ChartJS.register(
 	CategoryScale,
@@ -66,6 +65,40 @@ const FilterButton = styled.button`
 	}
 `;
 
+const colors = {
+	fuelEfficiency: "#EA4335",
+	fuelEfficiencyTransparent: "#EA4335CC",
+	cumulativeDistance: "#34A853",
+	cumulativeDistanceTransparent: "#34A853CC",
+	distanceSinceLastRefuel: "#225374",
+	distanceSinceLastRefuelTransparent: "#22537466",
+	fuelAmount: "#4285F4",
+	fuelAmountTransparent: "#4285F4CC",
+	fuelCost: "#FBBC05",
+	fuelCostTransparent: "#FBBC05CC",
+	fuelUnitPrice: "#ff8c00",
+	fuelUnitPriceTransparent: "#ff8c00CC",
+	averageFuelEfficiency: "#EA433544",
+	averageFuelEfficiencyTranceparent: "#EA4335CC",
+	legendText: "#999999",
+	tooltipBackground: "#333333",
+	tooltipTitle: "#999999",
+	tooltipBody: "#999999",
+	grid: "#444444",
+	axisText: "#999999",
+};
+
+const now = new Date();
+
+const oneMonthAgo = new Date(now.getTime());
+oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+const sixMonthsAgo = new Date(now.getTime());
+sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+const oneYearAgo = new Date(now.getTime());
+oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
 const RefuelingChart: React.FC<RefuelingChartProps> = ({
 	fuelEfficiencies,
 }) => {
@@ -74,41 +107,6 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 		"ALL",
 	);
 
-	const colors = {
-		fuelEfficiency: "#EA4335",
-		fuelEfficiencyTransparent: "#EA4335CC",
-		cumulativeDistance: "#34A853",
-		cumulativeDistanceTransparent: "#34A853CC",
-		distanceSinceLastRefuel: "#225374",
-		distanceSinceLastRefuelTransparent: "#22537466",
-		fuelAmount: "#4285F4",
-		fuelAmountTransparent: "#4285F4CC",
-		fuelCost: "#FBBC05",
-		fuelCostTransparent: "#FBBC05CC",
-		fuelUnitPrice: "#ff8c00",
-		fuelUnitPriceTransparent: "#ff8c00CC",
-		averageFuelEfficiency: "#EA433544",
-		averageFuelEfficiencyTranceparent: "#EA4335CC",
-		legendText: "#999999",
-		tooltipBackground: "#333333",
-		tooltipTitle: "#999999",
-		tooltipBody: "#999999",
-		grid: "#444444",
-		axisText: "#999999",
-	};
-
-	// フィルタ用に日付を用意
-	const now = new Date();
-	const oneMonthAgo = new Date(now.getTime());
-	oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-
-	const sixMonthsAgo = new Date(now.getTime());
-	sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-	const oneYearAgo = new Date(now.getTime());
-	oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-
-	// データをフィルタリング
 	const filteredData = fuelEfficiencies.filter((fe) => {
 		const feDate = new Date(fe.fe_date);
 
@@ -125,46 +123,29 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 		}
 	});
 
-	// ソート
 	const sortedAsc = [...filteredData].sort(
 		(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime(),
 	);
 
-	// ラベル(日付)
 	const labels = sortedAsc.map((fe) => fe.fe_date.slice(0, 10));
-
-	// 燃費 (km/L)
 	const dataFuelEfficiency = sortedAsc.map((fe) =>
 		fe.fe_amount ? fe.fe_mileage / fe.fe_amount : 0,
 	);
-
-	// 平均燃費 (km/L)
 	const averageFuelEfficiency =
 		dataFuelEfficiency.reduce((acc, cur) => acc + cur, 0) /
 		dataFuelEfficiency.length;
-
-	// 給油量 (L)
 	const dataFuelAmount = sortedAsc.map((fe) => fe.fe_amount || 0);
-
-	// 給油金額 (円)
 	const dataFuelCost = sortedAsc.map((fe) =>
 		fe.fe_amount ? fe.fe_unitprice * fe.fe_amount : 0,
 	);
-
-	// 走行距離 (累計)
 	let cumulative = 0;
 	const dataDistance = sortedAsc.map((fe) => {
 		cumulative += fe.fe_mileage;
 		return cumulative;
 	});
-
-	// 前回からの走行距離
 	const dataDistanceSinceLastRefuel = sortedAsc.map((fe) => fe.fe_mileage);
-
-	// 単価 (円/L)
 	const dataFuelUnitPrice = sortedAsc.map((fe) => fe.fe_unitprice);
 
-	// チャートデータ
 	const chartData: ChartData<"bar" | "line", number[], string> = {
 		labels,
 		datasets: [
@@ -242,7 +223,6 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 		],
 	};
 
-	// オプション
 	const chartOptions: ChartOptions<"bar" | "line"> = {
 		responsive: true,
 		plugins: {

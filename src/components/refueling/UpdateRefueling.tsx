@@ -208,7 +208,6 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 				fe_amount: amount!,
 				fe_unitprice: unitPrice!,
 				fe_mileage: mileage || 0,
-				fe_delta_mileage: mileage! - fuelEfficiency.fe_mileage,
 			});
 			window.location.href = "/refueling";
 		}
