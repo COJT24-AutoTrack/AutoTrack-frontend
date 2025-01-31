@@ -19,26 +19,23 @@ interface RefuelingCardGroupProps {
 const RefuelingCardGroup: React.FC<RefuelingCardGroupProps> = ({
 	fuelEfficiencies,
 }) => {
-	// 日付順に昇順ソート（新しいデータが後ろ）
+	// 燃費計算用にデータを整形し、表示順に戻すための処理が後に続いている
 	const ascendingFuelEfficiencies = [...fuelEfficiencies].sort(
 		(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime()
 	);
 
-	// 表示用に逆順（最新のデータが上）
 	const sortedFuelEfficiencies = [...ascendingFuelEfficiencies].reverse();
 
 	let prevMileage: number | null = null;
 
-	// `Map` のキーを `string` に統一
 	const fuelEfficiencyMap = new Map<string, { fuelEfficiency: number | null; deltaMileage: number | null }>();
 
 	ascendingFuelEfficiencies.forEach((fe, index) => {
 		let fuelEfficiency: number | null = null;
 		let deltaMileage: number | null = null;
 
-		// `fe.fe_mileage` を `number` に変換
 		const currentMileage = Number(fe.fe_mileage);
-		const key = String(fe.fe_id); // `fe_id` を `string` に変換してキーにする
+		const key = String(fe.fe_id);
 
 		if (prevMileage !== null && currentMileage > prevMileage && Number(fe.fe_amount) > 0) {
 			fuelEfficiency = (currentMileage - prevMileage) / Number(fe.fe_amount);
@@ -49,7 +46,6 @@ const RefuelingCardGroup: React.FC<RefuelingCardGroupProps> = ({
 			deltaMileage = currentMileage - previousMileage;
 		}
 
-		// `Map` に登録
 		fuelEfficiencyMap.set(key, { fuelEfficiency, deltaMileage });
 
 		prevMileage = currentMileage;
