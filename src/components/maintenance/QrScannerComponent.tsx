@@ -310,7 +310,7 @@ interface QrScannerComponentProps {
 		token: string;
 		decodedToken: { uid: string };
 	};
-	carId: number;
+	carId: string;
 }
 
 const QrScannerComponent: React.FC<QrScannerComponentProps> = ({

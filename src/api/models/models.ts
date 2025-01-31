@@ -11,7 +11,7 @@ export interface User {
 }
 
 export interface Car {
-	car_id: number;
+	car_id: string;
 	car_name: string;
 	carmodelnum: string;
 	car_color: string;
@@ -24,8 +24,8 @@ export interface Car {
 }
 
 export interface Tuning {
-	tuning_id: number;
-	car_id: number;
+	tuning_id: string;
+	car_id: string;
 	tuning_name: string;
 	tuning_date: string;
 	tuning_description: string;
@@ -78,8 +78,8 @@ export const maintenanceTypeMap: Record<string, string> = {
 };
 
 export interface Maintenance {
-	maint_id: number;
-	car_id: number;
+	maint_id: string;
+	car_id: string;
 	maint_type: MaintType;
 	maint_title: string;
 	maint_date: string;
@@ -89,8 +89,8 @@ export interface Maintenance {
 }
 
 export interface FuelEfficiency {
-	fe_id: number;
-	car_id: number;
+	fe_id: string;
+	car_id: string;
 	fe_date: string;
 	fe_amount: number;
 	fe_unitprice: number;
@@ -100,8 +100,8 @@ export interface FuelEfficiency {
 }
 
 export interface Accident {
-	accident_id: number;
-	car_id: number;
+	accident_id: string;
+	car_id: string;
 	accident_date: string;
 	accident_description: string;
 	created_at?: string;
@@ -109,8 +109,8 @@ export interface Accident {
 }
 
 export interface PeriodicInspection {
-	pi_id: number;
-	car_id: number;
+	pi_id: string;
+	car_id: string;
 	pi_name: string;
 	pi_date: string;
 	pi_nextdate: string;
@@ -132,16 +132,16 @@ export interface carInfo extends Car {
 }
 
 export interface FuelEfficiencyCalculationResult {
-	car_id: number;
+	car_id: string;
 	total_fuel_efficiency: number;
 	fuel_efficiencies: {
-		fe_id: number;
+		fe_id: string;
 		fuel_efficiency: number;
 	}[];
 }
 
 interface BaseCarInspection {
-	car_id: number;
+	car_id: string;
 	is_kcar: 0 | 1;
 
 	registration_version_info?: string; // 登録情報のバージョン情報

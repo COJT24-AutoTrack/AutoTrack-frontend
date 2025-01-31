@@ -120,7 +120,7 @@ interface AddFuelEfficiencyProps {
 		token: string;
 		decodedToken: { uid: string };
 	};
-	carId: number;
+	carId: string;
 }
 
 const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
@@ -248,7 +248,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 
 		// 1. FuelEfficiency にレコード作成
 		await clientAPI.fuelEfficiency.createFuelEfficiency({
-			car_id: Number(carId),
+			car_id: carId,
 			fe_date: date,
 			fe_amount: amount!,
 			fe_unitprice: unitPrice!,
@@ -258,7 +258,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		// 2. Car の累計走行距離 car_mileage を更新
 		if (newCarMileage !== oldCarMileage) {
 			await clientAPI.car.updateCar({
-				car_id: Number(carId),
+				car_id: carId,
 				car_name: carInfo?.car_name || "",
 				carmodelnum: carInfo?.carmodelnum || "",
 				car_color: carInfo?.car_color || "",

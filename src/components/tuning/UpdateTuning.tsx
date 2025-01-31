@@ -104,7 +104,7 @@ const DeleteButtonInner = styled.div`
 `;
 
 interface UpdateTuningProps {
-	tuningId: number;
+	tuningId: string;
 	tokens: {
 		token: string;
 		decodedToken: { uid: string };

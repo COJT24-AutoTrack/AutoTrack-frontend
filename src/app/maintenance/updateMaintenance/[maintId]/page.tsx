@@ -29,7 +29,7 @@ const UpdateMaintenancePage = async ({ params }: { params: Params }) => {
 
 	if (params.maintId) {
 		maintenance = await clientAPI.maintenance.getMaintenance({
-			maint_id: Number(params.maintId),
+			maint_id: params.maintId,
 		});
 	}
 

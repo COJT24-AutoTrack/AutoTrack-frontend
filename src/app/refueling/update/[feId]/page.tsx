@@ -9,7 +9,7 @@ import UpdateRefueling from "@/components/refueling/UpdateRefueling";
 export default async function UpdateFuelingPage({
 	params,
 }: {
-	params: { feId: number };
+	params: { feId: string };
 }) {
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,

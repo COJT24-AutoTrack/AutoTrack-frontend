@@ -212,6 +212,10 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 		}
 	};
 
+	if (!userCars) {
+		return <PageContainer>ユーザーの車が見つかりません</PageContainer>;
+	}
+
 	return (
 		<PageContainer>
 			<CarSelect
@@ -226,21 +230,30 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 					</FormTitle>
 					<QrScannerComponent
 						tokens={tokens}
-						carId={userCars ? userCars[selectedCarIndex].car_id : 0}
+						carId={userCars[selectedCarIndex].car_id}
 					/>
 					<FormElementContainer>
 						<Label>
 							<Wrench color="white" size={16} />
 							タイトル:
 						</Label>
-						<Input type="text" value={maintTitle} onChange={(e) => setMaintTitle(e.target.value)} />
+						<Input
+							type="text"
+							value={maintTitle}
+							onChange={(e) => setMaintTitle(e.target.value)}
+						/>
 					</FormElementContainer>
 					<FormElementContainer>
 						<Label>
 							<Calendar color="white" size={16} />
 							メンテナンス日:
 						</Label>
-						<Input type="date" value={maintDate} onChange={(e) => setMaintDate(e.target.value)} required />
+						<Input
+							type="date"
+							value={maintDate}
+							onChange={(e) => setMaintDate(e.target.value)}
+							required
+						/>
 					</FormElementContainer>
 					<FormElementContainer>
 						<Label>

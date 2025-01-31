@@ -104,7 +104,7 @@ const Button = styled.button`
 `;
 
 interface CarEditComponentProps {
-	carId: number;
+	carId: string;
 	tokens: {
 		token: string;
 		decodedToken: { uid: string };
