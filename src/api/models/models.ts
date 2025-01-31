@@ -95,7 +95,6 @@ export interface FuelEfficiency {
 	fe_amount: number;
 	fe_unitprice: number;
 	fe_mileage: number;
-	fe_delta_mileage: number;
 	created_at?: string;
 	updated_at?: string;
 }
