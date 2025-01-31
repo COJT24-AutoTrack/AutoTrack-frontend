@@ -224,7 +224,10 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 					<FormTitle className={Anton400.className}>
 						メンテナンス記録を追加
 					</FormTitle>
-					<QrScannerComponent />
+					<QrScannerComponent
+						tokens={tokens}
+						carId={userCars ? userCars[selectedCarIndex].car_id : 0}
+					/>
 					<FormElementContainer>
 						<Label>
 							<Wrench color="white" size={16} />

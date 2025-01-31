@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import QrScanner from "qr-scanner";
 import styled from "styled-components";
-import { CarInspection, StandardCarInspection, KCarInspection } from "@/api/models/models";
+import {
+	CarInspection,
+	StandardCarInspection,
+	KCarInspection,
+} from "@/api/models/models";
 import { ClientAPI } from "@/api/clientImplement";
 
 // ===== スタイル定義 =====
@@ -37,14 +41,25 @@ const ListItem = styled.li`
 	margin-bottom: 5px;
 `;
 
-const ClearButton = styled.button`
+const SubmitButton = styled.button`
 	margin-top: 10px;
+	width: 100px;
 	padding: 10px;
 	background-color: #f12424;
 	color: #fff;
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
+`;
+
+const ClearButton = styled(SubmitButton)`
+	background-color: #333;
+`;
+
+const ButtonsContainer = styled.div`
+	display: flex;
+	justify-content: space-around;
+	gap: 10px;
 `;
 
 // ===== 定数マッピング =====
@@ -219,7 +234,6 @@ const KcarHeaders = [
 	"帳票種別",
 ];
 
-// ===== "/" の数をカウントして並べ替える =====
 const countSlashes = (text: string): number => (text.match(/\//g) || []).length;
 
 const sortBySlashCount = (list: string[]): string[] => {
@@ -236,6 +250,61 @@ const sortBySlashCount = (list: string[]): string[] => {
 	);
 };
 
+const getDisplayValue = (isKcar: boolean, idx: number, val: string): string => {
+	if (isKcar) {
+		// 軽自動車向け処理
+		switch (idx) {
+			case 4:
+				return formatDate(val);
+			case 5:
+				return formatYearMonth(val);
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+				return convertAxleWeight(val);
+			case 11:
+				return `平成${val}年騒音規制適合車`;
+			case 12:
+				return `${parseInt(val, 10)} dB`;
+			case 18:
+				// 999999 は「-」扱い
+				return val === "999999" ? "-" : val;
+			case 19:
+				return getFuelType(val);
+			case 23:
+				return getKcarPlateCategory(val);
+			default:
+				return val;
+		}
+	} else {
+		// 普通車向け処理
+		switch (idx) {
+			case 3:
+				return formatDate(val);
+			case 4:
+				return formatYearMonth(val);
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+				return convertAxleWeight(val);
+			case 10:
+				return `平成${val}年騒音規制適合車`;
+			case 11:
+				return `${parseInt(val, 10)} dB`;
+			case 17:
+				return val === "999999" ? "-" : val;
+			case 18:
+				return getFuelType(val);
+			case 21:
+				return getPlateCategory(val);
+			default:
+				return val;
+		}
+	}
+};
+
 interface QrScannerComponentProps {
 	tokens: {
 		token: string;
@@ -244,15 +313,46 @@ interface QrScannerComponentProps {
 	carId: number;
 }
 
-const QrScannerComponent: React.FC<QrScannerComponentProps> = ({ tokens, carId }) => {
+const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
+	tokens,
+	carId,
+}) => {
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const scannerRef = useRef<QrScanner | null>(null);
 
 	const [scannedResults, setScannedResults] = useState<string[]>([]);
 	const [splittedResults, setSplittedResults] = useState<string[]>([]);
 	const [isKcar, setIsKcar] = useState<boolean>(false);
-	const [carInspection, setCarInspection] = useState<CarInspection | null>(null);
+	const [carInspection, setCarInspection] = useState<CarInspection | null>(
+		null,
+	);
+	const [StandardCarInspection, setStandardCarInspection] =
+		useState<StandardCarInspection | null>(null);
+	const [KCarInspection, setKCarInspection] = useState<KCarInspection | null>(
+		null,
+	);
 
+	// 既存の車検証情報があれば取得
+	useEffect(() => {
+		const fetchCarInspection = async () => {
+			const clientAPI = ClientAPI(tokens.token);
+			try {
+				const car = await clientAPI.carInspection.getCarInspection({
+					car_id: carId,
+				});
+				if (car.is_kcar === 1) {
+					setKCarInspection(car);
+				} else {
+					setStandardCarInspection(car);
+				}
+			} catch (error) {
+				console.error("Error fetching car inspection:", error);
+			}
+		};
+		fetchCarInspection();
+	}, [carId, tokens]);
+
+	// カメラ初期化 & スキャン
 	useEffect(() => {
 		if (!videoRef.current) return;
 
@@ -263,15 +363,12 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({ tokens, carId }
 					// 新しい結果であれば scannedResults に追加
 					setScannedResults((prevResults) => {
 						if (prevResults.includes(result.data)) {
-							// 重複ならそのまま
 							return prevResults;
 						}
 						const newResults = [...prevResults, result.data];
-
-						// "/" の数を見てソートする
 						const sortedResults = sortBySlashCount(newResults);
 
-						// ------ ここで “最初の要素” をチェックし、Kcar かどうか判定 ------
+						// 軽自動車判定
 						if (sortedResults.length > 0) {
 							if (sortedResults[0][0] === "K") {
 								setIsKcar(true);
@@ -280,12 +377,12 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({ tokens, carId }
 							}
 						}
 
-						// ------ 普通車か軽自動車かで splittedResults の作り方を分岐 ------
+						// パターン分岐
 						if (sortedResults[0]?.[0] === "K") {
-							// 軽自動車パターン
+							// 軽自動車
 							setSplittedResults(sortedResults.join("/").split("/"));
 						} else if (sortedResults.length === 5) {
-							// 普通車パターン: 5個揃ったら一気にまとめてスプリット
+							// 普通車
 							let joinedString = "";
 							for (let i = 0; i < sortedResults.length; i++) {
 								joinedString += sortedResults[i];
@@ -293,19 +390,17 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({ tokens, carId }
 							}
 							setSplittedResults(joinedString.split("/"));
 						}
-
 						return sortedResults;
 					});
 				} else {
-					console.warn("QRコードが空です。正しく読み取れませんでした。");
+					console.warn("QRコードが空です or 解析失敗");
 				}
 
-				// スキャンできたら一旦停止し、1秒後に再開
+				// スキャン後: 一旦停止 & 1秒後に再開
 				scannerRef.current?.stop();
-				setTimeout(
-					() => scannerRef.current?.start().catch(console.error),
-					1000,
-				);
+				setTimeout(() => {
+					scannerRef.current?.start().catch(console.error);
+				}, 1000);
 			},
 			{
 				highlightScanRegion: true,
@@ -319,16 +414,154 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({ tokens, carId }
 		};
 	}, []);
 
-	// 結果をクリア
+	// クリアボタン
 	const handleClearResults = () => {
 		setScannedResults([]);
 		setSplittedResults([]);
-		setIsKcar(false); // 軽自動車フラグもクリア
+		setIsKcar(false);
+		setCarInspection(null);
+	};
+
+	const handleSubmitAPI = async () => {
+		try {
+			const clientAPI = ClientAPI(tokens.token);
+
+			if (isKcar) {
+				const payload: KCarInspection = {
+					car_id: carId,
+					is_kcar: 1,
+
+					system_id_1: splittedResults[0] ?? "",
+					version_number: splittedResults[1] ?? "",
+					chassis_number_stamp_location: splittedResults[2] ?? "",
+					model_specification_number_category_classification_number:
+						splittedResults[3] ?? "",
+					expiration_date: splittedResults[4] ?? "",
+					first_registration_year_month: splittedResults[5] ?? "",
+					model: splittedResults[6] ?? "",
+					axle_weight_ff: splittedResults[7]
+						? parseInt(splittedResults[7], 10)
+						: undefined,
+					axle_weight_fr: splittedResults[8]
+						? parseInt(splittedResults[8], 10)
+						: undefined,
+					axle_weight_rf: splittedResults[9]
+						? parseInt(splittedResults[9], 10)
+						: undefined,
+					axle_weight_rr: splittedResults[10]
+						? parseInt(splittedResults[10], 10)
+						: undefined,
+					noise_regulation: splittedResults[11] ?? "",
+					proximity_exhaust_noise_limit: splittedResults[12]
+						? parseInt(splittedResults[12], 10)
+						: undefined,
+					drive_system: splittedResults[13] ?? "",
+					opacimeter_measured_car: splittedResults[14] === "1",
+					nox_pm_measurement_mode: splittedResults[15] ?? "",
+					nox_value: splittedResults[16]
+						? parseFloat(splittedResults[16])
+						: undefined,
+					pm_value: splittedResults[17]
+						? parseFloat(splittedResults[17])
+						: undefined,
+					fuel_type_code: splittedResults[18] ?? "",
+					preliminary_item: splittedResults[19] ?? "",
+					system_id_2: splittedResults[20] ?? "",
+					version_info_1: splittedResults[21] ?? "",
+					car_registration_number: splittedResults[22] ?? "",
+					plate_count_size_preferred_number_identifier:
+						splittedResults[23] ?? "",
+					chassis_number: splittedResults[24] ?? "",
+					engine_model: splittedResults[25] ?? "",
+					document_type: splittedResults[26] ?? "",
+				};
+
+				await clientAPI.carInspection.createCarInspection({
+					car_id: payload.car_id,
+					inspection_data: payload,
+				});
+				alert("軽自動車の車検証情報を送信しました。");
+			} else {
+				const payload: StandardCarInspection = {
+					car_id: carId,
+					is_kcar: 0,
+
+					version_info_1: splittedResults[0] ?? "",
+					chassis_number_stamp_location: splittedResults[1] ?? "",
+					model_specification_number_category_classification_number:
+						splittedResults[2] ?? "",
+					expiration_date: splittedResults[3] ?? "",
+					first_registration_year_month: splittedResults[4] ?? "",
+					model: splittedResults[5] ?? "",
+					axle_weight_ff: splittedResults[6]
+						? parseInt(splittedResults[6], 10)
+						: undefined,
+					axle_weight_fr: splittedResults[7]
+						? parseInt(splittedResults[7], 10)
+						: undefined,
+					axle_weight_rf: splittedResults[8]
+						? parseInt(splittedResults[8], 10)
+						: undefined,
+					axle_weight_rr: splittedResults[9]
+						? parseInt(splittedResults[9], 10)
+						: undefined,
+					noise_regulation: splittedResults[10] ?? "",
+					proximity_exhaust_noise_limit: splittedResults[11]
+						? parseInt(splittedResults[11], 10)
+						: undefined,
+					drive_system: splittedResults[12] ?? "",
+					opacimeter_measured_car: splittedResults[13] === "1",
+					nox_pm_measurement_mode: splittedResults[14] ?? "",
+					nox_value: splittedResults[15]
+						? parseFloat(splittedResults[15])
+						: undefined,
+					pm_value: splittedResults[16]
+						? parseFloat(splittedResults[16])
+						: undefined,
+					safety_standard_application_date: splittedResults[17] ?? "",
+					fuel_type_code: splittedResults[18] ?? "",
+					version_info_2: splittedResults[19] ?? "",
+					car_registration_number: splittedResults[20] ?? "",
+					plate_count_size_preferred_number_identifier:
+						splittedResults[21] ?? "",
+					chassis_number: splittedResults[22] ?? "",
+					engine_model: splittedResults[23] ?? "",
+					document_type: splittedResults[24] ?? "",
+				};
+
+				await clientAPI.carInspection.createCarInspection({
+					car_id: payload.car_id,
+					inspection_data: payload,
+				});
+				alert("普通車の車検証情報を送信しました。");
+			}
+		} catch (error) {
+			console.error("Error posting car inspection:", error);
+			alert("API通信エラーが発生しました。");
+		}
 	};
 
 	return (
 		<ScannerContainer>
 			<p>車検証のQRコードをスキャンできます</p>
+
+			{carInspection && (
+				<div style={{ background: "#eee", padding: "10px", margin: "10px 0" }}>
+					<h3>DBに登録済みの車検証情報</h3>
+					<ul>
+						{Object.entries(carInspection).map(([key, val], index) => (
+							<li key={key}>
+								{key}:{" "}
+								{getDisplayValue(
+									carInspection.is_kcar === 1,
+									index,
+									String(val),
+								)}
+							</li>
+						))}
+					</ul>
+				</div>
+			)}
 
 			<VideoWrapper>
 				<VideoElement ref={videoRef} />
@@ -349,71 +582,12 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({ tokens, carId }
 			<SplitResultsList>
 				{splittedResults.length > 0 ? (
 					splittedResults.map((result, index) => {
-						// まず、Kcar/普通車で使うヘッダを切り替える
 						const currentHeaders = isKcar ? KcarHeaders : headers;
-
-						// 取得した文字列を表示用に整形するヘルパー
-						const getDisplayValue = (idx: number, val: string): string => {
-							if (isKcar) {
-								// 軽自動車向け処理
-								switch (idx) {
-									case 4:
-										return formatDate(val);
-									case 5:
-										return formatYearMonth(val);
-									case 7:
-									case 8:
-									case 9:
-									case 10:
-										return convertAxleWeight(val);
-									case 11:
-										return `平成${val}年騒音規制適合車`;
-									case 12:
-										return `${parseInt(val, 10)} dB`;
-									case 18:
-										// 999999 は「-」扱い
-										return val === "999999" ? "-" : val;
-									case 19:
-										return getFuelType(val);
-									case 23:
-										return getKcarPlateCategory(val);
-									default:
-										return val;
-								}
-							} else {
-								// 普通車向け処理
-								switch (idx) {
-									case 3:
-										return formatDate(val);
-									case 4:
-										return formatYearMonth(val);
-									case 6:
-									case 7:
-									case 8:
-									case 9:
-										return convertAxleWeight(val);
-									case 10:
-										return `平成${val}年騒音規制適合車`;
-									case 11:
-										return `${parseInt(val, 10)} dB`;
-									case 17:
-										return val === "999999" ? "-" : val;
-									case 18:
-										return getFuelType(val);
-									case 21:
-										return getPlateCategory(val);
-									default:
-										return val;
-								}
-							}
-						};
-
-						// ヘッダが足りない場合に備えて || `項目 ${index + 1}`
 						const headerLabel = currentHeaders[index] || `項目 ${index + 1}`;
-
 						return (
 							<ListItem key={index}>
-								<strong>{headerLabel}:</strong> {getDisplayValue(index, result)}
+								<strong>{headerLabel}:</strong>{" "}
+								{getDisplayValue(isKcar, index, result)}
 							</ListItem>
 						);
 					})
@@ -422,9 +596,10 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({ tokens, carId }
 				)}
 			</SplitResultsList>
 
-			<ClearButton onClick={handleClearResults}>
-				スキャン結果をクリア
-			</ClearButton>
+			<ButtonsContainer>
+				<ClearButton onClick={handleClearResults}>クリア</ClearButton>
+				<SubmitButton onClick={handleSubmitAPI}>送信</SubmitButton>
+			</ButtonsContainer>
 		</ScannerContainer>
 	);
 };
