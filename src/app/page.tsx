@@ -73,20 +73,25 @@ export default async function Home() {
 		});
 
 		const monthlyMileage = (() => {
-			if (monthlyFuelEfficiencies.length === 0) return 0;
+			console.log("monthlyFuelEfficiencies", monthlyFuelEfficiencies);
+			if (monthlyFuelEfficiencies.length === 0) {
+				return 0;
+			} else if (monthlyFuelEfficiencies.length === 1) {
+				return monthlyFuelEfficiencies[0].fe_mileage;
+			} else {
+				const { minMileage, maxMileage } = monthlyFuelEfficiencies.reduce(
+					(acc, fe) => {
+						const mileage = fe.fe_mileage;
+						return {
+							minMileage: Math.min(acc.minMileage, mileage),
+							maxMileage: Math.max(acc.maxMileage, mileage),
+						};
+					},
+					{ minMileage: Infinity, maxMileage: -Infinity },
+				);
 
-			const { minMileage, maxMileage } = monthlyFuelEfficiencies.reduce(
-				(acc, fe) => {
-					const mileage = fe.fe_mileage;
-					return {
-						minMileage: Math.min(acc.minMileage, mileage),
-						maxMileage: Math.max(acc.maxMileage, mileage),
-					};
-				},
-				{ minMileage: Infinity, maxMileage: -Infinity },
-			);
-
-			return maxMileage - minMileage;
+				return maxMileage - minMileage;
+			}
 		})();
 		const monthlyFuelAmount = monthlyFuelEfficiencies.reduce(
 			(acc, fe) => acc + fe.fe_amount,

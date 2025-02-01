@@ -6,7 +6,7 @@ import styled from "styled-components";
 import BackHeader from "@/components/base/BackHeader";
 import { Anton } from "next/font/google";
 import { ClientAPI } from "@/api/clientImplement";
-import { FuelEfficiency } from "@/api/models/models";
+import { FuelEfficiency, Car } from "@/api/models/models";
 import {
 	Calendar,
 	Droplets,
@@ -141,17 +141,19 @@ interface UpdateFuelingProps {
 }
 
 const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
-	const [fuelEfficiency, setFuelEfficiency] = useState<FuelEfficiency | null>(
-		null,
-	);
+	const [fuelEfficiency, setFuelEfficiency] = useState<FuelEfficiency | null>(null);
 	const [date, setDate] = useState<string>("");
 	const [fuelAmount, setFuelAmount] = useState<number | null>(null);
 	const [totalMileage, setTotalMileage] = useState<number | null>(null);
 	const [unitPrice, setUnitPrice] = useState<number | null>(null);
+
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
 	const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
+	const [prevMileage, setPrevMileage] = useState<number | null>(null);
 	const [deltaMileage, setDeltaMileage] = useState<number | null>(null);
-	const [initialMileage, setInitialMileage] = useState<number | null>(null);
+
+	const router = useRouter();
 
 	useEffect(() => {
 		const clientAPI = ClientAPI(tokens.token);
@@ -165,28 +167,52 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 	}, [feId, tokens]);
 
 	useEffect(() => {
-		if (fuelEfficiency) {
-			setDate(fuelEfficiency.fe_date);
-			setFuelAmount(fuelEfficiency.fe_amount);
-			setTotalMileage(fuelEfficiency.fe_mileage);
-			setUnitPrice(fuelEfficiency.fe_unitprice);
+		const clientAPI = ClientAPI(tokens.token);
 
-			const fetchInitialMileage = async () => {
-				const clientAPI = ClientAPI(tokens.token);
-				const car = await clientAPI.car.getCar({ car_id: fuelEfficiency.car_id });
-				setInitialMileage(car.car_mileage);
-			};
-			fetchInitialMileage();
-		}
-	}, [fuelEfficiency, tokens]);
+		if (!fuelEfficiency) return;
+
+		setDate(fuelEfficiency.fe_date);
+		setFuelAmount(fuelEfficiency.fe_amount);
+		setTotalMileage(fuelEfficiency.fe_mileage);
+		setUnitPrice(fuelEfficiency.fe_unitprice);
+
+		const fetchPrevMileage = async () => {
+			const car = await clientAPI.car.getCar({ car_id: fuelEfficiency.car_id });
+			let fallbackMileage = car.car_mileage ?? 0;
+
+			const allFEs = await clientAPI.car.getCarFuelEfficiency({
+				car_id: fuelEfficiency.car_id,
+			});
+			const otherFEs = allFEs.filter((fe) => fe.fe_id !== fuelEfficiency.fe_id);
+
+			if (otherFEs.length === 0) {
+				setPrevMileage(fallbackMileage);
+				return;
+			}
+
+			const currentDate = new Date(fuelEfficiency.fe_date).getTime();
+			const olderFEs = otherFEs.filter(
+				(fe) => new Date(fe.fe_date).getTime() < currentDate
+			);
+
+			if (olderFEs.length === 0) {
+				setPrevMileage(fallbackMileage);
+			} else {
+				olderFEs.sort(
+					(a, b) => new Date(b.fe_date).getTime() - new Date(a.fe_date).getTime()
+				);
+				const latestOlderFE = olderFEs[0];
+				setPrevMileage(latestOlderFE.fe_mileage);
+			}
+		};
+		fetchPrevMileage();
+	}, [fuelEfficiency, tokens, feId]);
 
 	useEffect(() => {
-		if (totalMileage !== null && initialMileage !== null) {
-			if (fuelEfficiency && fuelEfficiency.fe_id === feId) {
-				setDeltaMileage(totalMileage - initialMileage);
-			}
+		if (totalMileage != null && prevMileage != null) {
+			setDeltaMileage(totalMileage - prevMileage);
 		}
-	}, [totalMileage, initialMileage, fuelEfficiency, feId]);
+	}, [totalMileage, prevMileage]);
 
 	const validateForm = () => {
 		const newErrors: { [key: string]: string } = {};
@@ -268,7 +294,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 						</Label>
 						<Input
 							type="number"
-							value={unitPrice || ""}
+							value={unitPrice ?? ""}
 							onChange={(e) => setUnitPrice(Number(e.target.value))}
 							min="0.01"
 							step="0.01"
@@ -285,7 +311,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 						</Label>
 						<Input
 							type="number"
-							value={fuelAmount || ""}
+							value={fuelAmount ?? ""}
 							onChange={(e) => setFuelAmount(Number(e.target.value))}
 							min="0.01"
 							step="0.01"
@@ -298,11 +324,11 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 					<FormElementContainer>
 						<Label>
 							<Navigation color="white" />
-							<p>走行距離(km)</p>
+							<p>総走行距離(km)</p>
 						</Label>
 						<Input
 							type="number"
-							value={totalMileage || ""}
+							value={totalMileage ?? ""}
 							onChange={(e) => setTotalMileage(Number(e.target.value))}
 							min="0.01"
 							step="0.01"
@@ -312,6 +338,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 							<ErrorMessage>{errors.totalMileage}</ErrorMessage>
 						)}
 					</FormElementContainer>
+
 					<FuelEfficiencyDisplay>
 						<FuelEfficiencyLabel>
 							<Droplets color="#f12424" />
@@ -324,6 +351,7 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 							km/L
 						</FuelEfficiencyValue>
 					</FuelEfficiencyDisplay>
+
 					<ButtonsContainer>
 						<DeleteButton type="button" onClick={handleDelete}>
 							<DeleteButtonInner>
