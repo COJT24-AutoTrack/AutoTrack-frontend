@@ -159,34 +159,24 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 		if (image) {
 			const formData = new FormData();
 			try {
-				// ファイル名を UUID に変更
 				const uuid = uuidv4();
 				const fileExtension = "webp"; // 圧縮後は常に WebP とする
 				const newFileName = `${uuid}.${fileExtension}`;
 
-				// 画像を圧縮
 				const compressedImage = await compressImage(image);
 
-				// ファイル名を UUID に変更して FormData に追加
 				const renamedFile = new File([compressedImage], newFileName, {
 					type: "image/webp",
 				});
 				formData.append("file", renamedFile);
 
-				// デバッグ用ログ
-				console.log("Renamed Compressed File:", renamedFile);
-				console.log("FormData Content:", formData.get("file"));
-
-				// API を呼び出して画像をアップロード
 				await clientAPI.image.uploadImage({ formData });
 
-				// 新しい画像URLを設定
 				setCarData((prevData) => ({
 					...prevData,
 					car_image_url: `https://r2.autotrack.work/images/${newFileName}`,
 				}));
 			} catch (e) {
-				// 圧縮またはアップロード失敗時のエラーハンドリング
 				console.error("Upload Error:", e);
 				alert((e as Error).message);
 				return;
@@ -194,7 +184,6 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 		}
 
 		try {
-			// 新しい画像URLを使用して車両情報を更新
 			console.log("request:", carData as Car);
 
 			const response = await clientAPI.car.updateCar(carData as Car);

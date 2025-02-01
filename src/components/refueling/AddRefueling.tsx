@@ -130,9 +130,10 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
 	const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 	const [oldCarMileage, setOldCarMileage] = useState<number>(0);
-	const [latestFuelMileage, setLatestFuelMileage] = useState<number | null>(
+	const [latestMileage, setLatestMileage] = useState<number | null>(
 		null,
 	);
+	const [inputMileage, setInputMileage] = useState<number | null>(null);
 
 	const router = useRouter();
 
@@ -165,7 +166,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 					const latestMileage = carFuelEfficiencies
 						.map((fe) => Number(fe.fe_mileage))
 						.reduce((a, b) => Math.max(a, b), 0);
-					setLatestFuelMileage(latestMileage);
+					setLatestMileage(latestMileage);
 					setTotalMileage(latestMileage); // 初期値を設定
 				}
 			} catch (error) {
@@ -176,6 +177,12 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		fetchCarMileage();
 		fetchLatestFuelEfficiency();
 	}, [carId, tokens]);
+
+	useEffect(() => {
+		if (inputMileage !== null) {
+			setTotalMileage(inputMileage);
+		}
+	}, [inputMileage]);
 
 	const validateForm = () => {
 		const newErrors: { [key: string]: string } = {};
@@ -280,9 +287,9 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 							type="number"
 							step="0.01"
 							min="0.01"
-							value={totalMileage > 0 ? totalMileage : ""}
-							onChange={(e) => setTotalMileage(Number(e.target.value))}
-							placeholder={`現在の走行距離: ${latestFuelMileage !== null ? latestFuelMileage : oldCarMileage} km`}
+							value={inputMileage ?? ""}
+							onChange={(e) => setInputMileage(Number(e.target.value))}
+							placeholder={`現在の走行距離: ${latestMileage !== null ? latestMileage : oldCarMileage} km`}
 						/>
 					</FormElementContainer>
 					<FuelEfficiencyDisplay>
@@ -291,11 +298,11 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 							<p>燃費</p>
 						</FuelEfficiencyLabel>
 						<FuelEfficiencyValue className={Anton400.className}>
-							{(latestFuelMileage ?? 0) > 0 &&
+							{(latestMileage ?? 0) > 0 &&
 							totalMileage > 0 &&
 							amount &&
 							unitPrice
-								? ((totalMileage - (latestFuelMileage ?? 0)) / amount).toFixed(
+								? ((totalMileage - (latestMileage ?? 0)) / amount).toFixed(
 										2,
 									)
 								: "0.00"}
