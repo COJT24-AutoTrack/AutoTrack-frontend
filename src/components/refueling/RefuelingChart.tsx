@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import styled from "styled-components";
 import { usePCQuery } from "@/hooks/useBreakpoints";
 import {
@@ -18,6 +18,7 @@ import {
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { FuelEfficiency } from "@/api/models/models";
+import { Car } from "@/api/models/models";
 
 ChartJS.register(
 	CategoryScale,
@@ -32,6 +33,7 @@ ChartJS.register(
 
 interface RefuelingChartProps {
 	fuelEfficiencies: FuelEfficiency[];
+	carMileage: Car["car_mileage"];
 }
 
 const ChartContainer = styled.div`
@@ -101,6 +103,7 @@ oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
 const RefuelingChart: React.FC<RefuelingChartProps> = ({
 	fuelEfficiencies,
+	carMileage,
 }) => {
 	const isPC = usePCQuery();
 	const [filterRange, setFilterRange] = useState<"1M" | "6M" | "1Y" | "ALL">(
@@ -135,13 +138,13 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 	const dataFuelCost: number[] = [];
 	const dataFuelUnitPrice: number[] = [];
 
-	let prevMileage = 0;
+	let prevMileage = carMileage;
 	sortedAsc.forEach((fe, i) => {
 		labels.push(fe.fe_date.slice(0, 10));
 
 		dataDistance.push(fe.fe_mileage);
 
-		const diff = i === 0 ? fe.fe_mileage : fe.fe_mileage - prevMileage;
+		const diff = fe.fe_mileage - prevMileage;
 		dataDistanceSinceLastRefuel.push(diff);
 
 		let feValue = 0;
