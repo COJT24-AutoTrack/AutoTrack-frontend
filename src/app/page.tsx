@@ -56,6 +56,7 @@ export default async function Home() {
 
 	const calculateMonthlyValues = (
 		fuelEfficiencies: FuelEfficiency[],
+		car: Car,
 	): {
 		monthlyAverageFuelEfficiency: number;
 		monthlyGasCost: number;
@@ -64,43 +65,54 @@ export default async function Home() {
 		totalMileage: number;
 	} => {
 		const now = new Date();
-		const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-		const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+		const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // 月初
+		const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1); // 翌月1日
 
-		const monthlyFuelEfficiencies = fuelEfficiencies.filter((fe) => {
-			const feDate = new Date(fe.fe_date);
-			return feDate >= startOfMonth && feDate < endOfMonth;
-		});
+		let monthlyRecords = fuelEfficiencies
+			.filter((fe) => {
+				const feDate = new Date(fe.fe_date);
+				return feDate >= startOfMonth && feDate < endOfMonth;
+			})
+			.sort(
+				(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime(),
+			);
+
+		// 前月末までの最終給油記録（最も新しいもの1件）を取得
+		const lastRecordOfPreviousMonth = fuelEfficiencies
+			.filter((fe) => new Date(fe.fe_date) < startOfMonth)
+			.sort(
+				(a, b) => new Date(b.fe_date).getTime() - new Date(a.fe_date).getTime(),
+			)[0];
 
 		const monthlyMileage = (() => {
-			console.log("monthlyFuelEfficiencies", monthlyFuelEfficiencies);
-			if (monthlyFuelEfficiencies.length === 0) {
+			if (monthlyRecords.length === 0) {
+				return car.car_mileage ?? 0;
+			} else if (monthlyRecords.length <= 1) {
+				if (monthlyRecords.length === 1) {
+					return (
+						monthlyRecords[0].fe_mileage -
+						(lastRecordOfPreviousMonth?.fe_mileage ?? 0)
+					);
+				}
 				return 0;
-			} else if (monthlyFuelEfficiencies.length === 1) {
-				return monthlyFuelEfficiencies[0].fe_mileage;
 			} else {
-				const { minMileage, maxMileage } = monthlyFuelEfficiencies.reduce(
-					(acc, fe) => {
-						const mileage = fe.fe_mileage;
-						return {
-							minMileage: Math.min(acc.minMileage, mileage),
-							maxMileage: Math.max(acc.maxMileage, mileage),
-						};
-					},
-					{ minMileage: Infinity, maxMileage: -Infinity },
+				return (
+					monthlyRecords[monthlyRecords.length - 1].fe_mileage -
+					lastRecordOfPreviousMonth?.fe_mileage
 				);
-
-				return maxMileage - minMileage;
 			}
 		})();
-		const monthlyFuelAmount = monthlyFuelEfficiencies.reduce(
+
+		const monthlyFuelAmount = monthlyRecords.reduce(
 			(acc, fe) => acc + fe.fe_amount,
 			0,
 		);
-		const monthlyGasCost = monthlyFuelEfficiencies.reduce(
+
+		const monthlyGasCost = monthlyRecords.reduce(
 			(total, fe) => total + Math.round(fe.fe_amount * fe.fe_unitprice),
 			0,
 		);
+
 		const monthlyAverageFuelEfficiency =
 			monthlyFuelAmount > 0 ? monthlyMileage / monthlyFuelAmount : 0;
 
@@ -108,6 +120,7 @@ export default async function Home() {
 			(total, fe) => total + Math.round(fe.fe_amount * fe.fe_unitprice),
 			0,
 		);
+
 		const totalMileage = fuelEfficiencies.reduce(
 			(maxMileage, fe) => Math.max(maxMileage, fe.fe_mileage),
 			0,
@@ -155,7 +168,7 @@ export default async function Home() {
 			monthlyMileage,
 			totalGasCost,
 			totalMileage,
-		} = calculateMonthlyValues(carFuelEfficiencies);
+		} = calculateMonthlyValues(carFuelEfficiencies, car);
 
 		return {
 			...car,
