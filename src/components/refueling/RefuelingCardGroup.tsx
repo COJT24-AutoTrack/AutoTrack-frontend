@@ -14,21 +14,27 @@ const Container = styled.div`
 
 interface RefuelingCardGroupProps {
 	fuelEfficiencies: FuelEfficiency[];
+	carMileage: number | null;
 }
 
 const RefuelingCardGroup: React.FC<RefuelingCardGroupProps> = ({
 	fuelEfficiencies,
+	carMileage,
 }) => {
-	// 燃費計算用にデータを整形し、表示順に戻すための処理が後に続いている
+	// 昇順にソート（古いデータが先）
 	const ascendingFuelEfficiencies = [...fuelEfficiencies].sort(
-		(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime()
+		(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime(),
 	);
 
+	// 表示用に逆順（最新のデータが上）
 	const sortedFuelEfficiencies = [...ascendingFuelEfficiencies].reverse();
 
 	let prevMileage: number | null = null;
 
-	const fuelEfficiencyMap = new Map<string, { fuelEfficiency: number | null; deltaMileage: number | null }>();
+	const fuelEfficiencyMap = new Map<
+		string,
+		{ fuelEfficiency: number | null; deltaMileage: number | null }
+	>();
 
 	ascendingFuelEfficiencies.forEach((fe, index) => {
 		let fuelEfficiency: number | null = null;
@@ -37,13 +43,20 @@ const RefuelingCardGroup: React.FC<RefuelingCardGroupProps> = ({
 		const currentMileage = Number(fe.fe_mileage);
 		const key = String(fe.fe_id);
 
-		if (prevMileage !== null && currentMileage > prevMileage && Number(fe.fe_amount) > 0) {
-			fuelEfficiency = (currentMileage - prevMileage) / Number(fe.fe_amount);
+		if (index === 0) {
+			// 最初の給油記録は car_mileage と比較
+			const initialMileage = carMileage !== null ? carMileage : 0;
+			deltaMileage = currentMileage - initialMileage;
+		} else {
+			// 2回目以降: 前の給油データと比較
+			const previousMileage = Number(
+				ascendingFuelEfficiencies[index - 1].fe_mileage,
+			);
+			deltaMileage = currentMileage - previousMileage;
 		}
 
-		if (index > 0) {
-			const previousMileage = Number(ascendingFuelEfficiencies[index - 1].fe_mileage);
-			deltaMileage = currentMileage - previousMileage;
+		if (deltaMileage !== null && deltaMileage > 0 && Number(fe.fe_amount) > 0) {
+			fuelEfficiency = deltaMileage / Number(fe.fe_amount);
 		}
 
 		fuelEfficiencyMap.set(key, { fuelEfficiency, deltaMileage });

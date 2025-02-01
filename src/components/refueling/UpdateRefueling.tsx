@@ -145,11 +145,13 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 		null,
 	);
 	const [date, setDate] = useState<string>("");
-	const [amount, setAmount] = useState<number | null>(null);
-	const [mileage, setMileage] = useState<number | null>(null);
+	const [fuelAmount, setFuelAmount] = useState<number | null>(null);
+	const [totalMileage, setTotalMileage] = useState<number | null>(null);
 	const [unitPrice, setUnitPrice] = useState<number | null>(null);
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
 	const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+	const [deltaMileage, setDeltaMileage] = useState<number | null>(null);
+	const [initialMileage, setInitialMileage] = useState<number | null>(null);
 
 	useEffect(() => {
 		const clientAPI = ClientAPI(tokens.token);
@@ -165,11 +167,26 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 	useEffect(() => {
 		if (fuelEfficiency) {
 			setDate(fuelEfficiency.fe_date);
-			setAmount(fuelEfficiency.fe_amount);
-			setMileage(fuelEfficiency.fe_mileage);
+			setFuelAmount(fuelEfficiency.fe_amount);
+			setTotalMileage(fuelEfficiency.fe_mileage);
 			setUnitPrice(fuelEfficiency.fe_unitprice);
+
+			const fetchInitialMileage = async () => {
+				const clientAPI = ClientAPI(tokens.token);
+				const car = await clientAPI.car.getCar({ car_id: fuelEfficiency.car_id });
+				setInitialMileage(car.car_mileage);
+			};
+			fetchInitialMileage();
 		}
-	}, [fuelEfficiency]);
+	}, [fuelEfficiency, tokens]);
+
+	useEffect(() => {
+		if (totalMileage !== null && initialMileage !== null) {
+			if (fuelEfficiency && fuelEfficiency.fe_id === feId) {
+				setDeltaMileage(totalMileage - initialMileage);
+			}
+		}
+	}, [totalMileage, initialMileage, fuelEfficiency, feId]);
 
 	const validateForm = () => {
 		const newErrors: { [key: string]: string } = {};
@@ -180,11 +197,11 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 		if (unitPrice === null || unitPrice <= 0) {
 			newErrors.unitPrice = "有効な単価を入力してください";
 		}
-		if (amount === null || amount <= 0) {
-			newErrors.amount = "有効な給油量を入力してください";
+		if (fuelAmount === null || fuelAmount <= 0) {
+			newErrors.fuelAmount = "有効な給油量を入力してください";
 		}
-		if (mileage === null || mileage <= 0) {
-			newErrors.mileage = "有効な走行距離を入力してください";
+		if (totalMileage === null || totalMileage <= 0) {
+			newErrors.totalMileage = "有効な走行距離を入力してください";
 		}
 
 		setErrors(newErrors);
@@ -205,9 +222,9 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 				fe_id: fuelEfficiency.fe_id,
 				car_id: fuelEfficiency.car_id,
 				fe_date: date,
-				fe_amount: amount!,
+				fe_amount: fuelAmount!,
 				fe_unitprice: unitPrice!,
-				fe_mileage: mileage || 0,
+				fe_mileage: totalMileage!,
 			});
 			window.location.href = "/refueling";
 		}
@@ -268,14 +285,14 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 						</Label>
 						<Input
 							type="number"
-							value={amount || ""}
-							onChange={(e) => setAmount(Number(e.target.value))}
+							value={fuelAmount || ""}
+							onChange={(e) => setFuelAmount(Number(e.target.value))}
 							min="0.01"
 							step="0.01"
 							required
 						/>
-						{isSubmitted && errors.amount && (
-							<ErrorMessage>{errors.amount}</ErrorMessage>
+						{isSubmitted && errors.fuelAmount && (
+							<ErrorMessage>{errors.fuelAmount}</ErrorMessage>
 						)}
 					</FormElementContainer>
 					<FormElementContainer>
@@ -285,14 +302,14 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 						</Label>
 						<Input
 							type="number"
-							value={mileage || ""}
-							onChange={(e) => setMileage(Number(e.target.value))}
+							value={totalMileage || ""}
+							onChange={(e) => setTotalMileage(Number(e.target.value))}
 							min="0.01"
 							step="0.01"
 							required
 						/>
-						{isSubmitted && errors.mileage && (
-							<ErrorMessage>{errors.mileage}</ErrorMessage>
+						{isSubmitted && errors.totalMileage && (
+							<ErrorMessage>{errors.totalMileage}</ErrorMessage>
 						)}
 					</FormElementContainer>
 					<FuelEfficiencyDisplay>
@@ -301,9 +318,9 @@ const UpdateRefueling: React.FC<UpdateFuelingProps> = ({ tokens, feId }) => {
 							<p>燃費</p>
 						</FuelEfficiencyLabel>
 						<FuelEfficiencyValue className={Anton400.className}>
-							{mileage && amount && mileage > 0 && amount > 0
-								? (mileage / amount).toFixed(2)
-								: "0"}
+							{deltaMileage !== null && fuelAmount && fuelAmount > 0
+								? (deltaMileage / fuelAmount).toFixed(2)
+								: "0.00"}
 							km/L
 						</FuelEfficiencyValue>
 					</FuelEfficiencyDisplay>

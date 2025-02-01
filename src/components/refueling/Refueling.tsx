@@ -57,6 +57,7 @@ interface RefuelingProps {
 
 const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
+	const [carMileage, setCarMileage] = useState<number | null>(null);
 	const [fuelEfficiencies, setFuelEfficiencies] = useState<
 		FuelEfficiency[] | null
 	>(null);
@@ -88,7 +89,22 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 				}
 			}
 		};
+		const fetchCarMileage = async () => {
+			if (userCars && userCars.length !== 0) {
+				const clientAPI = ClientAPI(token);
+				try {
+					const car = await clientAPI.car.getCar({
+						car_id: userCars[selectedCarIndex].car_id,
+					});
+					setCarMileage(car.car_mileage ?? 0);
+				} catch (error) {
+					console.error("Error fetching car info:", error);
+				}
+			}
+		};
+
 		fetchFuelEfficiencies();
+		fetchCarMileage();
 	}, [selectedCarIndex, userCars, token]);
 
 	// 給油追加ボタン
@@ -120,7 +136,10 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 								<RefuelingChart fuelEfficiencies={fuelEfficiencies} />
 
 								{/* ▼ カード一覧表示 */}
-								<RefuelingCardGroup fuelEfficiencies={fuelEfficiencies} />
+								<RefuelingCardGroup
+									fuelEfficiencies={fuelEfficiencies}
+									carMileage={carMileage}
+								/>
 							</>
 						)
 					)}

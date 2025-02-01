@@ -156,12 +156,17 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 			try {
 				const fuelEfficiencies =
 					await clientAPI.fuelEfficiency.getFuelEfficiencies();
-				if (fuelEfficiencies.length > 0) {
-					const latestMileage = fuelEfficiencies
-						.map((fe: FuelEfficiency) => fe.fe_mileage)
+
+				const carFuelEfficiencies = fuelEfficiencies.filter(
+					(fe: FuelEfficiency) => fe.car_id === carId,
+				);
+
+				if (carFuelEfficiencies.length > 0) {
+					const latestMileage = carFuelEfficiencies
+						.map((fe) => Number(fe.fe_mileage))
 						.reduce((a, b) => Math.max(a, b), 0);
 					setLatestFuelMileage(latestMileage);
-					console.log("Latest mileage:", latestMileage);
+					setTotalMileage(latestMileage); // 初期値を設定
 				}
 			} catch (error) {
 				console.error("Error fetching fuel efficiency:", error);
