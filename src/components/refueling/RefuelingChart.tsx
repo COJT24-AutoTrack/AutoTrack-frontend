@@ -127,24 +127,39 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 		(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime(),
 	);
 
-	const labels = sortedAsc.map((fe) => fe.fe_date.slice(0, 10));
-	const dataFuelEfficiency = sortedAsc.map((fe) =>
-		fe.fe_amount ? fe.fe_mileage / fe.fe_amount : 0,
-	);
-	const averageFuelEfficiency =
-		dataFuelEfficiency.reduce((acc, cur) => acc + cur, 0) /
-		dataFuelEfficiency.length;
-	const dataFuelAmount = sortedAsc.map((fe) => fe.fe_amount || 0);
-	const dataFuelCost = sortedAsc.map((fe) =>
-		fe.fe_amount ? fe.fe_unitprice * fe.fe_amount : 0,
-	);
-	let cumulative = 0;
-	const dataDistance = sortedAsc.map((fe) => {
-		cumulative += fe.fe_mileage;
-		return cumulative;
+	const labels: string[] = [];
+	const dataFuelEfficiency: number[] = [];
+	const dataDistanceSinceLastRefuel: number[] = [];
+	const dataDistance: number[] = [];
+	const dataFuelAmount: number[] = [];
+	const dataFuelCost: number[] = [];
+	const dataFuelUnitPrice: number[] = [];
+
+	let prevMileage = 0;
+	sortedAsc.forEach((fe, i) => {
+		labels.push(fe.fe_date.slice(0, 10));
+
+		dataDistance.push(fe.fe_mileage);
+
+		const diff = i === 0 ? fe.fe_mileage : fe.fe_mileage - prevMileage;
+		dataDistanceSinceLastRefuel.push(diff);
+
+		let feValue = 0;
+		if (fe.fe_amount && fe.fe_amount > 0 && diff > 0) {
+			feValue = diff / fe.fe_amount;
+		}
+		dataFuelEfficiency.push(feValue);
+
+		dataFuelAmount.push(fe.fe_amount || 0);
+		dataFuelCost.push(fe.fe_amount ? fe.fe_amount * fe.fe_unitprice : 0);
+		dataFuelUnitPrice.push(fe.fe_unitprice);
+
+		prevMileage = fe.fe_mileage;
 	});
-	const dataDistanceSinceLastRefuel = sortedAsc.map((fe) => fe.fe_mileage);
-	const dataFuelUnitPrice = sortedAsc.map((fe) => fe.fe_unitprice);
+
+	const sumFE = dataFuelEfficiency.reduce((acc, val) => acc + val, 0);
+	const averageFuelEfficiency =
+		dataFuelEfficiency.length > 0 ? sumFE / dataFuelEfficiency.length : 0;
 
 	const chartData: ChartData<"bar" | "line", number[], string> = {
 		labels,
@@ -219,7 +234,7 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 				stepped: "before",
 				borderDash: [5, 5],
 				pointRadius: 0,
-			}
+			},
 		],
 	};
 
@@ -283,7 +298,6 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 					},
 				},
 			},
-
 			yFuelCost: {
 				type: "linear",
 				position: "right",
