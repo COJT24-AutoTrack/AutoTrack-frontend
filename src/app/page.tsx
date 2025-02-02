@@ -68,14 +68,14 @@ export default async function Home() {
 		const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // 月初
 		const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1); // 翌月1日
 
-		let monthlyRecords = fuelEfficiencies
-			.filter((fe) => {
-				const feDate = new Date(fe.fe_date);
-				return feDate >= startOfMonth && feDate < endOfMonth;
-			})
-			.sort(
-				(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime(),
-			);
+		const allRecords = fuelEfficiencies.sort(
+			(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime(),
+		);
+
+		let monthlyRecords = allRecords.filter(
+			(fe) =>
+				new Date(fe.fe_date) >= startOfMonth && new Date(fe.fe_date) < endOfMonth,
+		);
 
 		// 前月末までの最終給油記録（最も新しいもの1件）を取得
 		const lastRecordOfPreviousMonth = fuelEfficiencies
@@ -85,16 +85,19 @@ export default async function Home() {
 			)[0];
 
 		const monthlyMileage = (() => {
-			if (monthlyRecords.length === 0) {
-				return car.car_mileage ?? 0;
-			} else if (monthlyRecords.length <= 1) {
-				if (monthlyRecords.length === 1) {
+			if (allRecords.length === 0) {
+				return 0;
+			} else if (allRecords.length === 1) {
+				if (monthlyRecords.length === 0) {
+					return 0;
+				} else if (monthlyRecords.length === 1) {
+					return monthlyRecords[0].fe_mileage - car.car_mileage;
+				} else {
 					return (
-						monthlyRecords[0].fe_mileage -
-						(lastRecordOfPreviousMonth?.fe_mileage ?? 0)
+						monthlyRecords[monthlyRecords.length - 1].fe_mileage -
+						monthlyRecords[0].fe_mileage
 					);
 				}
-				return 0;
 			} else {
 				return (
 					monthlyRecords[monthlyRecords.length - 1].fe_mileage -
