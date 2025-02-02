@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import styled from "styled-components";
 import { usePCQuery } from "@/hooks/useBreakpoints";
 import {
@@ -18,7 +18,7 @@ import {
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { FuelEfficiency } from "@/api/models/models";
-import { before } from "node:test";
+import { Car } from "@/api/models/models";
 
 ChartJS.register(
 	CategoryScale,
@@ -33,6 +33,7 @@ ChartJS.register(
 
 interface RefuelingChartProps {
 	fuelEfficiencies: FuelEfficiency[];
+	carMileage: Car["car_mileage"];
 }
 
 const ChartContainer = styled.div`
@@ -66,49 +67,49 @@ const FilterButton = styled.button`
 	}
 `;
 
+const colors = {
+	fuelEfficiency: "#EA4335",
+	fuelEfficiencyTransparent: "#EA4335CC",
+	cumulativeDistance: "#34A853",
+	cumulativeDistanceTransparent: "#34A853CC",
+	distanceSinceLastRefuel: "#225374",
+	distanceSinceLastRefuelTransparent: "#22537466",
+	fuelAmount: "#4285F4",
+	fuelAmountTransparent: "#4285F4CC",
+	fuelCost: "#FBBC05",
+	fuelCostTransparent: "#FBBC05CC",
+	fuelUnitPrice: "#ff8c00",
+	fuelUnitPriceTransparent: "#ff8c00CC",
+	averageFuelEfficiency: "#EA433544",
+	averageFuelEfficiencyTranceparent: "#EA4335CC",
+	legendText: "#999999",
+	tooltipBackground: "#333333",
+	tooltipTitle: "#999999",
+	tooltipBody: "#999999",
+	grid: "#444444",
+	axisText: "#999999",
+};
+
+const now = new Date();
+
+const oneMonthAgo = new Date(now.getTime());
+oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+const sixMonthsAgo = new Date(now.getTime());
+sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+const oneYearAgo = new Date(now.getTime());
+oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
 const RefuelingChart: React.FC<RefuelingChartProps> = ({
 	fuelEfficiencies,
+	carMileage,
 }) => {
 	const isPC = usePCQuery();
 	const [filterRange, setFilterRange] = useState<"1M" | "6M" | "1Y" | "ALL">(
 		"ALL",
 	);
 
-	const colors = {
-		fuelEfficiency: "#EA4335",
-		fuelEfficiencyTransparent: "#EA4335CC",
-		cumulativeDistance: "#34A853",
-		cumulativeDistanceTransparent: "#34A853CC",
-		distanceSinceLastRefuel: "#225374",
-		distanceSinceLastRefuelTransparent: "#22537466",
-		fuelAmount: "#4285F4",
-		fuelAmountTransparent: "#4285F4CC",
-		fuelCost: "#FBBC05",
-		fuelCostTransparent: "#FBBC05CC",
-		fuelUnitPrice: "#ff8c00",
-		fuelUnitPriceTransparent: "#ff8c00CC",
-		averageFuelEfficiency: "#EA433544",
-		averageFuelEfficiencyTranceparent: "#EA4335CC",
-		legendText: "#999999",
-		tooltipBackground: "#333333",
-		tooltipTitle: "#999999",
-		tooltipBody: "#999999",
-		grid: "#444444",
-		axisText: "#999999",
-	};
-
-	// フィルタ用に日付を用意
-	const now = new Date();
-	const oneMonthAgo = new Date(now.getTime());
-	oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-
-	const sixMonthsAgo = new Date(now.getTime());
-	sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-	const oneYearAgo = new Date(now.getTime());
-	oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-
-	// データをフィルタリング
 	const filteredData = fuelEfficiencies.filter((fe) => {
 		const feDate = new Date(fe.fe_date);
 
@@ -125,46 +126,44 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 		}
 	});
 
-	// ソート
 	const sortedAsc = [...filteredData].sort(
 		(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime(),
 	);
 
-	// ラベル(日付)
-	const labels = sortedAsc.map((fe) => fe.fe_date.slice(0, 10));
+	const labels: string[] = [];
+	const dataFuelEfficiency: number[] = [];
+	const dataDistanceSinceLastRefuel: number[] = [];
+	const dataDistance: number[] = [];
+	const dataFuelAmount: number[] = [];
+	const dataFuelCost: number[] = [];
+	const dataFuelUnitPrice: number[] = [];
 
-	// 燃費 (km/L)
-	const dataFuelEfficiency = sortedAsc.map((fe) =>
-		fe.fe_amount ? fe.fe_mileage / fe.fe_amount : 0,
-	);
+	let prevMileage = carMileage;
+	sortedAsc.forEach((fe, i) => {
+		labels.push(fe.fe_date.slice(0, 10));
 
-	// 平均燃費 (km/L)
-	const averageFuelEfficiency =
-		dataFuelEfficiency.reduce((acc, cur) => acc + cur, 0) /
-		dataFuelEfficiency.length;
+		dataDistance.push(fe.fe_mileage);
 
-	// 給油量 (L)
-	const dataFuelAmount = sortedAsc.map((fe) => fe.fe_amount || 0);
+		const diff = fe.fe_mileage - prevMileage;
+		dataDistanceSinceLastRefuel.push(diff);
 
-	// 給油金額 (円)
-	const dataFuelCost = sortedAsc.map((fe) =>
-		fe.fe_amount ? fe.fe_unitprice * fe.fe_amount : 0,
-	);
+		let feValue = 0;
+		if (fe.fe_amount && fe.fe_amount > 0 && diff > 0) {
+			feValue = diff / fe.fe_amount;
+		}
+		dataFuelEfficiency.push(feValue);
 
-	// 走行距離 (累計)
-	let cumulative = 0;
-	const dataDistance = sortedAsc.map((fe) => {
-		cumulative += fe.fe_mileage;
-		return cumulative;
+		dataFuelAmount.push(fe.fe_amount || 0);
+		dataFuelCost.push(fe.fe_amount ? fe.fe_amount * fe.fe_unitprice : 0);
+		dataFuelUnitPrice.push(fe.fe_unitprice);
+
+		prevMileage = fe.fe_mileage;
 	});
 
-	// 前回からの走行距離
-	const dataDistanceSinceLastRefuel = sortedAsc.map((fe) => fe.fe_mileage);
+	const sumFE = dataFuelEfficiency.reduce((acc, val) => acc + val, 0);
+	const averageFuelEfficiency =
+		dataFuelEfficiency.length > 0 ? sumFE / dataFuelEfficiency.length : 0;
 
-	// 単価 (円/L)
-	const dataFuelUnitPrice = sortedAsc.map((fe) => fe.fe_unitprice);
-
-	// チャートデータ
 	const chartData: ChartData<"bar" | "line", number[], string> = {
 		labels,
 		datasets: [
@@ -238,11 +237,10 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 				stepped: "before",
 				borderDash: [5, 5],
 				pointRadius: 0,
-			}
+			},
 		],
 	};
 
-	// オプション
 	const chartOptions: ChartOptions<"bar" | "line"> = {
 		responsive: true,
 		plugins: {
@@ -303,7 +301,6 @@ const RefuelingChart: React.FC<RefuelingChartProps> = ({
 					},
 				},
 			},
-
 			yFuelCost: {
 				type: "linear",
 				position: "right",

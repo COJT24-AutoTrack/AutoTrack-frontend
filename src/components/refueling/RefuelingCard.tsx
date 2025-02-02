@@ -127,29 +127,21 @@ const NextPageButton = styled.button`
 
 interface RefuelingCardProps {
 	fuelEfficiency?: FuelEfficiency;
+	deltaMileage?: number | null;
+	calculatedFuelEfficiency?: number | null;
 }
 
-const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
+const RefuelingCard: React.FC<RefuelingCardProps> = ({
+	fuelEfficiency,
+	deltaMileage,
+	calculatedFuelEfficiency,
+}) => {
 	const router = useRouter();
 
 	const handleDetailClick = () => {
 		if (fuelEfficiency) {
 			window.location.href = `refueling/update/${fuelEfficiency.fe_id}`;
 		}
-	};
-
-	const formatDate = (dateString: string) => {
-		return dateString.split("T")[0];
-	};
-
-	const calculateTotalCost = () => {
-		if (!fuelEfficiency) return "0";
-		return (fuelEfficiency.fe_amount * fuelEfficiency.fe_unitprice).toFixed(0);
-	};
-
-	const calculateFuelEfficiency = () => {
-		if (!fuelEfficiency || fuelEfficiency.fe_amount <= 0) return "0.00";
-		return (fuelEfficiency.fe_mileage / fuelEfficiency.fe_amount).toFixed(2);
 	};
 
 	return (
@@ -160,7 +152,11 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 					<FuelEfficiencyLabel>燃費</FuelEfficiencyLabel>
 					<FuelEfficiencyValue>
 						<FuelEfficiencyNumber>
-							{calculateFuelEfficiency()}
+							{fuelEfficiency &&
+							calculatedFuelEfficiency &&
+							fuelEfficiency.fe_amount > 0
+								? calculatedFuelEfficiency.toFixed(2)
+								: "0.00"}
 						</FuelEfficiencyNumber>
 						<FuelEfficiencyUnit>km/L</FuelEfficiencyUnit>
 					</FuelEfficiencyValue>
@@ -189,7 +185,7 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 						<MetricContent>
 							<MetricLabel>走行距離</MetricLabel>
 							<MetricValue>
-								{fuelEfficiency ? `${fuelEfficiency.fe_mileage}km` : ""}
+								{deltaMileage ? `${deltaMileage.toFixed(0)}km` : "0km"}
 							</MetricValue>
 						</MetricContent>
 					</MetricItem>
@@ -216,7 +212,7 @@ const RefuelingCard: React.FC<RefuelingCardProps> = ({ fuelEfficiency }) => {
 							<MetricLabel>給油金額</MetricLabel>
 							<MetricValue>
 								{fuelEfficiency
-									? `${calculateTotalCost()}円 (${fuelEfficiency.fe_unitprice}円/L)`
+									? `${(fuelEfficiency.fe_amount * fuelEfficiency.fe_unitprice).toFixed(0)}円 (${fuelEfficiency.fe_unitprice}円/L)`
 									: ""}
 							</MetricValue>
 						</MetricContent>

@@ -57,10 +57,12 @@ interface RefuelingProps {
 
 const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
+	const [carMileage, setCarMileage] = useState<number | null>(null);
 	const [fuelEfficiencies, setFuelEfficiencies] = useState<
 		FuelEfficiency[] | null
 	>(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isCarMileageLoading, setIsCarMileageLoading] = useState(false);
 	const router = useRouter();
 
 	const switchCar = () => {
@@ -69,37 +71,54 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 		}
 	};
 
-	// 給油データ取得
 	useEffect(() => {
-		const fetchFuelEfficiencies = async () => {
+		const fetchData = async () => {
 			if (userCars && userCars.length !== 0) {
 				setIsLoading(true);
+				setIsCarMileageLoading(true);
+				const clientAPI = ClientAPI(token);
+
 				try {
-					const clientAPI = ClientAPI(token);
-					const response = await clientAPI.car.getCarFuelEfficiency({
-						car_id: userCars[selectedCarIndex].car_id,
-					});
-					setFuelEfficiencies(response);
+					const [fuelResponse, carResponse] = await Promise.all([
+						clientAPI.car.getCarFuelEfficiency({
+							car_id: userCars[selectedCarIndex].car_id,
+						}),
+						clientAPI.car.getCar({
+							car_id: userCars[selectedCarIndex].car_id,
+						}),
+					]);
+
+					setFuelEfficiencies(fuelResponse);
+					setCarMileage(carResponse.car_mileage ?? 0);
 				} catch (error) {
-					console.error("Failed to fetch fuel efficiencies:", error);
-					// エラー処理をここに追加することもできます
+					console.error("Failed to fetch data:", error);
 				} finally {
 					setIsLoading(false);
+					setIsCarMileageLoading(false);
 				}
 			}
 		};
-		fetchFuelEfficiencies();
+
+		fetchData();
 	}, [selectedCarIndex, userCars, token]);
 
-	// 給油追加ボタン
 	const handleAddClick = () => {
 		if (userCars) {
-			window.location.href = `/refueling/add/${userCars[selectedCarIndex].car_id}`;
+			router.push(`/refueling/add/${userCars[selectedCarIndex].car_id}`);
 		}
 	};
 
 	if (!userCars) {
 		return <div>ユーザーの車が見つかりません</div>;
+	}
+
+	if (
+		isLoading ||
+		isCarMileageLoading ||
+		!fuelEfficiencies ||
+		carMileage === null
+	) {
+		return <LoadingContainer>データを読み込み中...</LoadingContainer>;
 	}
 
 	return (
@@ -111,19 +130,14 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 					switchCar={switchCar}
 				/>
 				<div style={{ padding: "10px" }}>
-					{isLoading ? (
-						<LoadingContainer>データを読み込み中...</LoadingContainer>
-					) : (
-						fuelEfficiencies && (
-							<>
-								{/* ▼ ここでグラフ表示 */}
-								<RefuelingChart fuelEfficiencies={fuelEfficiencies} />
-
-								{/* ▼ カード一覧表示 */}
-								<RefuelingCardGroup fuelEfficiencies={fuelEfficiencies} />
-							</>
-						)
-					)}
+					<RefuelingChart
+						fuelEfficiencies={fuelEfficiencies}
+						carMileage={carMileage}
+					/>
+					<RefuelingCardGroup
+						fuelEfficiencies={fuelEfficiencies}
+						carMileage={carMileage}
+					/>
 				</div>
 			</Container>
 			{userCars.length !== 0 && (
