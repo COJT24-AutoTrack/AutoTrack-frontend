@@ -481,10 +481,7 @@ export interface ImageAPIInterface {
 
 export interface CarInspectionAPIInterface {
 	createCarInspection: {
-		request: {
-			car_id: string;
-			inspection_data: CarInspection;
-		};
+		request: CarInspection;
 		response: void;
 	};
 	getCarInspection: {

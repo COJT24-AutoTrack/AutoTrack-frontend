@@ -18,6 +18,7 @@ import {
 	Trash2,
 } from "lucide-react";
 import BackHeader from "../base/BackHeader";
+import QrScannerComponent from "../maintenance/QrScannerComponent";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -110,6 +111,27 @@ const DeleteButton = styled(Button)`
 	}
 `;
 
+const TabContainer = styled.div`
+	display: flex;
+	justify-content: center;
+	margin-bottom: 20px;
+`;
+
+const TabButton = styled.button<{ active: boolean }>`
+	padding: 10px 20px;
+	background-color: ${(props) => (props.active ? "#f12424" : "#444")};
+	color: #ffffff;
+	border: none;
+	cursor: pointer;
+	font-size: 16px;
+	border-radius: 5px;
+	margin: 0 5px;
+
+	&:hover {
+		background-color: ${(props) => (props.active ? "#d61f1f" : "#666")};
+	}
+`;
+
 interface CarComponentProps {
 	carId: string;
 	tokens: {
@@ -120,6 +142,7 @@ interface CarComponentProps {
 
 const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 	const [userCar, setUserCar] = useState<Car | null>(null);
+	const [tab, setTab] = useState<number>(0);
 
 	useEffect(() => {
 		const fetchCar = async () => {
@@ -156,69 +179,85 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 		<div>
 			<BackHeader route={"/"} />
 			<PageContainer>
-				<CarInfoContainer>
-					<CarImage
-						src={
-							userCar?.car_image_url ||
-							`https://r2.autotrack.work/images/No_Image9e6034d5.png`
-						}
-						alt="Your car"
-						width={800}
-						height={480}
-					/>
-					<CarInfoGrid>
-						<CarInfoItem>
-							<CarInfoLabel>
-								<CarIcon size={16} /> 車名
-							</CarInfoLabel>
-							<CarInfoValue>{userCar?.car_name}</CarInfoValue>
-						</CarInfoItem>
-						<CarInfoItem>
-							<CarInfoLabel>
-								<Hash size={16} /> 型式番号
-							</CarInfoLabel>
-							<CarInfoValue>{userCar?.carmodelnum}</CarInfoValue>
-						</CarInfoItem>
-						<CarInfoItem>
-							<CarInfoLabel>
-								<Palette size={16} /> 色
-							</CarInfoLabel>
-							<CarInfoValue>{userCar?.car_color}</CarInfoValue>
-						</CarInfoItem>
-						<CarInfoItem>
-							<CarInfoLabel>
-								<Navigation size={16} /> 走行距離
-							</CarInfoLabel>
-							<CarInfoValue>{userCar?.car_mileage} km</CarInfoValue>
-						</CarInfoItem>
-						<CarInfoItem>
-							<CarInfoLabel>
-								<Droplet size={16} /> 浸水車
-							</CarInfoLabel>
-							<CarInfoValue>
-								{userCar?.car_isflooding ? "はい" : "いいえ"}
-							</CarInfoValue>
-						</CarInfoItem>
-						<CarInfoItem>
-							<CarInfoLabel>
-								<Cigarette size={16} /> 喫煙車
-							</CarInfoLabel>
-							<CarInfoValue>
-								{userCar?.car_issmoked ? "はい" : "いいえ"}
-							</CarInfoValue>
-						</CarInfoItem>
-					</CarInfoGrid>
-					<ButtonContainer>
-						<DeleteButton onClick={handleDelete}>
-							<Trash2 size={18} />
-							削除
-						</DeleteButton>
-						<EditButton onClick={handleEdit}>
-							<Edit size={18} />
-							編集
-						</EditButton>
-					</ButtonContainer>
-				</CarInfoContainer>
+				{/* タブ UI */}
+				<TabContainer>
+					<TabButton active={tab === 0} onClick={() => setTab(0)}>
+						基本情報
+					</TabButton>
+					<TabButton active={tab === 1} onClick={() => setTab(1)}>
+						追加情報
+					</TabButton>
+				</TabContainer>
+
+				{tab === 0 ? (
+					<CarInfoContainer>
+						<CarImage
+							src={
+								userCar?.car_image_url ||
+								`https://r2.autotrack.work/images/No_Image9e6034d5.png`
+							}
+							alt="Your car"
+							width={800}
+							height={480}
+						/>
+						<CarInfoGrid>
+							<CarInfoItem>
+								<CarInfoLabel>
+									<CarIcon size={16} /> 車名
+								</CarInfoLabel>
+								<CarInfoValue>{userCar?.car_name}</CarInfoValue>
+							</CarInfoItem>
+							<CarInfoItem>
+								<CarInfoLabel>
+									<Hash size={16} /> 型式番号
+								</CarInfoLabel>
+								<CarInfoValue>{userCar?.carmodelnum}</CarInfoValue>
+							</CarInfoItem>
+							<CarInfoItem>
+								<CarInfoLabel>
+									<Palette size={16} /> 色
+								</CarInfoLabel>
+								<CarInfoValue>{userCar?.car_color}</CarInfoValue>
+							</CarInfoItem>
+							<CarInfoItem>
+								<CarInfoLabel>
+									<Navigation size={16} /> 走行距離
+								</CarInfoLabel>
+								<CarInfoValue>{userCar?.car_mileage} km</CarInfoValue>
+							</CarInfoItem>
+							<CarInfoItem>
+								<CarInfoLabel>
+									<Droplet size={16} /> 浸水車
+								</CarInfoLabel>
+								<CarInfoValue>
+									{userCar?.car_isflooding ? "はい" : "いいえ"}
+								</CarInfoValue>
+							</CarInfoItem>
+							<CarInfoItem>
+								<CarInfoLabel>
+									<Cigarette size={16} /> 喫煙車
+								</CarInfoLabel>
+								<CarInfoValue>
+									{userCar?.car_issmoked ? "はい" : "いいえ"}
+								</CarInfoValue>
+							</CarInfoItem>
+						</CarInfoGrid>
+						<ButtonContainer>
+							<DeleteButton onClick={handleDelete}>
+								<Trash2 size={18} />
+								削除
+							</DeleteButton>
+							<EditButton onClick={handleEdit}>
+								<Edit size={18} />
+								編集
+							</EditButton>
+						</ButtonContainer>
+					</CarInfoContainer>
+				) : (
+					<CarInfoContainer>
+						<QrScannerComponent tokens={tokens} carId={carId} />
+					</CarInfoContainer>
+				)}
 			</PageContainer>
 		</div>
 	);
