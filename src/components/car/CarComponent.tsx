@@ -139,6 +139,64 @@ const TabButton = styled.button<{ active: boolean }>`
 	}
 `;
 
+const InspectionContainer = styled.div`
+	background-color: #2b2b2b;
+	border-radius: 8px;
+	overflow-y: scroll;
+	max-height: 50dvh;
+`;
+
+const InspectionTitle = styled.h3`
+	font-size: 20px;
+`;
+
+const InspectionTable = styled.table`
+	width: 100%;
+	border-collapse: collapse;
+`;
+
+const InspectionTableRow = styled.tr`
+	border-bottom: 1px solid #444;
+`;
+
+const InspectionTableHeader = styled.th`
+	text-align: left;
+	padding: 8px;
+	background-color: #333;
+	color: #f12424;
+	font-weight: bold;
+`;
+
+const InspectionTableCell = styled.td`
+	padding: 8px;
+	color: #fff;
+`;
+
+const InspectionButtonContainer = styled.div`
+	display: flex;
+	justify-content: center;
+	margin-top: 30px;
+`;
+
+const SubmitButton = styled.button`
+	padding: 12px 20px;
+	border-radius: 4px;
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	background-color: #f12424;
+	color: #ffffff;
+	border: none;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+
+	&:hover {
+		background-color: #d61f1f;
+	}
+`;
+
 export function toStandardCarOrKei(ci: CarInspection) {
 	const {
 		car_id,
@@ -264,6 +322,7 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 	const [carInspection, setCarInspection] = useState<CarInspection | null>(
 		null,
 	);
+	const [isScanning, setIsScanning] = useState(false);
 
 	useEffect(() => {
 		const fetchCar = async () => {
@@ -392,35 +451,47 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 					</CarInfoContainer>
 				) : (
 					<CarInfoContainer>
-						{carInspection && (
-							<div style={{ padding: "10px", margin: "10px 0" }}>
-								<h3>DBに登録済みの車検証情報</h3>
-								<ul>
-									{Object.entries(toStandardCarOrKei(carInspection)).map(
-										([key, val], index) => (
-											<li key={key}>
-												<strong>
-													{carInspectionRecord[
-														key as keyof typeof carInspectionRecord
-													] || key}
-													:
-												</strong>{" "}
-												{String(val)}
-												{/* {getDisplayValue(
-													carInspection.is_kcar === 1,
-													index,
-													String(val),
-												)} */}
-											</li>
-										),
-									)}
-								</ul>
-								<div>
-									{JSON.stringify(toStandardCarOrKei(carInspection), null, 2)}
-								</div>
+						{isScanning ? (
+							<QrScannerComponent
+								tokens={tokens}
+								carId={carId}
+								isExist={!!carInspection}
+							/>
+						) : carInspection ? (
+							<div>
+								<InspectionContainer>
+									<InspectionTable>
+										<tbody>
+											{Object.entries(toStandardCarOrKei(carInspection)).map(
+												([key, val], index) => (
+													<InspectionTableRow key={key}>
+														<InspectionTableHeader>
+															{carInspectionRecord[
+																key as keyof typeof carInspectionRecord
+															] || key}
+														</InspectionTableHeader>
+														<InspectionTableCell>
+															{String(val)}
+														</InspectionTableCell>
+													</InspectionTableRow>
+												),
+											)}
+										</tbody>
+									</InspectionTable>
+								</InspectionContainer>
+								<InspectionButtonContainer>
+									<SubmitButton onClick={() => setIsScanning(true)}>
+										車検証を更新
+									</SubmitButton>
+								</InspectionButtonContainer>
 							</div>
+						) : (
+							<InspectionButtonContainer>
+								<SubmitButton onClick={() => setIsScanning(true)}>
+									車検証を登録
+								</SubmitButton>
+							</InspectionButtonContainer>
 						)}
-						<QrScannerComponent tokens={tokens} carId={carId} />
 					</CarInfoContainer>
 				)}
 			</PageContainer>

@@ -85,14 +85,18 @@ interface QrScannerComponentProps {
 		decodedToken: { uid: string };
 	};
 	carId: string;
+	isExist: boolean;
 }
 
 const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 	tokens,
 	carId,
+	isExist,
 }) => {
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const scannerRef = useRef<QrScanner | null>(null);
+
+	const [scannedResults, setScannedResults] = useState<string[]>([]);
 	const [splittedResults, setSplittedResults] = useState<string[]>([]);
 	const [isKcar, setIsKcar] = useState<boolean>(false);
 	const [carInspection, setCarInspection] = useState<CarInspection | null>(
@@ -101,15 +105,18 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 
 	const handleDecode = useCallback(
 		(result: QrScanner.ScanResult) => {
+			console.log("QRコードスキャン結果:", result);
 			const rawData = result.data.trim();
 			if (!rawData) {
 				console.warn("QRコードが空です or 解析失敗");
 				return;
+			} else {
+				console.log("QRコード解析成功:", rawData);
 			}
 
-			setSplittedResults((prev) => {
+			setScannedResults((prev) => {
+				// 同じ結果は重複登録しない
 				if (prev.includes(rawData)) {
-					// 既にある行なら無視
 					return prev;
 				}
 
@@ -198,9 +205,10 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 
 				// state 更新を集約
 				setIsKcar(detectedIsKcar);
+				setSplittedResults(newSplitted);
 				setCarInspection(newInspection);
 
-				return newSplitted;
+				return sortedResults;
 			});
 		},
 		[carId],
@@ -224,6 +232,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 
 	// クリアボタン
 	const handleClearResults = () => {
+		setScannedResults([]);
 		setSplittedResults([]);
 		setIsKcar(false);
 		setCarInspection(null);
@@ -236,7 +245,11 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 				alert("スキャン結果がありません");
 				return;
 			}
-			await clientAPI.carInspection.createCarInspection(carInspection);
+			if (!isExist) {
+				await clientAPI.carInspection.createCarInspection(carInspection);
+			} else {
+				await clientAPI.carInspection.updateCarInspection(carInspection);
+			}
 		} catch (error) {
 			console.error("Error posting car inspection:", error);
 			alert("API通信エラーが発生しました。");
