@@ -8,7 +8,7 @@ import TuningPageComponent from "@/components/tuning/TuningPageComponent";
 import { ClientAPI } from "@/api/clientImplement";
 
 const TuningPage = async () => {
-	const tokens = await getTokens(cookies(), {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,

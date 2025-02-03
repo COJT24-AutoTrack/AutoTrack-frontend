@@ -9,9 +9,9 @@ import AddRefueling from "@/components/refueling/AddRefueling";
 export default async function AddRefuelingPage({
 	params,
 }: {
-	params: { carId: string };
+	params: Promise<{ carId: string }>;
 }) {
-	const tokens = await getTokens(cookies(), {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
@@ -22,5 +22,7 @@ export default async function AddRefuelingPage({
 		return notFound();
 	}
 
-	return <AddRefueling tokens={tokens} carId={params.carId} />;
+	const { carId } = await params;
+
+	return <AddRefueling tokens={tokens} carId={carId} />;
 }

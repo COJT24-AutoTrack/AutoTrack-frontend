@@ -8,7 +8,7 @@ import Refueling from "@/components/refueling/Refueling";
 import { ClientAPI } from "@/api/clientImplement";
 
 const RefuelingPage = async () => {
-	const tokens = await getTokens(cookies(), {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,

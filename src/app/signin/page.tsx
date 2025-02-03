@@ -1,4 +1,4 @@
-export const runtime = 'edge';
+export const runtime = "edge";
 
 import SignInForm from "@/components/auth/SignInForm";
 import { getTokens } from "next-firebase-auth-edge";
@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { clientConfig, serverConfig } from "@/../config";
 
 export default async function SignInPage() {
-	const tokens = await getTokens(cookies(), {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,

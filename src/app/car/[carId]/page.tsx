@@ -6,26 +6,28 @@ import { notFound } from "next/navigation";
 import { clientConfig, serverConfig } from "@/../config";
 import CarComponent from "@/components/car/CarComponent";
 
-const CarPage = async ({ params }: { params: { carId: string } }) => {
-	const tokens = await getTokens(cookies(), {
+const CarPage = async ({ params }: { params: Promise<{ carId: string }> }) => {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
 		serviceAccount: serverConfig.serviceAccount,
 	});
 
+	const { carId } = await params;
+
 	if (!tokens) {
 		console.error("Not signed in");
 		return notFound();
 	}
 
-	if (!params.carId) {
+	if (!carId) {
 		return notFound();
 	}
 
 	return (
 		<div>
-			<CarComponent carId={params.carId} tokens={tokens} />
+			<CarComponent carId={carId} tokens={tokens} />
 		</div>
 	);
 };

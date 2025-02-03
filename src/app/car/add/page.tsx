@@ -6,7 +6,7 @@ import { clientConfig, serverConfig } from "@/../config";
 import AddCar from "@/components/CarSlider/AddCar";
 
 const AddCarPage = async () => {
-	const tokens = await getTokens(cookies(), {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
