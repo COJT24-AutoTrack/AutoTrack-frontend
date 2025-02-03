@@ -115,8 +115,11 @@ const fuelTypeMap: Record<string, string> = {
 	"14": "ガソリン・電気",
 	"15": "LPG・電気",
 	"16": "軽油・電気",
+	"17": "ガソリン・LPG(切替式)",
+	"18": "ガソリン・灯油(切替式)",
 	"99": "その他",
 	"00": "-",
+	"--": "-",
 };
 
 const convertAxleWeight = (value: string): string => {
