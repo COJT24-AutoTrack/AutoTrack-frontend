@@ -334,11 +334,6 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 				const car = await clientAPI.carInspection.getCarInspection({
 					car_id: carId,
 				});
-				// if (car.is_kcar === 1) {
-				// 	setKCarInspection(car);
-				// } else {
-				// 	setStandardCarInspection(car);
-				// }
 			} catch (error) {
 				console.error("Error fetching car inspection:", error);
 			}
