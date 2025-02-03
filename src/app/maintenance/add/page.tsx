@@ -12,8 +12,8 @@ interface Params {
 	maintType: string;
 }
 
-const AddMaintenancePage = async ({ params }: { params: Params }) => {
-	const tokens = await getTokens(cookies(), {
+const AddMaintenancePage = async () => {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,

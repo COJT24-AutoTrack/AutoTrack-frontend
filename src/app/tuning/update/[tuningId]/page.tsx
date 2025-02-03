@@ -11,9 +11,9 @@ import UpdateTuning from "@/components/tuning/UpdateTuning";
 export default async function UpdateTuningPage({
 	params,
 }: {
-	params: { tuningId: string };
+	params: Promise<{ tuningId: string }>;
 }) {
-	const tokens = await getTokens(cookies(), {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
@@ -27,5 +27,7 @@ export default async function UpdateTuningPage({
 	const clientAPI = ClientAPI(tokens.token);
 	const tunings: Tuning[] = await clientAPI.tuning.getTunings();
 
-	return <UpdateTuning tuningId={params.tuningId} tokens={tokens} />;
+	const { tuningId } = await params;
+
+	return <UpdateTuning tuningId={tuningId} tokens={tokens} />;
 }

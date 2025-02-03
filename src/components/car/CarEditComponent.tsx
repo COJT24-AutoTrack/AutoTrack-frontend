@@ -122,7 +122,7 @@ const CarEditComponent: React.FC<CarEditComponentProps> = ({
 		car_mileage: 0,
 		car_isflooding: 0,
 		car_issmoked: 0,
-		car_image_url: "https://r2.autotrack.work/images/No_Image9e6034d5.png",
+		car_image_url: "https://r2.autotrack.work/images/No_Image9e6034d5.webp",
 	});
 	const [image, setImage] = useState<File | null>(null);
 	const [preview, setPreview] = useState<string | null>(null);

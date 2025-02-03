@@ -9,7 +9,7 @@ import { ClientAPI } from "@/api/clientImplement";
 import { Car, FuelEfficiency, Maintenance, carInfo } from "@/api/models/models";
 
 export default async function Home() {
-	const tokens = await getTokens(cookies(), {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,

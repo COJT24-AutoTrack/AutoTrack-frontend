@@ -99,6 +99,11 @@ const Button = styled.button`
 	&:hover {
 		background-color: #d61f1f;
 	}
+
+	&:disabled {
+		background-color: #666;
+		cursor: not-allowed;
+	}
 `;
 
 const BackHeader = styled.div`
@@ -134,25 +139,39 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 		car_mileage: 0,
 		car_isflooding: 0,
 		car_issmoked: 0,
-		car_image_url: "https://r2.autotrack.work/images/No_Image9e6034d5.png",
+		car_image_url: "https://r2.autotrack.work/images/No_Image9e6034d5.webp",
 	});
 	const [image, setImage] = useState<File | null>(null);
 	const [preview, setPreview] = useState<string | null>(null);
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
+	const [isFormValid, setIsFormValid] = useState(false);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value, type, checked } = e.target;
-		setCarData((prevData) => ({
-			...prevData,
-			[name]:
-				type === "checkbox"
-					? checked
-					: name === "car_mileage"
-						? value === ""
-							? 0
-							: Number(value)
-						: value,
-		}));
+		setCarData((prevData) => {
+			if (
+				carData.car_mileage &&
+				carData.car_name &&
+				carData.carmodelnum &&
+				carData.car_color
+			) {
+				setIsFormValid(true);
+			} else {
+				setIsFormValid(false);
+			}
+
+			return {
+				...prevData,
+				[name]:
+					type === "checkbox"
+						? checked
+						: name === "car_mileage"
+							? value === ""
+								? 0
+								: Number(value)
+							: value,
+			};
+		});
 	};
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -236,6 +255,23 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 				console.error("Upload Error:", e);
 				alert((e as Error).message);
 				return;
+			}
+		} else {
+			try {
+				const body = {
+					firebase_user_id: tokens.decodedToken.uid,
+					car: carData as Car,
+				};
+
+				const newCar = await clientAPI.car.createCar(body);
+
+				if (newCar) {
+					alert("新しい車が追加されました！");
+					window.location.href = "/";
+				}
+			} catch (e) {
+				console.error("Failed to create car:", e);
+				alert("車の登録に失敗しました。もう一度お試しください。");
 			}
 		}
 
@@ -360,7 +396,9 @@ const AddCar: React.FC<AddCarPageComponentProps> = ({ tokens }) => {
 							/>
 						)}
 					</FormElementContainer>
-					<Button type="submit">登録</Button>
+					<Button type="submit" disabled={!isFormValid}>
+						登録
+					</Button>
 				</Form>
 			</FormContainer>
 		</PageContainer>

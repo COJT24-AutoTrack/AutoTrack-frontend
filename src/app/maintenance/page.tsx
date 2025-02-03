@@ -8,7 +8,7 @@ import { clientConfig, serverConfig } from "@/../config";
 import MaintenanceComponent from "@/components/maintenance/MaintenanceComponent";
 
 const MaintenancePage = async () => {
-	const tokens = await getTokens(cookies(), {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,

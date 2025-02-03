@@ -21,7 +21,7 @@ const activeStyle = css`
 	color: ${(props) => props.theme.colors.link};
 `;
 
-const TabBarItem = styled.a<{ isActive: boolean }>`
+const TabBarItem = styled.a<{ $isActive: boolean }>`
 	color: ${(props) => props.theme.colors.textPrimary};
 	text-decoration: none;
 	display: flex;
@@ -39,7 +39,7 @@ const TabBarItem = styled.a<{ isActive: boolean }>`
 		justify-content: center;
 	}
 
-	${(props) => props.isActive && activeStyle}
+	${(props) => props.$isActive && activeStyle}
 `;
 
 const TabBar = () => {
@@ -52,20 +52,20 @@ const TabBar = () => {
 
 	return (
 		<TabBarContainer>
-			<TabBarItem href="/" isActive={currentPath === "/"}>
+			<TabBarItem href="/" $isActive={currentPath === "/"}>
 				{currentPath === "/" ? <House color="red" /> : <House />}
 				Home
 			</TabBarItem>
 			<TabBarItem
 				href="/refueling"
-				isActive={currentPath.startsWith("/refueling")}
+				$isActive={currentPath.startsWith("/refueling")}
 			>
 				{currentPath.startsWith("/refueling") ? <Fuel color="red" /> : <Fuel />}
 				Refueling
 			</TabBarItem>
 			<TabBarItem
 				href="/maintenance"
-				isActive={currentPath.startsWith("/maintenance")}
+				$isActive={currentPath.startsWith("/maintenance")}
 			>
 				{currentPath.startsWith("/maintenance") ? (
 					<Wrench color="red" />
@@ -74,7 +74,7 @@ const TabBar = () => {
 				)}
 				Maintenance
 			</TabBarItem>
-			<TabBarItem href="/tuning" isActive={currentPath.startsWith("/tuning")}>
+			<TabBarItem href="/tuning" $isActive={currentPath.startsWith("/tuning")}>
 				{currentPath.startsWith("/tuning") ? <Gauge color="red" /> : <Gauge />}
 				Tuning
 			</TabBarItem>

@@ -13,8 +13,8 @@ interface Params {
 	maintType: MaintType;
 }
 
-const MaintenanceItemPage = async ({ params }: { params: Params }) => {
-	const tokens = await getTokens(cookies(), {
+const MaintenanceItemPage = async ({ params }: { params: Promise<Params> }) => {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
@@ -30,9 +30,11 @@ const MaintenanceItemPage = async ({ params }: { params: Params }) => {
 		firebase_user_id: tokens.decodedToken.uid,
 	});
 
+	const { maintType } = await params;
+
 	return (
 		<MaintenanceItemPageContent
-			maintType={decodeURIComponent(params.maintType) as MaintType}
+			maintType={decodeURIComponent(maintType) as MaintType}
 			tokens={tokens}
 			userCars={userCars}
 		/>
