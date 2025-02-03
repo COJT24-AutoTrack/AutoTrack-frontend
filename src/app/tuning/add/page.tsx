@@ -6,9 +6,10 @@ import { MaintType } from "@/api/models/models";
 import { notFound } from "next/navigation";
 import AddTuningPageContent from "@/components/tuning/AddTuningPage";
 import { clientConfig, serverConfig } from "@/../config";
-import { ClientAPI } from "@/api/clientImplement";
+import { useSelectedCarContext } from "@/context/selectedCarContext";
 
 const AddTuningPage = async () => {
+	const { userCars } = useSelectedCarContext();
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
@@ -19,12 +20,6 @@ const AddTuningPage = async () => {
 	if (!tokens) {
 		return notFound();
 	}
-
-	const clientAPI = ClientAPI(tokens.token);
-
-	const userCars = await clientAPI.user.getUserCars({
-		firebase_user_id: tokens.decodedToken.uid,
-	});
 
 	if (!userCars) {
 		return notFound();

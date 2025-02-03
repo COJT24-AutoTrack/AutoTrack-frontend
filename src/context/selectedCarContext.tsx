@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { carInfo } from "@/api/models/models";
+import { Car, carInfo } from "@/api/models/models";
 
 // Contextの型定義
 interface SelectedCarContextType {
 	selectedCar: carInfo | null;
+	userCars: Car[];
 	setSelectedCar: React.Dispatch<React.SetStateAction<carInfo | null>>;
 }
 
@@ -13,9 +14,10 @@ const SelectedCarContext = createContext<SelectedCarContextType | undefined>(und
 // Providerコンポーネントの定義
 export const SelectedCarProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 	const [selectedCar, setSelectedCar] = useState<carInfo | null>(null);
+	const [userCars, setUserCars] = useState<Car[]>([]);
 
 	return (
-		<SelectedCarContext.Provider value={{ selectedCar, setSelectedCar }}>
+		<SelectedCarContext.Provider value={{ selectedCar, userCars, setSelectedCar }}>
 			{children}
 		</SelectedCarContext.Provider>
 	);

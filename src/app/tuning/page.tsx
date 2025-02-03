@@ -5,9 +5,10 @@ import { cookies } from "next/headers";
 import { clientConfig, serverConfig } from "@/../../config";
 import { notFound } from "next/navigation";
 import TuningPageComponent from "@/components/tuning/TuningPageComponent";
-import { ClientAPI } from "@/api/clientImplement";
+import { useSelectedCarContext } from "@/context/selectedCarContext";
 
 const TuningPage = async () => {
+	const { userCars } = useSelectedCarContext();
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
@@ -19,17 +20,11 @@ const TuningPage = async () => {
 		return notFound();
 	}
 
-	const clientAPI = ClientAPI(tokens.token);
-
-	const response = await clientAPI.user.getUserCars({
-		firebase_user_id: tokens.decodedToken.uid,
-	});
-
-	if (!response) {
+	if (!userCars) {
 		return notFound();
 	}
 
-	return <TuningPageComponent userCars={response} tokens={tokens} />;
+	return <TuningPageComponent userCars={userCars} tokens={tokens} />;
 };
 
 export default TuningPage;

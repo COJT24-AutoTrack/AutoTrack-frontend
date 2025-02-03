@@ -6,13 +6,14 @@ import { MaintType } from "@/api/models/models";
 import { notFound } from "next/navigation";
 import AddMaintenancePageContent from "@/components/maintenance/AddMaintenance";
 import { clientConfig, serverConfig } from "@/../config";
-import { ClientAPI } from "@/api/clientImplement";
+import { useSelectedCarContext } from "@/context/selectedCarContext";
 
 interface Params {
 	maintType: string;
 }
 
 const AddMaintenancePage = async ({ params }: { params: Params }) => {
+	const { userCars } = useSelectedCarContext();
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
@@ -24,11 +25,6 @@ const AddMaintenancePage = async ({ params }: { params: Params }) => {
 		return notFound();
 	}
 
-	const clientAPI = ClientAPI(tokens.token);
-
-	const userCars = await clientAPI.user.getUserCars({
-		firebase_user_id: tokens.decodedToken.uid,
-	});
 	if (!userCars) {
 		return notFound();
 	}

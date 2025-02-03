@@ -6,8 +6,10 @@ import { notFound } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import { clientConfig, serverConfig } from "@/../config";
 import MaintenanceComponent from "@/components/maintenance/MaintenanceComponent";
+import { useSelectedCarContext } from "@/context/selectedCarContext";
 
 const MaintenancePage = async () => {
+	const { userCars } = useSelectedCarContext();
 	const tokens = await getTokens(cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
@@ -18,12 +20,6 @@ const MaintenancePage = async () => {
 	if (!tokens) {
 		return notFound();
 	}
-
-	const clientAPI = ClientAPI(tokens.token);
-
-	const userCars = await clientAPI.user.getUserCars({
-		firebase_user_id: tokens.decodedToken.uid,
-	});
 
 	if (!userCars) {
 		return notFound();
