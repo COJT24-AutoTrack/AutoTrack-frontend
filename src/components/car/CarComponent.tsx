@@ -6,6 +6,7 @@ import { Anton } from "next/font/google";
 import {
 	Car,
 	CarInspection,
+	carInspectionRecord,
 	KCarInspection,
 	StandardCarInspection,
 } from "@/api/models/models";
@@ -398,12 +399,18 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 									{Object.entries(toStandardCarOrKei(carInspection)).map(
 										([key, val], index) => (
 											<li key={key}>
-												{key}:{" "}
-												{getDisplayValue(
+												<strong>
+													{carInspectionRecord[
+														key as keyof typeof carInspectionRecord
+													] || key}
+													:
+												</strong>{" "}
+												{String(val)}
+												{/* {getDisplayValue(
 													carInspection.is_kcar === 1,
 													index,
 													String(val),
-												)}
+												)} */}
 											</li>
 										),
 									)}

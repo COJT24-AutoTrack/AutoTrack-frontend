@@ -195,7 +195,7 @@ export type CarInspection = {
 
 type CarInspectionKeys = keyof BaseCarInspection | keyof Standard | keyof KCar;
 
-const carInspectionRecord: Record<CarInspectionKeys, string> = {
+export const carInspectionRecord: Record<CarInspectionKeys, string> = {
 	chassis_number_stamp_location: "車台番号打刻位置",
 	model_specification_number_category_classification_number:
 		"型式指定番号・類別区分番号",
