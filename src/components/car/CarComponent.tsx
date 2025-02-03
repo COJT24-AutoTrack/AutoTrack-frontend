@@ -194,7 +194,7 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 						<CarImage
 							src={
 								userCar?.car_image_url ||
-								`https://r2.autotrack.work/images/No_Image9e6034d5.png`
+								`https://r2.autotrack.work/images/No_Image9e6034d5.webp`
 							}
 							alt="Your car"
 							width={800}
