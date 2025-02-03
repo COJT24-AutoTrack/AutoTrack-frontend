@@ -197,7 +197,8 @@ type CarInspectionKeys = keyof BaseCarInspection | keyof Standard | keyof KCar;
 
 const carInspectionRecord: Record<CarInspectionKeys, string> = {
 	chassis_number_stamp_location: "車台番号打刻位置",
-	model_specification_number_category_classification_number: "型式指定番号・類別区分番号",
+	model_specification_number_category_classification_number:
+		"型式指定番号・類別区分番号",
 	expiration_date: "有効期間の満了する日",
 	first_registration_year_month: "初度登録年月",
 	model: "型式",
@@ -207,7 +208,8 @@ const carInspectionRecord: Record<CarInspectionKeys, string> = {
 	proximity_exhaust_noise_limit: "接近排気騒音規制",
 	fuel_type_code: "燃料種類コード",
 	car_registration_number: "自動車登録番号および車両番号",
-	plate_count_size_preferred_number_identifier: "標板の枚数・大きさ・希望番号の識別",
+	plate_count_size_preferred_number_identifier:
+		"標板の枚数・大きさ・希望番号の識別",
 	chassis_number: "車台番号",
 	engine_model: "原動機型式",
 	document_type: "帳票種別",
@@ -233,7 +235,19 @@ const carInspectionRecord: Record<CarInspectionKeys, string> = {
 	preliminary_item: "予備項目",
 	system_id_3: "システムID",
 	version_number_3: "バージョン番号",
-}
+};
+
+export type StandardCarInspection = {
+	car_id: string;
+	is_kcar: 0;
+} & BaseCarInspection &
+	Standard;
+
+export type KCarInspection = {
+	car_id: string;
+	is_kcar: 1;
+} & BaseCarInspection &
+	KCar;
 
 // export interface StandardCarInspection {
 // 	version_info_2: string; // バージョン情報 一桁 固定 0

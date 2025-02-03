@@ -3,7 +3,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Anton } from "next/font/google";
-import { Car } from "@/api/models/models";
+import {
+	Car,
+	CarInspection,
+	KCarInspection,
+	StandardCarInspection,
+} from "@/api/models/models";
 import { ClientAPI } from "@/api/clientImplement";
 import Image from "next/image";
 import { checkIsUserCars } from "@/module/checkUserCars";
@@ -19,6 +24,7 @@ import {
 } from "lucide-react";
 import BackHeader from "../base/BackHeader";
 import QrScannerComponent from "../maintenance/QrScannerComponent";
+import { getDisplayValue } from "@/lib/parseCarInspection";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -132,6 +138,117 @@ const TabButton = styled.button<{ active: boolean }>`
 	}
 `;
 
+export function toStandardCarOrKei(ci: CarInspection) {
+	const {
+		car_id,
+		chassis_number_stamp_location,
+		model_specification_number_category_classification_number,
+		expiration_date,
+		first_registration_year_month,
+		model,
+		axle_weight_ff,
+		axle_weight_rr,
+		noise_regulation,
+		proximity_exhaust_noise_limit,
+		fuel_type_code,
+		car_registration_number,
+		plate_count_size_preferred_number_identifier,
+		chassis_number,
+		engine_model,
+		document_type,
+		// --- Standard専用フィールド ---
+		version_info_2,
+		axle_weight_fr,
+		axle_weight_rf,
+		drive_system,
+		opacimeter_measured_car,
+		nox_pm_measurement_mode,
+		nox_value,
+		pm_value,
+		safety_standard_application_date,
+		version_info_3,
+		// --- KCar専用フィールド ---
+		system_id_2,
+		version_number_2,
+		k_axle_weight_fr,
+		k_axle_weight_rf,
+		k_drive_system,
+		k_opacimeter_measured_car,
+		k_nox_pm_measurement_mode,
+		k_nox_value,
+		k_pm_value,
+		preliminary_item,
+		system_id_3,
+		version_number_3,
+	} = ci;
+
+	if (ci.is_kcar !== 1) {
+		const standardCar: StandardCarInspection = {
+			car_id,
+			is_kcar: 0, // 普通車なので固定
+			chassis_number_stamp_location,
+			model_specification_number_category_classification_number,
+			expiration_date,
+			first_registration_year_month,
+			model,
+			axle_weight_ff,
+			axle_weight_rr,
+			noise_regulation,
+			proximity_exhaust_noise_limit,
+			fuel_type_code,
+			car_registration_number,
+			plate_count_size_preferred_number_identifier,
+			chassis_number,
+			engine_model,
+			document_type,
+			version_info_2,
+			axle_weight_fr,
+			axle_weight_rf,
+			drive_system,
+			opacimeter_measured_car,
+			nox_pm_measurement_mode,
+			nox_value,
+			pm_value,
+			safety_standard_application_date,
+			version_info_3,
+		};
+		return standardCar;
+	} else {
+		const kCar: KCarInspection = {
+			car_id,
+			is_kcar: 1, // 軽自動車なので固定
+			chassis_number_stamp_location,
+			model_specification_number_category_classification_number,
+			expiration_date,
+			first_registration_year_month,
+			model,
+			axle_weight_ff,
+			axle_weight_rr,
+			noise_regulation,
+			proximity_exhaust_noise_limit,
+			fuel_type_code,
+			car_registration_number,
+			plate_count_size_preferred_number_identifier,
+			chassis_number,
+			engine_model,
+			document_type,
+			system_id_2,
+			version_number_2,
+			k_axle_weight_fr,
+			k_axle_weight_rf,
+			k_drive_system,
+			k_opacimeter_measured_car,
+			k_nox_pm_measurement_mode,
+			k_nox_value,
+			k_pm_value,
+			preliminary_item,
+			system_id_3,
+			version_number_3,
+		};
+		return kCar;
+	}
+}
+
 interface CarComponentProps {
 	carId: string;
 	tokens: {
@@ -143,6 +260,9 @@ interface CarComponentProps {
 const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 	const [userCar, setUserCar] = useState<Car | null>(null);
 	const [tab, setTab] = useState<number>(0);
+	const [carInspection, setCarInspection] = useState<CarInspection | null>(
+		null,
+	);
 
 	useEffect(() => {
 		const fetchCar = async () => {
@@ -153,6 +273,22 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 			setUserCar(response);
 		};
 		fetchCar();
+	}, [carId, tokens]);
+
+	useEffect(() => {
+		const fetchCarInspection = async () => {
+			const clientAPI = ClientAPI(tokens.token);
+			try {
+				const car = await clientAPI.carInspection.getCarInspection({
+					car_id: carId,
+				});
+
+				setCarInspection(car);
+			} catch (error) {
+				console.error("Error fetching car inspection:", error);
+			}
+		};
+		fetchCarInspection();
 	}, [carId, tokens]);
 
 	const handleEdit = async () => {
@@ -185,7 +321,7 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 						基本情報
 					</TabButton>
 					<TabButton active={tab === 1} onClick={() => setTab(1)}>
-						追加情報
+						車検証
 					</TabButton>
 				</TabContainer>
 
@@ -255,6 +391,28 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 					</CarInfoContainer>
 				) : (
 					<CarInfoContainer>
+						{carInspection && (
+							<div style={{ padding: "10px", margin: "10px 0" }}>
+								<h3>DBに登録済みの車検証情報</h3>
+								<ul>
+									{Object.entries(toStandardCarOrKei(carInspection)).map(
+										([key, val], index) => (
+											<li key={key}>
+												{key}:{" "}
+												{getDisplayValue(
+													carInspection.is_kcar === 1,
+													index,
+													String(val),
+												)}
+											</li>
+										),
+									)}
+								</ul>
+								<div>
+									{JSON.stringify(toStandardCarOrKei(carInspection), null, 2)}
+								</div>
+							</div>
+						)}
 						<QrScannerComponent tokens={tokens} carId={carId} />
 					</CarInfoContainer>
 				)}
