@@ -9,6 +9,7 @@ import { carInfo } from "@/api/models/models";
 import { usePCQuery, useSPandTBQuery } from "@/hooks/useBreakpoints";
 import { useRouter } from "next/navigation";
 import { media } from "@/styles/breakpoints";
+import { CarProvider } from "@/context/carContext";
 
 const Main = styled.div`
 	display: flex;
@@ -43,6 +44,7 @@ const HStack = styled.div`
 	flex-direction: row;
 	gap: 10px;
 `;
+
 const FuelEfficiencyComponentWrapper = styled.div`
 	flex: 1;
 `;
@@ -71,89 +73,94 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 	};
 
 	return (
-		<Main>
-			<CarSliderComponentWrapper>
-				<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
-			</CarSliderComponentWrapper>
-			<MenuContainer>
-				{isSPandTB && (
-					<FuelEfficiencyComponentWrapper>
-						<FuelEfficiencyComponent
-							userCar={selectedCar}
-							onClick={() => {
-								window.location.href = "/refueling";
-							}}
-						/>
-					</FuelEfficiencyComponentWrapper>
-				)}
-				<DetailCardComponentsWrapper>
-					<VStack>
-						{isSPandTB && (
-							<HStack>
-								<div style={{ flex: 1 }}>
+		<CarProvider value={{ selectedCar, setSelectedCar }}>
+			<Main>
+				<CarSliderComponentWrapper>
+					<CarSliderComponent
+						userCars={userCars}
+						onSelectCar={handleSelectCar}
+					/>
+				</CarSliderComponentWrapper>
+				<MenuContainer>
+					{isSPandTB && (
+						<FuelEfficiencyComponentWrapper>
+							<FuelEfficiencyComponent
+								userCar={selectedCar}
+								onClick={() => {
+									window.location.href = "/refueling";
+								}}
+							/>
+						</FuelEfficiencyComponentWrapper>
+					)}
+					<DetailCardComponentsWrapper>
+						<VStack>
+							{isSPandTB && (
+								<HStack>
+									<div style={{ flex: 1 }}>
+										<DetailCardComponent
+											label={"Mileage"}
+											value={selectedCar ? selectedCar.total_mileage : 0}
+											unit={"Km"}
+										/>
+									</div>
+									<div style={{ flex: 1 }}>
+										<DetailCardComponent
+											label={"Fuel Cost"}
+											value={selectedCar ? selectedCar.monthly_gas_cost : 0}
+											unit={"Yen"}
+										/>
+									</div>
+								</HStack>
+							)}
+							{isSPandTB && (
+								<HStack>
 									<DetailCardComponent
-										label={"Mileage"}
-										value={selectedCar ? (selectedCar.total_mileage) : 0}
+										label={"Car Wash"}
+										value={selectedCar ? selectedCar.odd_after_wash : 0}
 										unit={"Km"}
 									/>
-								</div>
-								<div style={{ flex: 1 }}>
 									<DetailCardComponent
-										label={"Fuel Cost"}
-										value={selectedCar ? selectedCar.monthly_gas_cost : 0}
+										label={"Tires"}
+										value={selectedCar ? selectedCar.odd_after_exchange : 0}
+										unit={"Km"}
+									/>
+								</HStack>
+							)}
+							{isPC && (
+								<HStack>
+									<FuelEfficiencyComponent
+										userCar={selectedCar}
+										onClick={() => {
+											// ここにクリック時の動作を実装
+										}}
+									/>
+									<DetailCardComponent
+										label={"Mileage"}
+										value={selectedCar ? selectedCar.car_mileage : 0}
+										unit={"Km"}
+									/>
+									<DetailCardComponent
+										label={"Total Fuel Cost"}
+										value={selectedCar ? selectedCar.total_gas_cost : 0}
 										unit={"Yen"}
 									/>
-								</div>
-							</HStack>
-						)}
-						{isSPandTB && (
-							<HStack>
-								<DetailCardComponent
-									label={"Car Wash"}
-									value={selectedCar ? selectedCar.odd_after_wash : 0}
-									unit={"Km"}
-								/>
-								<DetailCardComponent
-									label={"Tires"}
-									value={selectedCar ? selectedCar.odd_after_exchange : 0}
-									unit={"Km"}
-								/>
-							</HStack>
-						)}
-						{isPC && (
-							<HStack>
-								<FuelEfficiencyComponent
-									userCar={selectedCar}
-									onClick={() => {
-										// ここにクリック時の動作を実装
-									}}
-								/>
-								<DetailCardComponent
-									label={"Mileage"}
-									value={selectedCar ? (selectedCar.car_mileage) : 0}
-									unit={"Km"}
-								/>
-								<DetailCardComponent
-									label={"Total Fuel Cost"}
-									value={selectedCar ? selectedCar.total_gas_cost : 0}
-									unit={"Yen"}
-								/>
-								<DetailCardComponent
-									label={"Car Wash"}
-									value={selectedCar ? selectedCar.odd_after_wash : 0}
-									unit={"Km"}
-								/>
-								<DetailCardComponent
-									label={"Tires"}
-									value={selectedCar ? selectedCar.odd_after_exchange : 0}
-									unit={"Km"}
-								/>
-							</HStack>
-						)}
-					</VStack>
-				</DetailCardComponentsWrapper>
-			</MenuContainer>
-		</Main>
+									<DetailCardComponent
+										label={"Car Wash"}
+										value={selectedCar ? selectedCar.odd_after_wash : 0}
+										unit={"Km"}
+									/>
+									<DetailCardComponent
+										label={"Tires"}
+										value={selectedCar ? selectedCar.odd_after_exchange : 0}
+										unit={"Km"}
+									/>
+								</HStack>
+							)}
+						</VStack>
+					</DetailCardComponentsWrapper>
+				</MenuContainer>
+			</Main>
+		</CarProvider>
 	);
 };
 

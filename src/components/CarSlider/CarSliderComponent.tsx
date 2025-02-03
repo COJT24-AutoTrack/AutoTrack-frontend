@@ -9,6 +9,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import { carInfo } from "@/api/models/models";
 import { useRouter } from "next/navigation";
 import { useSPandTBQuery, useSPQuery } from "@/hooks/useBreakpoints";
+import { useCarContext } from "@/context/carContext";
 import styled from "styled-components";
 
 const SliderWrapper = styled.div`
@@ -40,6 +41,8 @@ const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 	onSelectCar,
 }) => {
 	const router = useRouter();
+	const { setSelectedCar } = useCarContext();
+
 
 	const carCardOnClick = (userCar: carInfo) => {
 		onSelectCar(userCar);
