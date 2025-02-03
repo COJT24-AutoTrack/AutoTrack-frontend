@@ -186,10 +186,10 @@ export interface KCar {
 	version_number_3: "22" | null;
 }
 
-export type CarInspection = ({
+export type CarInspection = {
 	car_id: string;
 	is_kcar: 0 | 1;
-} & BaseCarInspection) &
+} & BaseCarInspection &
 	Standard &
 	KCar;
 
