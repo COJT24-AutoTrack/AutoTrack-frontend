@@ -1,11 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import QrScanner from "qr-scanner";
 import styled from "styled-components";
-import {
-	CarInspection,
-	StandardCarInspection,
-	KCarInspection,
-} from "@/api/models/models";
+import { CarInspection } from "@/api/models/models";
 import { ClientAPI } from "@/api/clientImplement";
 
 // ===== スタイル定義 =====
@@ -326,11 +322,6 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 	const [carInspection, setCarInspection] = useState<CarInspection | null>(
 		null,
 	);
-	const [StandardCarInspection, setStandardCarInspection] =
-		useState<StandardCarInspection | null>(null);
-	const [KCarInspection, setKCarInspection] = useState<KCarInspection | null>(
-		null,
-	);
 
 	// 既存の車検証情報があれば取得
 	useEffect(() => {
@@ -340,11 +331,11 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 				const car = await clientAPI.carInspection.getCarInspection({
 					car_id: carId,
 				});
-				if (car.is_kcar === 1) {
-					setKCarInspection(car);
-				} else {
-					setStandardCarInspection(car);
-				}
+				// if (car.is_kcar === 1) {
+				// 	setKCarInspection(car);
+				// } else {
+				// 	setStandardCarInspection(car);
+				// }
 			} catch (error) {
 				console.error("Error fetching car inspection:", error);
 			}
@@ -392,6 +383,67 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 						}
 						return sortedResults;
 					});
+
+					setCarInspection({
+						car_id: carId,
+						is_kcar: isKcar ? 1 : 0,
+
+						chassis_number_stamp_location: isKcar
+							? splittedResults[2]
+							: splittedResults[1],
+						model_specification_number_category_classification_number: isKcar
+							? splittedResults[2]
+							: splittedResults[3],
+						expiration_date: isKcar ? splittedResults[4] : splittedResults[3],
+						first_registration_year_month: isKcar
+							? splittedResults[5]
+							: splittedResults[4],
+						model: isKcar ? splittedResults[6] : splittedResults[5],
+						axle_weight_ff: isKcar ? splittedResults[7] : splittedResults[6],
+						axle_weight_rr: isKcar ? splittedResults[10] : splittedResults[9],
+						noise_regulation: isKcar
+							? splittedResults[11]
+							: splittedResults[10],
+						proximity_exhaust_noise_limit: isKcar
+							? splittedResults[12]
+							: splittedResults[11],
+						fuel_type_code: splittedResults[18],
+						car_registration_number: isKcar
+							? splittedResults[22]
+							: splittedResults[20],
+						plate_count_size_preferred_number_identifier: isKcar
+							? splittedResults[23]
+							: splittedResults[21],
+						chassis_number: isKcar ? splittedResults[24] : splittedResults[22],
+						engine_model: isKcar ? splittedResults[25] : splittedResults[23],
+						document_type: isKcar ? splittedResults[26] : splittedResults[24],
+						// 普通
+						version_info_2: isKcar ? null : splittedResults[0],
+						axle_weight_fr: isKcar ? null : splittedResults[7],
+						axle_weight_rf: isKcar ? null : splittedResults[8],
+						drive_system: isKcar ? null : splittedResults[12],
+						opacimeter_measured_car: isKcar ? null : splittedResults[13],
+						nox_pm_measurement_mode: isKcar ? null : splittedResults[14],
+						nox_value: isKcar ? null : splittedResults[15],
+						pm_value: isKcar ? null : splittedResults[16],
+						safety_standard_application_date: isKcar
+							? null
+							: splittedResults[17],
+						version_info_3: isKcar ? null : splittedResults[19],
+						// 軽
+						system_id_2: isKcar ? "K" : null,
+						version_number_2: isKcar ? "32" : null,
+						k_axle_weight_fr: isKcar ? "-" : null,
+						k_axle_weight_rf: isKcar ? "-" : null,
+						k_drive_system: isKcar ? "-" : null,
+						k_opacimeter_measured_car: isKcar ? "-" : null,
+						k_nox_pm_measurement_mode: isKcar ? "-" : null,
+						k_nox_value: isKcar ? "-" : null,
+						k_pm_value: isKcar ? "-" : null,
+						preliminary_item: isKcar ? "999" : null,
+						system_id_3: isKcar ? "K" : null,
+						version_number_3: isKcar ? "22" : null,
+					});
 				} else {
 					console.warn("QRコードが空です or 解析失敗");
 				}
@@ -425,116 +477,11 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 	const handleSubmitAPI = async () => {
 		try {
 			const clientAPI = ClientAPI(tokens.token);
-
-			if (isKcar) {
-				const payload: KCarInspection = {
-					car_id: carId,
-					is_kcar: 1,
-
-					system_id_1: splittedResults[0] ?? "",
-					version_number: splittedResults[1] ?? "",
-					chassis_number_stamp_location: splittedResults[2] ?? "",
-					model_specification_number_category_classification_number:
-						splittedResults[3] ?? "",
-					expiration_date: splittedResults[4] ?? "",
-					first_registration_year_month: splittedResults[5] ?? "",
-					model: splittedResults[6] ?? "",
-					axle_weight_ff: splittedResults[7]
-						? parseInt(splittedResults[7], 10)
-						: undefined,
-					axle_weight_fr: splittedResults[8]
-						? parseInt(splittedResults[8], 10)
-						: undefined,
-					axle_weight_rf: splittedResults[9]
-						? parseInt(splittedResults[9], 10)
-						: undefined,
-					axle_weight_rr: splittedResults[10]
-						? parseInt(splittedResults[10], 10)
-						: undefined,
-					noise_regulation: splittedResults[11] ?? "",
-					proximity_exhaust_noise_limit: splittedResults[12]
-						? parseInt(splittedResults[12], 10)
-						: undefined,
-					drive_system: splittedResults[13] ?? "",
-					opacimeter_measured_car: parseInt(splittedResults[14], 10) as 0 | 1,
-					nox_pm_measurement_mode: splittedResults[15] ?? "",
-					nox_value: splittedResults[16]
-						? parseFloat(splittedResults[16])
-						: undefined,
-					pm_value: splittedResults[17]
-						? parseFloat(splittedResults[17])
-						: undefined,
-					fuel_type_code: splittedResults[18] ?? "",
-					preliminary_item: splittedResults[19] ?? "",
-					system_id_2: splittedResults[20] ?? "",
-					version_info_2: splittedResults[21] ?? "",
-					car_registration_number: splittedResults[22] ?? "",
-					plate_count_size_preferred_number_identifier:
-						splittedResults[23] ?? "",
-					chassis_number: splittedResults[24] ?? "",
-					engine_model: splittedResults[25] ?? "",
-					document_type: splittedResults[26] ?? "",
-				};
-
-				await clientAPI.carInspection.createCarInspection({
-					car_id: payload.car_id,
-					inspection_data: payload,
-				});
-				alert("軽自動車の車検証情報を送信しました。");
-			} else {
-				const payload: StandardCarInspection = {
-					car_id: carId,
-					is_kcar: 0,
-
-					version_info_1: splittedResults[0] ?? "",
-					chassis_number_stamp_location: splittedResults[1] ?? "",
-					model_specification_number_category_classification_number:
-						splittedResults[2] ?? "",
-					expiration_date: splittedResults[3] ?? "",
-					first_registration_year_month: splittedResults[4] ?? "",
-					model: splittedResults[5] ?? "",
-					axle_weight_ff: splittedResults[6]
-						? parseInt(splittedResults[6], 10)
-						: undefined,
-					axle_weight_fr: splittedResults[7]
-						? parseInt(splittedResults[7], 10)
-						: undefined,
-					axle_weight_rf: splittedResults[8]
-						? parseInt(splittedResults[8], 10)
-						: undefined,
-					axle_weight_rr: splittedResults[9]
-						? parseInt(splittedResults[9], 10)
-						: undefined,
-					noise_regulation: splittedResults[10] ?? "",
-					proximity_exhaust_noise_limit: splittedResults[11]
-						? parseInt(splittedResults[11], 10)
-						: undefined,
-					drive_system: splittedResults[12] ?? "",
-					opacimeter_measured_car: parseInt(splittedResults[13], 10) as 0 | 1,
-					nox_pm_measurement_mode: splittedResults[14] ?? "",
-					nox_value: splittedResults[15]
-						? parseFloat(splittedResults[15])
-						: undefined,
-					pm_value: splittedResults[16]
-						? parseFloat(splittedResults[16])
-						: undefined,
-					safety_standard_application_date: splittedResults[17] ?? "",
-					fuel_type_code: splittedResults[18] ?? "",
-					version_info_2: splittedResults[19] ?? "",
-					car_registration_number: splittedResults[20] ?? "",
-					plate_count_size_preferred_number_identifier:
-						splittedResults[21] ?? "",
-					chassis_number: splittedResults[22] ?? "",
-					engine_model: splittedResults[23] ?? "",
-					document_type: splittedResults[24] ?? "",
-				};
-
-				await clientAPI.carInspection.createCarInspection({
-					car_id: payload.car_id,
-					inspection_data: payload,
-				});
-				alert("普通車の車検証情報を送信しました。");
+			if (!carInspection) {
+				alert("スキャン結果がありません");
+				return;
 			}
+			await clientAPI.carInspection.createCarInspection(carInspection);
 		} catch (error) {
 			console.error("Error posting car inspection:", error);
 			alert("API通信エラーが発生しました。");
