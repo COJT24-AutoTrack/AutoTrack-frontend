@@ -1,12 +1,12 @@
 import React from "react";
 import { AppProps } from "next/app";
-import { CarProvider } from "@/context/carContext";
+import { SelectedCarProvider } from "@/context/selectedCarContext";
 
 const CarContext = ({ Component, pageProps }: AppProps) => {
 	return (
-		<CarProvider>
+		<SelectedCarProvider>
 			<Component {...pageProps} />
-		</CarProvider>
+		</SelectedCarProvider>
 	);
 };
 

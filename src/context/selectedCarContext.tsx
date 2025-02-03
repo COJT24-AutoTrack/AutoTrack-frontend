@@ -2,30 +2,30 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 import { carInfo } from "@/api/models/models";
 
 // Contextの型定義
-interface CarContextType {
+interface SelectedCarContextType {
 	selectedCar: carInfo | null;
 	setSelectedCar: React.Dispatch<React.SetStateAction<carInfo | null>>;
 }
 
 // デフォルト値を設定
-const CarContext = createContext<CarContextType | undefined>(undefined);
+const SelectedCarContext = createContext<SelectedCarContextType | undefined>(undefined);
 
 // Providerコンポーネントの定義
-export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const SelectedCarProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 	const [selectedCar, setSelectedCar] = useState<carInfo | null>(null);
 
 	return (
-		<CarContext.Provider value={{ selectedCar, setSelectedCar }}>
+		<SelectedCarContext.Provider value={{ selectedCar, setSelectedCar }}>
 			{children}
-		</CarContext.Provider>
+		</SelectedCarContext.Provider>
 	);
 };
 
 // Contextを使用するカスタムフック
-export const useCarContext = (): CarContextType => {
-	const context = useContext(CarContext);
+export const useSelectedCarContext = (): SelectedCarContextType => {
+	const context = useContext(SelectedCarContext);
 	if (!context) {
-		throw new Error("useCarContext must be used within a CarProvider");
+		throw new Error("useSelectedCarContext must be used within a CarProvider");
 	}
 	return context;
 };
