@@ -25,7 +25,7 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={inter.className}>
 				<ThemeProvider theme={theme}>
-					<SelectedCarProvider> {/* Context Provider 追加 */}
+					<SelectedCarProvider>
 						<Suspense>
 							<GlobalLoading />
 						</Suspense>
