@@ -3,13 +3,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Anton } from "next/font/google";
-import { Car, maintenanceTypeMap, MaintType } from "@/api/models/models";
+import { Car, MaintType } from "@/api/models/models";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";
 import CarSelect from "@/components/base/CarSelect";
-import { Settings, Calendar, FileText, Wrench } from "lucide-react";
-import QrScannerComponent from "./QrScannerComponent";
+import { Calendar, FileText, Wrench } from "lucide-react";
 
 const Anton400 = Anton({
 	weight: "400",
@@ -228,10 +227,6 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 					<FormTitle className={Anton400.className}>
 						メンテナンス記録を追加
 					</FormTitle>
-					<QrScannerComponent
-						tokens={tokens}
-						carId={userCars[selectedCarIndex].car_id}
-					/>
 					<FormElementContainer>
 						<Label>
 							<Wrench color="white" size={16} />
