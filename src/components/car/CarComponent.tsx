@@ -124,9 +124,9 @@ const TabContainer = styled.div`
 	margin-bottom: 20px;
 `;
 
-const TabButton = styled.button<{ active: boolean }>`
+const TabButton = styled.button<{ $active: boolean }>`
 	padding: 10px 20px;
-	background-color: ${(props) => (props.active ? "#f12424" : "#444")};
+	background-color: ${(props) => (props.$active ? "#f12424" : "#444")};
 	color: #ffffff;
 	border: none;
 	cursor: pointer;
@@ -135,7 +135,7 @@ const TabButton = styled.button<{ active: boolean }>`
 	margin: 0 5px;
 
 	&:hover {
-		background-color: ${(props) => (props.active ? "#d61f1f" : "#666")};
+		background-color: ${(props) => (props.$active ? "#d61f1f" : "#666")};
 	}
 `;
 
@@ -377,10 +377,10 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 			<PageContainer>
 				{/* タブ UI */}
 				<TabContainer>
-					<TabButton active={tab === 0} onClick={() => setTab(0)}>
+					<TabButton $active={tab === 0} onClick={() => setTab(0)}>
 						基本情報
 					</TabButton>
-					<TabButton active={tab === 1} onClick={() => setTab(1)}>
+					<TabButton $active={tab === 1} onClick={() => setTab(1)}>
 						車検証
 					</TabButton>
 				</TabContainer>
