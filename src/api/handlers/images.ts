@@ -33,6 +33,6 @@ export const ImageAPI = (jwt: string) => ({
 			throw new Error("Failed to upload image");
 		}
 
-		return { imgURL: "" };
+		return response.json();
 	},
 });

@@ -9,7 +9,7 @@ import { ClientAPI } from "@/api/clientImplement";
 import { Car, FuelEfficiency, Maintenance, carInfo } from "@/api/models/models";
 
 export default async function Home() {
-	const tokens = await getTokens(cookies(), {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
@@ -36,7 +36,6 @@ export default async function Home() {
 		firebase_user_id: tokens.decodedToken.uid,
 	});
 
-	// すべての車のメンテナンスデータを取得
 	const allMaintenances: Maintenance[] = [];
 	const allFuelEfficiencies: FuelEfficiency[] = [];
 
@@ -45,53 +44,98 @@ export default async function Home() {
 			await clientAPI.car.getCarMaintenance({
 				car_id: car.car_id,
 			});
+
 		const carFuelEfficiencies: FuelEfficiency[] =
 			await clientAPI.car.getCarFuelEfficiency({
 				car_id: car.car_id,
 			});
+
 		allMaintenances.push(...carMaintenances);
 		allFuelEfficiencies.push(...carFuelEfficiencies);
 	}
 
-	const parseDateToDays = (dateStr: string): number => {
-		const date = new Date(dateStr);
-		const now = new Date();
-		const diffTime = Math.abs(now.getTime() - date.getTime());
-		return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-	};
-
 	const calculateMonthlyValues = (
 		fuelEfficiencies: FuelEfficiency[],
+		car: Car,
 	): {
-		averageFuelEfficiency: number;
+		monthlyAverageFuelEfficiency: number;
+		monthlyGasCost: number;
+		monthlyMileage: number;
 		totalGasCost: number;
 		totalMileage: number;
 	} => {
 		const now = new Date();
-		const oneMonthAgo = new Date();
-		oneMonthAgo.setMonth(now.getMonth() - 1);
+		const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // 月初
+		const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1); // 翌月1日
 
-		const monthlyFuelEfficiencies = fuelEfficiencies.filter(
-			(fe) => new Date(fe.fe_date) >= oneMonthAgo,
+		const allRecords = fuelEfficiencies.sort(
+			(a, b) => new Date(a.fe_date).getTime() - new Date(b.fe_date).getTime(),
 		);
 
-		const totalMileage = monthlyFuelEfficiencies.reduce(
-			(acc, fe) => acc + fe.fe_mileage,
-			0,
+		let monthlyRecords = allRecords.filter(
+			(fe) =>
+				new Date(fe.fe_date) >= startOfMonth && new Date(fe.fe_date) < endOfMonth,
 		);
-		const totalFuelAmount = monthlyFuelEfficiencies.reduce(
+
+		// 前月末までの最終給油記録（最も新しいもの1件）を取得
+		const lastRecordOfPreviousMonth = fuelEfficiencies
+			.filter((fe) => new Date(fe.fe_date) < startOfMonth)
+			.sort(
+				(a, b) => new Date(b.fe_date).getTime() - new Date(a.fe_date).getTime(),
+			)[0];
+
+		const monthlyMileage = (() => {
+			if (allRecords.length === 0) {
+				return 0;
+			} else if (allRecords.length === 1) {
+				if (monthlyRecords.length === 0) {
+					return 0;
+				} else if (monthlyRecords.length === 1) {
+					return monthlyRecords[0].fe_mileage - car.car_mileage;
+				} else {
+					return (
+						monthlyRecords[monthlyRecords.length - 1].fe_mileage -
+						monthlyRecords[0].fe_mileage
+					);
+				}
+			} else {
+				return (
+					monthlyRecords[monthlyRecords.length - 1].fe_mileage -
+					lastRecordOfPreviousMonth?.fe_mileage
+				);
+			}
+		})();
+
+		const monthlyFuelAmount = monthlyRecords.reduce(
 			(acc, fe) => acc + fe.fe_amount,
 			0,
 		);
-		const totalGasCost = monthlyFuelEfficiencies.reduce(
-			(total, fe) => total + fe.fe_amount * fe.fe_unitprice,
+
+		const monthlyGasCost = monthlyRecords.reduce(
+			(total, fe) => total + Math.round(fe.fe_amount * fe.fe_unitprice),
 			0,
 		);
 
-		const averageFuelEfficiency =
-			totalFuelAmount > 0 ? totalMileage / totalFuelAmount : 0;
+		const monthlyAverageFuelEfficiency =
+			monthlyFuelAmount > 0 ? monthlyMileage / monthlyFuelAmount : 0;
 
-		return { averageFuelEfficiency, totalGasCost, totalMileage };
+		const totalGasCost = fuelEfficiencies.reduce(
+			(total, fe) => total + Math.round(fe.fe_amount * fe.fe_unitprice),
+			0,
+		);
+
+		const totalMileage = fuelEfficiencies.reduce(
+			(maxMileage, fe) => Math.max(maxMileage, fe.fe_mileage),
+			0,
+		);
+
+		return {
+			monthlyAverageFuelEfficiency,
+			monthlyGasCost,
+			monthlyMileage,
+			totalGasCost,
+			totalMileage,
+		};
 	};
 
 	const calculateOddAfterMaintenance = (
@@ -121,8 +165,13 @@ export default async function Home() {
 			(m) => m.car_id === car.car_id,
 		);
 
-		const { averageFuelEfficiency, totalGasCost, totalMileage } =
-			calculateMonthlyValues(carFuelEfficiencies);
+		const {
+			monthlyAverageFuelEfficiency,
+			monthlyGasCost,
+			monthlyMileage,
+			totalGasCost,
+			totalMileage,
+		} = calculateMonthlyValues(carFuelEfficiencies, car);
 
 		return {
 			...car,
@@ -137,7 +186,9 @@ export default async function Home() {
 				carMaintenances,
 				carFuelEfficiencies,
 			),
-			monthly_fuel_efficiency: averageFuelEfficiency.toFixed(2),
+			monthly_fuel_efficiency: monthlyAverageFuelEfficiency.toFixed(2),
+			monthly_gas_cost: monthlyGasCost,
+			monthly_mileage: monthlyMileage,
 			total_gas_cost: totalGasCost,
 			total_mileage: totalMileage,
 		};

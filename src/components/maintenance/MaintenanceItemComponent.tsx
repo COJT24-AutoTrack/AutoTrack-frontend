@@ -7,7 +7,7 @@ import { Maintenance } from "@/api/models/models";
 
 interface MaintenanceItemComponentProps {
 	maintenances: Maintenance[];
-	carId: number;
+	carId: string;
 	maintType: string;
 }
 
@@ -30,7 +30,7 @@ const MaintenanceItemComponent: React.FC<MaintenanceItemComponentProps> = ({
 }) => {
 	const router = useRouter();
 
-	const handleDetailClick = (maintId: number) => {
+	const handleDetailClick = (maintId: string) => {
 		window.location.href = `/maintenance/${carId}/${maintType}/update?maintId=${maintId}`;
 	};
 

@@ -9,9 +9,9 @@ import UpdateRefueling from "@/components/refueling/UpdateRefueling";
 export default async function UpdateFuelingPage({
 	params,
 }: {
-	params: { feId: number };
+	params: Promise<{ feId: string }>;
 }) {
-	const tokens = await getTokens(cookies(), {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
@@ -22,5 +22,7 @@ export default async function UpdateFuelingPage({
 		return notFound();
 	}
 
-	return <UpdateRefueling feId={params.feId} tokens={tokens} />;
+	const { feId } = await params;
+
+	return <UpdateRefueling feId={feId} tokens={tokens} />;
 }

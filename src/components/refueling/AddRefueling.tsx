@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import BackHeader from "@/components/base/BackHeader";
 import { Anton } from "next/font/google";
 import { ClientAPI } from "@/api/clientImplement";
 import { checkIsUserCars } from "@/module/checkUserCars";
+import { FuelEfficiency } from "@/api/models/models";
 import {
 	Calendar,
 	Droplets,
@@ -65,6 +66,11 @@ const Input = styled.input`
 	padding: 10px;
 	font-size: 16px;
 
+	&::placeholder {
+		color: #cccccc;
+		opacity: 1;
+	}
+
 	&:focus {
 		outline: none;
 		border-color: #4a90e2;
@@ -113,34 +119,81 @@ interface AddFuelEfficiencyProps {
 		token: string;
 		decodedToken: { uid: string };
 	};
-	carId: number;
+	carId: string;
 }
 
 const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
-	const [date, setDate] = useState<string>("");
+	const [date, setDate] = useState("");
 	const [amount, setAmount] = useState<number | null>(null);
-	const [mileage, setMileage] = useState<number | null>(null);
 	const [unitPrice, setUnitPrice] = useState<number | null>(null);
+	const [totalMileage, setTotalMileage] = useState<number>(0);
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
 	const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+	const [oldCarMileage, setOldCarMileage] = useState<number>(0);
+	const [latestMileage, setLatestMileage] = useState<number | null>(
+		null,
+	);
+	const [inputMileage, setInputMileage] = useState<number | null>(null);
 
 	const router = useRouter();
+
+	useEffect(() => {
+		const fetchCarMileage = async () => {
+			const clientAPI = ClientAPI(tokens.token);
+			try {
+				const car = await clientAPI.car.getCar({ car_id: carId });
+				setOldCarMileage(car.car_mileage ?? 0);
+			} catch (error) {
+				console.error("Error fetching car info:", error);
+				setErrors((prev) => ({
+					...prev,
+					fetchCar: "車両情報の取得に失敗しました。再度お試しください。",
+				}));
+			}
+		};
+
+		const fetchLatestFuelEfficiency = async () => {
+			const clientAPI = ClientAPI(tokens.token);
+			try {
+				const fuelEfficiencies =
+					await clientAPI.fuelEfficiency.getFuelEfficiencies();
+
+				const carFuelEfficiencies = fuelEfficiencies.filter(
+					(fe: FuelEfficiency) => fe.car_id === carId,
+				);
+
+				if (carFuelEfficiencies.length > 0) {
+					const latestMileage = carFuelEfficiencies
+						.map((fe) => Number(fe.fe_mileage))
+						.reduce((a, b) => Math.max(a, b), 0);
+					setLatestMileage(latestMileage);
+					setTotalMileage(latestMileage); // 初期値を設定
+				}
+			} catch (error) {
+				console.error("Error fetching fuel efficiency:", error);
+			}
+		};
+
+		fetchCarMileage();
+		fetchLatestFuelEfficiency();
+	}, [carId, tokens]);
+
+	useEffect(() => {
+		if (inputMileage !== null) {
+			setTotalMileage(inputMileage);
+		}
+	}, [inputMileage]);
 
 	const validateForm = () => {
 		const newErrors: { [key: string]: string } = {};
 
-		if (date === "") {
-			newErrors.date = "日付を入力してください";
-		}
-		if (unitPrice === null || unitPrice <= 0) {
+		if (!date) newErrors.date = "日付を入力してください";
+		if (!unitPrice || unitPrice <= 0)
 			newErrors.unitPrice = "有効な単価を入力してください";
-		}
-		if (amount === null || amount <= 0) {
+		if (!amount || amount <= 0)
 			newErrors.amount = "有効な給油量を入力してください";
-		}
-		if (mileage === null || mileage <= 0) {
+		if (!totalMileage || totalMileage <= 0)
 			newErrors.mileage = "有効な走行距離を入力してください";
-		}
 
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
@@ -150,9 +203,7 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		event.preventDefault();
 		setIsSubmitted(true);
 
-		if (!validateForm()) {
-			return;
-		}
+		if (!validateForm()) return;
 
 		const isUserCar = await checkIsUserCars({ carId, tokens });
 		if (!isUserCar) {
@@ -164,13 +215,15 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 		const clientAPI = ClientAPI(tokens.token);
 
 		await clientAPI.fuelEfficiency.createFuelEfficiency({
-			car_id: Number(carId),
+			car_id: carId,
 			fe_date: date,
 			fe_amount: amount!,
 			fe_unitprice: unitPrice!,
-			fe_mileage: mileage!,
+			fe_mileage: totalMileage!,
 		});
-		window.location.href = "/refueling";
+
+		alert("給油記録を登録し、走行距離を更新しました。");
+		router.push("/refueling");
 	};
 
 	return (
@@ -179,6 +232,9 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 			<FormContainer>
 				<Form onSubmit={handleSignUp}>
 					<FormTitle>給油記録追加</FormTitle>
+
+					{errors.fetchCar && <ErrorMessage>{errors.fetchCar}</ErrorMessage>}
+
 					<FormElementContainer>
 						<Label>
 							<Calendar color="white" />
@@ -186,13 +242,12 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 						</Label>
 						<Input
 							type="date"
+							value={date}
 							onChange={(e) => setDate(e.target.value)}
 							required
 						/>
-						{isSubmitted && errors.date && (
-							<ErrorMessage>{errors.date}</ErrorMessage>
-						)}
 					</FormElementContainer>
+
 					<FormElementContainer>
 						<Label>
 							<JapaneseYen color="white" />
@@ -200,15 +255,14 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 						</Label>
 						<Input
 							type="number"
-							onChange={(e) => setUnitPrice(Number(e.target.value))}
 							min="0.01"
 							step="0.01"
+							value={unitPrice ?? ""}
+							onChange={(e) => setUnitPrice(Number(e.target.value))}
 							required
 						/>
-						{isSubmitted && errors.unitPrice && (
-							<ErrorMessage>{errors.unitPrice}</ErrorMessage>
-						)}
 					</FormElementContainer>
+
 					<FormElementContainer>
 						<Label>
 							<Fuel color="white" />
@@ -217,29 +271,26 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 						<Input
 							type="number"
 							step="0.01"
-							onChange={(e) => setAmount(Number(e.target.value))}
 							min="0.01"
+							value={amount ?? ""}
+							onChange={(e) => setAmount(Number(e.target.value))}
 							required
 						/>
-						{isSubmitted && errors.amount && (
-							<ErrorMessage>{errors.amount}</ErrorMessage>
-						)}
 					</FormElementContainer>
+
 					<FormElementContainer>
 						<Label>
 							<Navigation color="white" />
-							<p>走行距離(km)</p>
+							<p>総走行距離(km)</p>
 						</Label>
 						<Input
 							type="number"
 							step="0.01"
-							onChange={(e) => setMileage(Number(e.target.value))}
 							min="0.01"
-							required
+							value={inputMileage ?? ""}
+							onChange={(e) => setInputMileage(Number(e.target.value))}
+							placeholder={`現在の走行距離: ${latestMileage !== null ? latestMileage : oldCarMileage} km`}
 						/>
-						{isSubmitted && errors.mileage && (
-							<ErrorMessage>{errors.mileage}</ErrorMessage>
-						)}
 					</FormElementContainer>
 					<FuelEfficiencyDisplay>
 						<FuelEfficiencyLabel>
@@ -247,12 +298,18 @@ const AddRefueling: React.FC<AddFuelEfficiencyProps> = ({ tokens, carId }) => {
 							<p>燃費</p>
 						</FuelEfficiencyLabel>
 						<FuelEfficiencyValue className={Anton400.className}>
-							{mileage && amount && mileage > 0 && amount > 0
-								? (mileage / amount).toFixed(2)
-								: "0"}
+							{(latestMileage ?? 0) > 0 &&
+							totalMileage > 0 &&
+							amount &&
+							unitPrice
+								? ((totalMileage - (latestMileage ?? 0)) / amount).toFixed(
+										2,
+									)
+								: "0.00"}
 							km/L
 						</FuelEfficiencyValue>
 					</FuelEfficiencyDisplay>
+
 					<Button type="submit">登録</Button>
 				</Form>
 			</FormContainer>

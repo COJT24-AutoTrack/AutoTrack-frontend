@@ -12,8 +12,12 @@ interface Params {
 	maintId: string;
 }
 
-const UpdateMaintenancePage = async ({ params }: { params: Params }) => {
-	const tokens = await getTokens(cookies(), {
+const UpdateMaintenancePage = async ({
+	params,
+}: {
+	params: Promise<Params>;
+}) => {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
@@ -24,12 +28,14 @@ const UpdateMaintenancePage = async ({ params }: { params: Params }) => {
 		return notFound();
 	}
 
+	const { maintId } = await params;
+
 	const clientAPI = ClientAPI(tokens.token);
 	let maintenance: Maintenance | null = null;
 
-	if (params.maintId) {
+	if (maintId) {
 		maintenance = await clientAPI.maintenance.getMaintenance({
-			maint_id: Number(params.maintId),
+			maint_id: maintId,
 		});
 	}
 

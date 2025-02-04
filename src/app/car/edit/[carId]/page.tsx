@@ -6,8 +6,12 @@ import { notFound } from "next/navigation";
 import { clientConfig, serverConfig } from "@/../config";
 import CarEditComponent from "@/components/car/CarEditComponent";
 
-const CarEditPage = async ({ params }: { params: { carId: number } }) => {
-	const tokens = await getTokens(cookies(), {
+const CarEditPage = async ({
+	params,
+}: {
+	params: Promise<{ carId: string }>;
+}) => {
+	const tokens = await getTokens(await cookies(), {
 		apiKey: clientConfig.apiKey,
 		cookieName: serverConfig.cookieName,
 		cookieSignatureKeys: serverConfig.cookieSignatureKeys,
@@ -19,13 +23,15 @@ const CarEditPage = async ({ params }: { params: { carId: number } }) => {
 		return notFound();
 	}
 
-	if (!params.carId) {
+	const { carId } = await params;
+
+	if (!carId) {
 		return notFound();
 	}
 
 	return (
 		<div>
-			<CarEditComponent carId={params.carId} tokens={tokens} />
+			<CarEditComponent carId={carId} tokens={tokens} />
 		</div>
 	);
 };
