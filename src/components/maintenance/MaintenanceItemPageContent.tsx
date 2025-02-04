@@ -195,6 +195,7 @@ const MaintenanceItemPageContent: React.FC<MaintenanceItemPageContentProps> = ({
 		<PageContainer>
 			<TopBar>
 				<CarSelect
+					token={tokens.token}
 					userCars={userCars}
 					selectedCarIndex={selectedCarIndex}
 					switchCar={switchCar}

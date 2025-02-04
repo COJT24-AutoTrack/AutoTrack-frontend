@@ -31,7 +31,6 @@ const RefuelingPage = async () => {
 
 	return (
 		<Refueling
-			userCars={response}
 			token={tokens.token}
 			userId={tokens.decodedToken.uid}
 		/>

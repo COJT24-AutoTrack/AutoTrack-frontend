@@ -219,6 +219,7 @@ const AddMaintenancePageContent: React.FC<AddMaintenancePageContentProps> = ({
 	return (
 		<PageContainer>
 			<CarSelect
+				token={tokens.token}
 				userCars={userCars}
 				selectedCarIndex={selectedCarIndex}
 				switchCar={switchCar}

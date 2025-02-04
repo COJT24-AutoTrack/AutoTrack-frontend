@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import { useRouter } from "next/navigation";
 import { media } from "@/styles/breakpoints";
 import { Fuel, Gauge, House, Wrench } from "lucide-react";
+import { useSelectedCarContext } from "@/context/selectedCarContext";
 
 const TabBarContainer = styled.nav`
 	background-color: ${(props) => props.theme.colors.baseBackground};
@@ -49,6 +50,11 @@ const TabBar = () => {
 	useEffect(() => {
 		setCurrentPath(window.location.pathname);
 	}, [router]);
+
+	const { userCars, selectedCar, initialized } = useSelectedCarContext();
+	console.log("TabBar: userCars", userCars);
+	console.log("TabBar: selectedCar", selectedCar);
+	console.log("TabBar: initialized", initialized);
 
 	return (
 		<TabBarContainer>

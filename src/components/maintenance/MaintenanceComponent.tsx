@@ -139,6 +139,7 @@ const MaintenanceComponent: React.FC<MaintenancePageProps> = ({
 	return (
 		<PageContainer>
 			<CarSelect
+				token={tokens.token}
 				userCars={userCars}
 				selectedCarIndex={selectedCarIndex}
 				switchCar={switchCar}

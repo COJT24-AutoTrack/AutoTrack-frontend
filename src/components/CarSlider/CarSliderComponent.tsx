@@ -33,28 +33,30 @@ const SliderWrapper = styled.div`
 
 interface CarSliderComponentProps {
 	userCars: carInfo[];
-	onSelectCar: (userCar: carInfo) => void;
+	// onSelectCar プロパティは不要になりました
 }
 
 const CarSliderComponent: React.FC<CarSliderComponentProps> = ({
 	userCars,
-	onSelectCar,
 }) => {
 	const router = useRouter();
 	const { setSelectedCar } = useSelectedCarContext();
 
+	// カードがクリックされた場合、コンテキストの selectedCar を更新し、詳細ページへ遷移
 	const carCardOnClick = (userCar: carInfo) => {
-		onSelectCar(userCar);
+		setSelectedCar(userCar);
 		window.location.href = `car/${userCar.car_id}`;
 	};
 
-	const handleSlideChange = (swiper: { realIndex: any }) => {
+	// スライド変更時に、表示中の車情報を selectedCar として更新
+	const handleSlideChange = (swiper: { realIndex: number }) => {
 		const activeIndex = swiper.realIndex;
 		const newSelectedCar = userCars[activeIndex];
-		onSelectCar(newSelectedCar);
+		setSelectedCar(newSelectedCar);
 	};
 
 	const isSPandTB = useSPandTBQuery();
+
 	const handleAddCarClick = () => {
 		window.location.href = "/car/add";
 	};

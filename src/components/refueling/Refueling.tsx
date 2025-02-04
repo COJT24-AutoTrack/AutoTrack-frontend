@@ -1,14 +1,14 @@
 "use client";
 
-import { Car, FuelEfficiency } from "@/api/models/models";
-import { useState, useEffect } from "react";
+import { FuelEfficiency } from "@/api/models/models";
+import { useState, useEffect, use } from "react";
 import CarSelect from "@/components/base/CarSelect";
 import RefuelingCardGroup from "@/components/refueling/RefuelingCardGroup";
 import RefuelingChart from "@/components/refueling/RefuelingChart";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
-import { ClientAPI } from "@/api/clientImplement";
 import { CirclePlus } from "lucide-react";
+import { useSelectedCarContext } from "@/context/selectedCarContext";
 
 const Container = styled.div`
 	position: relative;
@@ -49,74 +49,32 @@ const LoadingContainer = styled.div`
 	color: #666;
 `;
 
-interface RefuelingProps {
-	userCars: Car[] | null;
-	token: string;
-	userId: string;
-}
-
-const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
-	const [selectedCarIndex, setSelectedCarIndex] = useState(0);
-	const [carMileage, setCarMileage] = useState<number | null>(null);
-	const [fuelEfficiencies, setFuelEfficiencies] = useState<
-		FuelEfficiency[] | null
-	>(null);
-	const [isLoading, setIsLoading] = useState(false);
-	const [isCarMileageLoading, setIsCarMileageLoading] = useState(false);
+const Refueling: React.FC<{ token: string; userId: string }> = ({
+	token,
+	userId,
+}) => {
+	const { userCars, selectedCar, initialized } = useSelectedCarContext();
 	const router = useRouter();
 
-	const switchCar = () => {
-		if (userCars) {
-			setSelectedCarIndex((prevIndex) => (prevIndex + 1) % userCars.length);
-		}
-	};
+	console.log("Refueling: userCars", userCars);
+	console.log("Refueling: selectedCar", selectedCar);
+	console.log("Refueling: initialized", initialized);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			if (userCars && userCars.length !== 0) {
-				setIsLoading(true);
-				setIsCarMileageLoading(true);
-				const clientAPI = ClientAPI(token);
+	// まず、初期化が完了していなければ Loading を返す
+	if (!initialized) {
+		return <LoadingContainer>データを読み込み中...</LoadingContainer>;
+	}
 
-				try {
-					const [fuelResponse, carResponse] = await Promise.all([
-						clientAPI.car.getCarFuelEfficiency({
-							car_id: userCars[selectedCarIndex].car_id,
-						}),
-						clientAPI.car.getCar({
-							car_id: userCars[selectedCarIndex].car_id,
-						}),
-					]);
-
-					setFuelEfficiencies(fuelResponse);
-					setCarMileage(carResponse.car_mileage ?? 0);
-				} catch (error) {
-					console.error("Failed to fetch data:", error);
-				} finally {
-					setIsLoading(false);
-					setIsCarMileageLoading(false);
-				}
-			}
-		};
-
-		fetchData();
-	}, [selectedCarIndex, userCars, token]);
-
-	const handleAddClick = () => {
-		if (userCars) {
-			router.push(`/refueling/add/${userCars[selectedCarIndex].car_id}`);
-		}
-	};
-
-	if (!userCars) {
+	// 初期化が完了していても、userCars が空の場合はエラー表示
+	if (userCars.length === 0) {
 		return <div>ユーザーの車が見つかりません</div>;
 	}
 
+	// 同様に、selectedCar が未設定の場合も Loading 表示を返す
 	if (
-		isLoading ||
-		isCarMileageLoading ||
-		!fuelEfficiencies ||
-		carMileage === null
+		!selectedCar ||
+		!selectedCar.fuel_efficiency ||
+		selectedCar.car_mileage === undefined
 	) {
 		return <LoadingContainer>データを読み込み中...</LoadingContainer>;
 	}
@@ -124,27 +82,27 @@ const Refueling: React.FC<RefuelingProps> = ({ userCars, token }) => {
 	return (
 		<>
 			<Container>
-				<CarSelect
-					userCars={userCars}
-					selectedCarIndex={selectedCarIndex}
-					switchCar={switchCar}
-				/>
+				<CarSelect token={token} userId={userId} />
 				<div style={{ padding: "10px" }}>
 					<RefuelingChart
-						fuelEfficiencies={fuelEfficiencies}
-						carMileage={carMileage}
+						fuelEfficiencies={selectedCar.fuel_efficiency}
+						carMileage={selectedCar.car_mileage}
 					/>
 					<RefuelingCardGroup
-						fuelEfficiencies={fuelEfficiencies}
-						carMileage={carMileage}
+						fuelEfficiencies={selectedCar.fuel_efficiency}
+						carMileage={selectedCar.car_mileage}
 					/>
 				</div>
 			</Container>
-			{userCars.length !== 0 && (
-				<AddButton onClick={handleAddClick}>
-					<CirclePlus color="white" />
-				</AddButton>
-			)}
+			<AddButton
+				onClick={() => {
+					if (selectedCar) {
+						router.push(`/refueling/add/${selectedCar.car_id}`);
+					}
+				}}
+			>
+				<CirclePlus color="white" />
+			</AddButton>
 		</>
 	);
 };

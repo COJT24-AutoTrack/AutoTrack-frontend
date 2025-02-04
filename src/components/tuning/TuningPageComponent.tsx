@@ -106,6 +106,7 @@ const TuningPageComponent: React.FC<TuningPageComponentProps> = ({
 		<>
 			<Container>
 				<CarSelect
+					token={tokens.token}
 					userCars={userCars}
 					selectedCarIndex={selectedCarIndex}
 					switchCar={switchCar}
