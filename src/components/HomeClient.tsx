@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import CarSliderComponent from "@/components/CarSlider/CarSliderComponent";
 import styled from "styled-components";
 import FuelEfficiencyComponent from "@/components/CarDetail/FuelEfficiencyComponent";
@@ -9,6 +9,10 @@ import { carInfo } from "@/api/models/models";
 import { usePCQuery, useSPandTBQuery } from "@/hooks/useBreakpoints";
 import { useRouter } from "next/navigation";
 import { media } from "@/styles/breakpoints";
+import {
+	SelectedCarProvider,
+	useSelectedCarContext,
+} from "@/context/selectedCarContext";
 
 const Main = styled.div`
 	display: flex;
@@ -43,6 +47,7 @@ const HStack = styled.div`
 	flex-direction: row;
 	gap: 10px;
 `;
+
 const FuelEfficiencyComponentWrapper = styled.div`
 	flex: 1;
 `;
@@ -51,29 +56,23 @@ const DetailCardComponentsWrapper = styled.div`
 	flex: 2;
 `;
 
-const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
-	const [selectedCar, setSelectedCar] = useState<carInfo | null>(null);
+const HomeClientContent: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
+	const { selectedCar, setSelectedCar } = useSelectedCarContext();
 	const router = useRouter();
 
 	useEffect(() => {
-		if (userCars.length > 0) {
+		if (userCars.length > 0 && !selectedCar) {
 			setSelectedCar(userCars[0]);
-		} else {
-			setSelectedCar(null);
 		}
-	}, [userCars]);
+	}, [userCars, selectedCar, setSelectedCar]);
 
 	const isSPandTB = useSPandTBQuery();
 	const isPC = usePCQuery();
 
-	const handleSelectCar = (car: carInfo) => {
-		setSelectedCar(car);
-	};
-
 	return (
 		<Main>
 			<CarSliderComponentWrapper>
-				<CarSliderComponent userCars={userCars} onSelectCar={handleSelectCar} />
+				<CarSliderComponent userCars={userCars} onSelectCar={setSelectedCar} />
 			</CarSliderComponentWrapper>
 			<MenuContainer>
 				{isSPandTB && (
@@ -93,7 +92,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 								<div style={{ flex: 1 }}>
 									<DetailCardComponent
 										label={"Mileage"}
-										value={selectedCar ? (selectedCar.total_mileage) : 0}
+										value={selectedCar ? selectedCar.total_mileage : 0}
 										unit={"Km"}
 									/>
 								</div>
@@ -130,7 +129,7 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 								/>
 								<DetailCardComponent
 									label={"Mileage"}
-									value={selectedCar ? (selectedCar.car_mileage) : 0}
+									value={selectedCar ? selectedCar.car_mileage : 0}
 									unit={"Km"}
 								/>
 								<DetailCardComponent
@@ -154,6 +153,14 @@ const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 				</DetailCardComponentsWrapper>
 			</MenuContainer>
 		</Main>
+	);
+};
+
+const HomeClient: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
+	return (
+		<SelectedCarProvider>
+			<HomeClientContent userCars={userCars} />
+		</SelectedCarProvider>
 	);
 };
 

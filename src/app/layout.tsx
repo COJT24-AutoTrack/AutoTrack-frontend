@@ -8,6 +8,7 @@ import { ThemeProvider } from "styled-components";
 import "../styles/GlobalStyle.css";
 import GlobalLoading from "@/components/GlobalLoading";
 import { Suspense } from "react";
+import { SelectedCarProvider } from "@/context/selectedCarContext"; // 追加
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,10 +25,12 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={inter.className}>
 				<ThemeProvider theme={theme}>
-					<Suspense>
-						<GlobalLoading />
-					</Suspense>
-					{shouldUseLayout ? <Home>{children}</Home> : children}
+					<SelectedCarProvider>
+						<Suspense>
+							<GlobalLoading />
+						</Suspense>
+						{shouldUseLayout ? <Home>{children}</Home> : children}
+					</SelectedCarProvider>
 				</ThemeProvider>
 			</body>
 		</html>
