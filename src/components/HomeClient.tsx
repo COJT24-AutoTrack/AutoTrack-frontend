@@ -9,10 +9,7 @@ import { carInfo } from "@/api/models/models";
 import { usePCQuery, useSPandTBQuery } from "@/hooks/useBreakpoints";
 import { useRouter } from "next/navigation";
 import { media } from "@/styles/breakpoints";
-import {
-	SelectedCarProvider,
-	useSelectedCarContext,
-} from "@/context/selectedCarContext";
+import { useSelectedCarContext } from "@/context/selectedCarContext";
 
 const Main = styled.div`
 	display: flex;
@@ -56,7 +53,13 @@ const DetailCardComponentsWrapper = styled.div`
 	flex: 2;
 `;
 
-const HomeClientContent: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
+interface HomeClientProps {
+	userCars: carInfo[];
+	token: string;
+	userId: string;
+}
+
+const HomeClient: React.FC<HomeClientProps> = ({ userCars, token, userId }) => {
 	const { selectedCar, initialized } = useSelectedCarContext();
 	const router = useRouter();
 
@@ -64,7 +67,10 @@ const HomeClientContent: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 		return <div>Loading...</div>;
 	}
 
-	const car = selectedCar!;
+	// selectedCar が null の可能性を排除したいなら、ここでチェックしてローディングを返すなど
+	if (!selectedCar) {
+		return <div>Loading (no selected car)...</div>;
+	}
 
 	const isSPandTB = useSPandTBQuery();
 	const isPC = usePCQuery();
@@ -72,16 +78,14 @@ const HomeClientContent: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 	return (
 		<Main>
 			<CarSliderComponentWrapper>
-			<CarSliderComponent userCars={userCars} />
+				<CarSliderComponent userCars={userCars} />
 			</CarSliderComponentWrapper>
 			<MenuContainer>
 				{isSPandTB && (
 					<FuelEfficiencyComponentWrapper>
 						<FuelEfficiencyComponent
-							userCar={car}
-							onClick={() => {
-								router.push("/refueling");
-							}}
+							userCar={selectedCar}
+							onClick={() => router.push("/refueling")}
 						/>
 					</FuelEfficiencyComponentWrapper>
 				)}
@@ -92,14 +96,14 @@ const HomeClientContent: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 								<div style={{ flex: 1 }}>
 									<DetailCardComponent
 										label={"Mileage"}
-										value={car.total_mileage}
+										value={selectedCar.total_mileage}
 										unit={"Km"}
 									/>
 								</div>
 								<div style={{ flex: 1 }}>
 									<DetailCardComponent
 										label={"Fuel Cost"}
-										value={car.monthly_gas_cost}
+										value={selectedCar.monthly_gas_cost}
 										unit={"Yen"}
 									/>
 								</div>
@@ -109,12 +113,12 @@ const HomeClientContent: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 							<HStack>
 								<DetailCardComponent
 									label={"Car Wash"}
-									value={car.odd_after_wash}
+									value={selectedCar.odd_after_wash}
 									unit={"Km"}
 								/>
 								<DetailCardComponent
 									label={"Tires"}
-									value={car.odd_after_exchange}
+									value={selectedCar.odd_after_exchange}
 									unit={"Km"}
 								/>
 							</HStack>
@@ -122,29 +126,27 @@ const HomeClientContent: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 						{isPC && (
 							<HStack>
 								<FuelEfficiencyComponent
-									userCar={car}
-									onClick={() => {
-										router.push("/refueling");
-									}}
+									userCar={selectedCar}
+									onClick={() => router.push("/refueling")}
 								/>
 								<DetailCardComponent
 									label={"Mileage"}
-									value={car.car_mileage}
+									value={selectedCar.car_mileage}
 									unit={"Km"}
 								/>
 								<DetailCardComponent
 									label={"Total Fuel Cost"}
-									value={car.total_gas_cost}
+									value={selectedCar.total_gas_cost}
 									unit={"Yen"}
 								/>
 								<DetailCardComponent
 									label={"Car Wash"}
-									value={car.odd_after_wash}
+									value={selectedCar.odd_after_wash}
 									unit={"Km"}
 								/>
 								<DetailCardComponent
 									label={"Tires"}
-									value={car.odd_after_exchange}
+									value={selectedCar.odd_after_exchange}
 									unit={"Km"}
 								/>
 							</HStack>
@@ -153,20 +155,6 @@ const HomeClientContent: React.FC<{ userCars: carInfo[] }> = ({ userCars }) => {
 				</DetailCardComponentsWrapper>
 			</MenuContainer>
 		</Main>
-	);
-};
-
-interface HomeClientProps {
-	userCars: carInfo[];
-	token: string;
-	userId: string;
-}
-
-const HomeClient: React.FC<HomeClientProps> = ({ userCars, token, userId }) => {
-	return (
-		<SelectedCarProvider token={token} userId={userId}>
-			<HomeClientContent userCars={userCars} />
-		</SelectedCarProvider>
 	);
 };
 
