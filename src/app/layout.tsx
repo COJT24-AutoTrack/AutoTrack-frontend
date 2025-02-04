@@ -17,7 +17,7 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	const pathname = usePathname();
+	const pathname = usePathname() ?? "";
 	const noLayoutPages = ["/signin", "/signup"];
 	const shouldUseLayout = !noLayoutPages.includes(pathname);
 
@@ -26,7 +26,7 @@ export default function RootLayout({
 			<body className={inter.className}>
 				<ThemeProvider theme={theme}>
 					<SelectedCarProvider>
-						<Suspense>
+						<Suspense fallback={<GlobalLoading />}>
 							<GlobalLoading />
 						</Suspense>
 						{shouldUseLayout ? <Home>{children}</Home> : children}
