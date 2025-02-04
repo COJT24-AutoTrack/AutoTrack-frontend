@@ -3,6 +3,7 @@
 import React, { use, useState } from "react";
 import styled from "styled-components";
 import { usePCQuery } from "@/hooks/useBreakpoints";
+import "chart.js/auto";
 import {
 	Chart as ChartJS,
 	CategoryScale,
