@@ -95,6 +95,9 @@ export default async function Home() {
 				if (monthlyRecords.length === 1) {
 					return monthlyRecords[0].fe_mileage - car.car_mileage;
 				} else {
+					if (monthlyRecords.length === 0) {
+						return 0;
+					}
 					return (
 						monthlyRecords[monthlyRecords.length - 1].fe_mileage -
 						monthlyRecords[0].fe_mileage
