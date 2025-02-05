@@ -86,12 +86,13 @@ export default async function Home() {
 			)[0];
 
 		const monthlyMileage = (() => {
+			if (monthlyRecords.length === 0) {
+				return 0;
+			}
 			if (allRecords.length === 0) {
 				return 0;
 			} else if (allRecords.length === 1) {
-				if (monthlyRecords.length === 0) {
-					return 0;
-				} else if (monthlyRecords.length === 1) {
+				if (monthlyRecords.length === 1) {
 					return monthlyRecords[0].fe_mileage - car.car_mileage;
 				} else {
 					if (monthlyRecords.length === 0) {
@@ -103,12 +104,12 @@ export default async function Home() {
 					);
 				}
 			} else {
-				if (monthlyRecords.length === 0) {
-					return 0;
-				}
+				const previousMileage = lastRecordOfPreviousMonth
+					? lastRecordOfPreviousMonth.fe_mileage
+					: car.car_mileage;
+
 				return (
-					monthlyRecords[monthlyRecords.length - 1].fe_mileage -
-					lastRecordOfPreviousMonth?.fe_mileage
+					monthlyRecords[monthlyRecords.length - 1].fe_mileage - previousMileage
 				);
 			}
 		})();
