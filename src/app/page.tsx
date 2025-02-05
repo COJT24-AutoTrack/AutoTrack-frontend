@@ -74,7 +74,8 @@ export default async function Home() {
 
 		let monthlyRecords = allRecords.filter(
 			(fe) =>
-				new Date(fe.fe_date) >= startOfMonth && new Date(fe.fe_date) < endOfMonth,
+				new Date(fe.fe_date) >= startOfMonth &&
+				new Date(fe.fe_date) < endOfMonth,
 		);
 
 		// 前月末までの最終給油記録（最も新しいもの1件）を取得
@@ -85,12 +86,13 @@ export default async function Home() {
 			)[0];
 
 		const monthlyMileage = (() => {
+			if (monthlyRecords.length === 0) {
+				return 0;
+			}
 			if (allRecords.length === 0) {
 				return 0;
 			} else if (allRecords.length === 1) {
-				if (monthlyRecords.length === 0) {
-					return 0;
-				} else if (monthlyRecords.length === 1) {
+				if (monthlyRecords.length === 1) {
 					return monthlyRecords[0].fe_mileage - car.car_mileage;
 				} else {
 					return (
@@ -99,9 +101,12 @@ export default async function Home() {
 					);
 				}
 			} else {
+				const previousMileage = lastRecordOfPreviousMonth
+					? lastRecordOfPreviousMonth.fe_mileage
+					: car.car_mileage;
+
 				return (
-					monthlyRecords[monthlyRecords.length - 1].fe_mileage -
-					lastRecordOfPreviousMonth?.fe_mileage
+					monthlyRecords[monthlyRecords.length - 1].fe_mileage - previousMileage
 				);
 			}
 		})();
