@@ -23,9 +23,7 @@ export const CarInspectionAPI = (jwt: string) => ({
 
 	getCarInspection: async (
 		request: CarInspectionAPIInterface["getCarInspection"]["request"],
-	): Promise<
-		CarInspectionAPIInterface["getCarInspection"]["response"]
-	> => {
+	): Promise<CarInspectionAPIInterface["getCarInspection"]["response"]> => {
 		const response = await fetchWithToken(
 			`${AUTOTRACK_API_CAR_INSPECTIONS_URL}/${request.car_id}`,
 			{
