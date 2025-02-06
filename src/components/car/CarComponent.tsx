@@ -342,8 +342,11 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 				const car = await clientAPI.carInspection.getCarInspection({
 					car_id: carId,
 				});
-
-				setCarInspection(car);
+				if (car) {
+					setCarInspection(car);
+				} else {
+					setCarInspection(null);
+				}
 			} catch (error) {
 				console.error("Error fetching car inspection:", error);
 			}
@@ -452,11 +455,7 @@ const CarComponent: React.FC<CarComponentProps> = ({ carId, tokens }) => {
 				) : (
 					<CarInfoContainer>
 						{isScanning ? (
-							<QrScannerComponent
-								tokens={tokens}
-								carId={carId}
-								isExist={!!carInspection}
-							/>
+							<QrScannerComponent tokens={tokens} carId={carId} />
 						) : carInspection ? (
 							<div>
 								<InspectionContainer>

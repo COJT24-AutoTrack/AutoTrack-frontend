@@ -85,13 +85,11 @@ interface QrScannerComponentProps {
 		decodedToken: { uid: string };
 	};
 	carId: string;
-	isExist: boolean;
 }
 
 const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 	tokens,
 	carId,
-	isExist,
 }) => {
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const scannerRef = useRef<QrScanner | null>(null);
@@ -245,11 +243,8 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 				alert("スキャン結果がありません");
 				return;
 			}
-			if (!isExist) {
-				await clientAPI.carInspection.createCarInspection(carInspection);
-			} else {
-				await clientAPI.carInspection.updateCarInspection(carInspection);
-			}
+			await clientAPI.carInspection.createCarInspection(carInspection);
+			window.location.reload();
 		} catch (error) {
 			console.error("Error posting car inspection:", error);
 			alert("API通信エラーが発生しました。");
