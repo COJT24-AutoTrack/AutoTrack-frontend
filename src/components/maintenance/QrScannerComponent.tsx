@@ -275,7 +275,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 			)} */}
 
 			<VideoWrapper>
-				<VideoElement ref={videoRef} />
+				<VideoElement ref={videoRef} playsInline />
 			</VideoWrapper>
 
 			{/* --- 生のスキャン結果を出す ---
