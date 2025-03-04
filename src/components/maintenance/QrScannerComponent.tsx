@@ -226,7 +226,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 			setResult(result.getText());
 			handleDecode(result.getText());
 		},
-		constraints,
+		// constraints,
 		// hints,
 	});
 
