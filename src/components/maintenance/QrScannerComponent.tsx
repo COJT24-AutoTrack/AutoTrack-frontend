@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import QrScanner from "qr-scanner";
+// import QrScanner from "qr-scanner";
 import styled from "styled-components";
 import { CarInspection } from "@/api/models/models";
 import { ClientAPI } from "@/api/clientImplement";
@@ -8,6 +8,8 @@ import {
 	KCarHeaders,
 	StandardCarheaders,
 } from "@/lib/parseCarInspection";
+import { useZxing } from "react-zxing";
+import { DecodeHintType } from "@zxing/library";
 
 // ===== スタイル定義 =====
 const ScannerContainer = styled.div`
@@ -91,8 +93,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 	tokens,
 	carId,
 }) => {
-	const videoRef = useRef<HTMLVideoElement | null>(null);
-	const scannerRef = useRef<QrScanner | null>(null);
+	// const scannerRef = useRef<QrScanner | null>(null);
 
 	const [scannedResults, setScannedResults] = useState<string[]>([]);
 	const [splittedResults, setSplittedResults] = useState<string[]>([]);
@@ -101,10 +102,12 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 		null,
 	);
 
+	const [result, setResult] = useState("");
+
 	const handleDecode = useCallback(
-		(result: QrScanner.ScanResult) => {
+		(result: string) => {
 			console.log("QRコードスキャン結果:", result);
-			const rawData = result.data.trim();
+			const rawData = result.trim();
 			if (!rawData) {
 				console.warn("QRコードが空です or 解析失敗");
 				return;
@@ -212,20 +215,26 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 		[carId],
 	);
 
+	const { ref } = useZxing({
+		onDecodeResult(result) {
+			setResult(result.getText());
+			handleDecode(result.getText());
+		},
+		timeBetweenDecodingAttempts: 100,
+	});
+
 	useEffect(() => {
-		if (!videoRef.current) return;
-
-		scannerRef.current = new QrScanner(videoRef.current, handleDecode, {
-			highlightScanRegion: true,
-			highlightCodeOutline: true,
-		});
-
-		scannerRef.current.start().catch(console.error);
-
-		// クリーンアップ
-		return () => {
-			scannerRef.current?.stop();
-		};
+		// if (!videoRef.current) return;
+		// scannerRef.current = new QrScanner(videoRef.current, handleDecode, {
+		// 	highlightScanRegion: true,
+		// 	highlightCodeOutline: true,
+		// });
+		// scannerRef.current.start().catch(console.error);
+		// // クリーンアップ
+		// return () => {
+		// 	scannerRef.current?.stop();
+		// };
+		console.log("QR Scanner Error: No QR Code Found.");
 	}, [handleDecode]);
 
 	// クリアボタン
@@ -275,7 +284,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 			)} */}
 
 			<VideoWrapper>
-				<VideoElement ref={videoRef} />
+				<VideoElement ref={ref} />
 			</VideoWrapper>
 
 			{/* --- 生のスキャン結果を出す ---
@@ -291,6 +300,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 
 			{/* --- 分割・変換後の結果表示 --- */}
 			<SplitResultsList>
+				<p>{result}</p>
 				{splittedResults.length > 0 ? (
 					splittedResults.map((result, index) => {
 						const currentHeaders = isKcar ? KCarHeaders : StandardCarheaders;
