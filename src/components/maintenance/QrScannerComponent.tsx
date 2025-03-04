@@ -217,7 +217,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 	const hints = new Map();
 	hints.set(DecodeHintType.TRY_HARDER, true);
 	const constraints: MediaStreamConstraints = {
-		video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+		video: { width: { ideal: 1920 }, height: { ideal: 1080 } },
 		audio: false,
 	};
 
@@ -227,7 +227,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 			handleDecode(result.getText());
 		},
 		constraints,
-		hints,
+		// hints,
 	});
 
 	useEffect(() => {
