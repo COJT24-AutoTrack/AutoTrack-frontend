@@ -9,6 +9,7 @@ import {
 	StandardCarheaders,
 } from "@/lib/parseCarInspection";
 import { useZxing } from "react-zxing";
+import { DecodeHintType } from "@zxing/library";
 
 // ===== スタイル定義 =====
 const ScannerContainer = styled.div`
@@ -213,12 +214,20 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 		},
 		[carId],
 	);
+	const hints = new Map();
+	hints.set(DecodeHintType.TRY_HARDER, true);
+	const constraints: MediaStreamConstraints = {
+		video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+		audio: false,
+	};
 
 	const { ref } = useZxing({
 		onDecodeResult(result) {
 			setResult(result.getText());
 			handleDecode(result.getText());
 		},
+		constraints,
+		hints,
 	});
 
 	useEffect(() => {
