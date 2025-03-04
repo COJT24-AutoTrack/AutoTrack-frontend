@@ -214,20 +214,13 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 		},
 		[carId],
 	);
-	const hints = new Map();
-	hints.set(DecodeHintType.TRY_HARDER, true);
-	const constraints: MediaStreamConstraints = {
-		video: { width: { ideal: 1920 }, height: { ideal: 1080 } },
-		audio: false,
-	};
 
 	const { ref } = useZxing({
 		onDecodeResult(result) {
 			setResult(result.getText());
 			handleDecode(result.getText());
 		},
-		// constraints,
-		// hints,
+		timeBetweenDecodingAttempts: 0.1,
 	});
 
 	useEffect(() => {
