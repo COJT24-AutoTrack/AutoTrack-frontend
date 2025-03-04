@@ -220,7 +220,7 @@ const QrScannerComponent: React.FC<QrScannerComponentProps> = ({
 			setResult(result.getText());
 			handleDecode(result.getText());
 		},
-		timeBetweenDecodingAttempts: 0.1,
+		timeBetweenDecodingAttempts: 100,
 	});
 
 	useEffect(() => {
