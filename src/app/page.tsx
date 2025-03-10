@@ -160,9 +160,13 @@ export default async function Home() {
 
 		if (!lastMaintenanceDate) return 0;
 
-		return fuelEfficiencies
+		const latestFuelRecord = fuelEfficiencies
 			.filter((fe) => new Date(fe.fe_date) >= new Date(lastMaintenanceDate))
-			.reduce((acc, fe) => acc + fe.fe_mileage, 0);
+			.sort(
+				(a, b) => new Date(b.fe_date).getTime() - new Date(a.fe_date).getTime(),
+			)[0];
+
+		return latestFuelRecord ? latestFuelRecord.fe_mileage : 0;
 	};
 
 	const carInfos: carInfo[] = userCars.map((car) => {
@@ -190,7 +194,7 @@ export default async function Home() {
 				carFuelEfficiencies,
 			),
 			odd_after_exchange: calculateOddAfterMaintenance(
-				"Oil Change",
+				"Tires",
 				carMaintenances,
 				carFuelEfficiencies,
 			),
